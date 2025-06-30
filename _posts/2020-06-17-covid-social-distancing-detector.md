@@ -5,7 +5,7 @@ subtitle: A quarantine project combining deep learning and computer vision.
 cover-img: /assets/img/social/3.png
 thumbnail-img: /assets/img/social/3.png
 share-img: /assets/img/social/3.png
-tags: [computervision]
+tags: [computervision,deeplearning]
 author: Basile Roth
 ---
 
