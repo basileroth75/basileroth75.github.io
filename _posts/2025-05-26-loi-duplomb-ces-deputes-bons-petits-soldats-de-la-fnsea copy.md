@@ -5,7 +5,7 @@ subtitle: Une étude exclusive, réalisée par Politis et Data for Good, montre 
 cover-img: /assets/img/fnsea/FNSEA_LOI.png
 thumbnail-img: /assets/img/fnsea/FNSEA_LOI.png
 share-img: /assets/img/fnsea/FNSEA_LOI.png
-tags: [dataforgood]
+tags: [dataforgood, nlp]
 author: Maxime Sirvins, Pierre Jequier-Zalc et Basile Roth
 ---
 
