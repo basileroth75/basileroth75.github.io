@@ -191,16 +191,15 @@ Let me resume how this project works :
 
 I used a video from the **PETS2009** dataset which consists of multisensor sequences containing different crowd activities. It was originally build for tasks like person counting and density estimation in crowds. I decided to use video from the the 1st angle because it was the widest one, with the best view of the scene. This video presents the results obtained :
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
-
-
+[![IMAGE ALT TEXT HERE](/Users/basileroth/Desktop/Code/basileroth75.github.io/assets/img/social/5.png)](https://www.youtube.com/watch?v=3b2GPwN2_I0)
 
 ### 6. Conclusion and improvements
 Nowadays, social distancing along with other basic sanitary mesures are very important to keep the spread of the Covid-19 as slow as possible. But this project is only a proof of concept and was not made to be use to monitor social distancing in public or private areas because of ethical and privacy issues.
 
 I am well aware that this project is not perfect so these are a few ideas how this application be improved :
 
-Using a faster model in order to perform real-time social distancing analysis.
-Use a model more robust to occlusions.
-Automatic calibration is a very well known problem in Computer vision and could improve a lot the bird eye view transformation on different scenes.
-This article is my first contribution to Towards Data Science and Medium. I have made the code available on my Github. Please do not hesitate to ask if you have a question regarding the code itself or this article. If you have ideas for possible improvements or any kind of feedback, feel free to contact me, it will be greatly appreciated. I hope you find this helpful and feel free to share it if you like it.
+- Using a faster model in order to perform real-time social distancing analysis.
+- Use a model more robust to occlusions.
+- Automatic calibration is a very well known problem in Computer vision and could improve a lot the bird eye view transformation on different scenes.
+
+This article is my first contribution to the open source community. I have made the code available on my Github. Please do not hesitate to ask if you have a question regarding the code itself or this article. If you have ideas for possible improvements or any kind of feedback, feel free to contact me, it will be greatly appreciated. I hope you find this helpful and feel free to share it if you like it.
