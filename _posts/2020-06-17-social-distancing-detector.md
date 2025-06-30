@@ -9,8 +9,6 @@ tags: [computervision]
 author: Basile Roth
 ---
 
-### Introduction
-
 During the quarantine I was spending time on github exploring Tensorflow’s huge number of pre-trained models. While doing this, I stumbled on a repository containing 25 pre-trained object detection models with performance and speed indicators. Having some knowledge in computer vision and given the actual context, I thought it could be interesting to use one of these to build a social distancing application.
 
 More so, last semester I was introduced to OpenCV during my Computer Vision class and realized how powerful it was while doing a number of small projects. One of these included performing a bird eye view transformation of a picture. A bird eye view is a basically a top-down representation of a scene. It is a task often performed when building applications for automatic car driving.
