@@ -17,7 +17,7 @@ Cependant, l’influence du puissant syndicat agricole ne s’arrête pas à une
 
 Si elles sont souvent critiquées, ces stratégies de lobbying sont rarement précisément décrites. Comment se matérialisent-elles, concrètement ? Politis et l’association Data for Good se sont associées (voir notre encadré méthodologique) pour mettre en évidence leurs ressorts, au niveau législatif. Et les conclusions sont assez effarantes : 37 % des amendements déposés par les parlementaires hors-NFP sont des demandes directes du puissant syndicat agricole.
 
-![Alt text](/Users/basileroth/Desktop/Code/basileroth75.github.io/assets/img/fnsea/DATA_FNSEA_1-2048x1112.avif "a title")
+![Alt text](/Users/basileroth/Desktop/Code/basileroth75.github.io/assets/img/fnsea/DATA_FNSEA_1-2048x1112.png "a title")
 
 Surtout, cela permet de se rendre compte que la droite et les macronistes – qui constituent, très largement, les deux principaux groupes qui ressortent de notre étude – sont la courroie de transmission de ce puissant lobby agricole. Rien de bien étonnant, même si cela permet de dévoiler pleinement la stratégie politique du groupe Ensemble pour la République (EPR).
 
@@ -25,7 +25,7 @@ Si, ces derniers jours, plusieurs parlementaires du groupe ont affirmé être «
 
 Aussi, pour pleinement se rendre compte de ce que veulent dire ces chiffres, il faut refaire la genèse de cette proposition de loi, issue du Sénat. Comme expliqué précédemment, c’est le sénateur Laurent Duplomb qui l’a portée au Palais du Luxembourg, début janvier. Au sein de la Chambre haute, elle a été adoptée, sans modification ou presque.
 
-![Alt text](/Users/basileroth/Desktop/Code/basileroth75.github.io/assets/img/fnsea/DATA_FNSEA_2-2048x1112.avif "a title")
+![Alt text](/Users/basileroth/Desktop/Code/basileroth75.github.io/assets/img/fnsea/DATA_FNSEA_2-2048x1112.png "a title")
 
 En d’autres termes, c’est un texte particulièrement dur pour l’environnement – et reprenant nombre de demandes de la FNSEA – qui est arrivé au sein de l’Assemblée nationale. En commission, le texte a été amendé, partiellement, sans que cela ne change drastiquement son esprit.
 

@@ -9,29 +9,32 @@ tags: [computervision]
 author: Basile Roth
 ---
 
-Introduction
+### Introduction
+
 During the quarantine I was spending time on github exploring Tensorflow’s huge number of pre-trained models. While doing this, I stumbled on a repository containing 25 pre-trained object detection models with performance and speed indicators. Having some knowledge in computer vision and given the actual context, I thought it could be interesting to use one of these to build a social distancing application.
 
 More so, last semester I was introduced to OpenCV during my Computer Vision class and realized how powerful it was while doing a number of small projects. One of these included performing a bird eye view transformation of a picture. A bird eye view is a basically a top-down representation of a scene. It is a task often performed when building applications for automatic car driving.
 
+![Alt text](/Users/basileroth/Desktop/Code/basileroth75.github.io/assets/img/social/1.png "Implementation of bird’s eye view system for camera on vehicle")
 
-Implementation of bird’s eye view system for camera on vehicle
 This made me realize that applying such technique on a scene where we want to monitor social distancing could improve the quality of it. This article presents how I used a deep learning model along with some knowledge in computer vision to build a robust social distancing detector.
 
 This article is going to be structured as follow :
+- Model selection
+- People detection
+- Bird eye view transformation
+- Social distancing measurement
+- Results and improvements
 
-Model selection
-People detection
-Bird eye view transformation
-Social distancing measurement
-Results and improvements
-All of the following code along with installation explanations can be found on my github repository.
+All of the following code along with installation explanations can be found on my [github repository](https://github.com/basileroth75/covid-social-distancing-detection).
 
-1. Model selection
-All the models available on the Tensorflow object detection model zoo have been trained on the COCO dataset (Common Objects in COntext). This dataset contains 120,000 images with a total 880,000 labeled objects in these images. These models are trained to detect the 90 different types of objects labeled in this dataset. A complete list of all this different objects is available in the data part of the repository accessible on the data section of the github repo. This list of objects includes a car, a toothbrush, a banana and of course a person.
+### 1. Model selection
+
+All the models available on the Tensorflow object detection model zoo have been trained on the COCO dataset (Common Objects in COntext). This [dataset](https://cocodataset.org/#explore) contains 120,000 images with a total 880,000 labeled objects in these images. These models are trained to detect the 90 different types of objects labeled in this dataset. A complete list of all this different objects is available in the data part of the repository accessible on the data section of the github [repo](https://github.com/tensorflow/models/blob/master/research/object_detection/data/mscoco_complete_label_map.pbtxt). This list of objects includes a car, a toothbrush, a banana and of course a person.
+
+![Alt text](/Users/basileroth/Desktop/Code/basileroth75.github.io/assets/img/social/2.png "Non exhaustive list of the available models")
 
 
-Non exhaustive list of the available models
 They have different performances depending on the speed of the model. I made a few tests in order to determine how to leverage the quality of the model depending on the speed of the predictions. Since the goal of this application was not to be able to perform real time analysis, I ended up choosing the faster_rcnn_inception_v2_coco which has a mAP (detector performance on a validation set) of 28, which is quite strong, and an execution speed of 58 ms.
 
 2. People detection
@@ -85,13 +88,17 @@ Once 2 points are identified being too close from one another, the color of the 
 5. Results
 Let me resume how this project works :
 
-First get the 4 corner points of the plan and apply the perspective transformation to get a bird view of this plan and save the transformation matrix.
-Get the bounding box for each person detected in the original frame.
-Compute the lowest point of this box. It is the point located between both feet.
-Use the transformation matrix to each of theses points to get the real “GPS” coordinates of each person.
-Use itertools.combinations() to measure the distance from every points to all the other ones in the frame.
-If a social distancing violation is detected, change the color of the bounding box to red.
+- First get the 4 corner points of the plan and apply the perspective transformation to get a bird view of this plan and save the transformation matrix.
+- Get the bounding box for each person detected in the original frame.
+- Compute the lowest point of this box. It is the point located between both feet.
+- Use the transformation matrix to each of theses points to get the real “GPS” coordinates of each person.
+- Use itertools.combinations() to measure the distance from every points to all the other ones in the frame.
+- If a social distancing violation is detected, change the color of the bounding box to red.
+
 I used a video from the PETS2009 dataset which consists of multisensor sequences containing different crowd activities. It was originally build for tasks like person counting and density estimation in crowds. I decided to use video from the the 1st angle because it was the widest one, with the best view of the scene. This video presents the results obtained :
+
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+
 
 
 6. Conclusion and improvements
