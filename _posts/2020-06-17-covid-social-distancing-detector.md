@@ -2,9 +2,9 @@
 layout: post
 title: A social distancing detector using a Tensorflow object detection model, Python and OpenCV.
 subtitle: A quarantine project combining deep learning and computer vision.
-cover-img: /assets/img/FNSEA_LOI.png
-thumbnail-img: /assets/img/FNSEA_LOI.png
-share-img: /assets/img/FNSEA_LOI.png
+cover-img: /assets/img/social/3.png
+thumbnail-img: /assets/img/social/3.png
+share-img: /assets/img/social/3.png
 tags: [computervision]
 author: Basile Roth
 ---
