@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Loi Duplomb : ces députés bons petits soldats de la FNSEA
+title: Loi Duplomb - ces députés bons petits soldats de la FNSEA
 subtitle: Une étude exclusive, réalisée par Politis et Data for Good, montre l’influence majeure de la FNSEA sur les débats de la loi Duplomb.
 cover-img: /assets/img/FNSEA_LOI.png
 thumbnail-img: /assets/img/FNSEA_LOI.png
