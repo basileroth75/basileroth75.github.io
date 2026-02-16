@@ -7,9 +7,7 @@
 <script src="https://d3js.org/d3.v7.min.js"></script>
 
 <style>
-    /* WordPress Wrapper Styling 
-       This keeps the map contained within your blog post/page layout.
-    */
+    /* WordPress Wrapper Styling */
     #map-wrapper {
         position: relative;
         width: 100%;
@@ -25,7 +23,7 @@
     #map { 
         width: 100%; 
         height: 100%; 
-        z-index: 1; /* Keeps map below the controls */
+        z-index: 1; 
     }
 
     /* Tooltip Styling */
@@ -34,41 +32,44 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        padding: 8px 12px;
+        padding: 6px 10px;
         color: #333;
-        font-size: 13px;
-        line-height: 1.5;
+        font-size: 12px;
+        line-height: 1.4;
     }
     .custom-tooltip b { color: #555; }
-    .tooltip-title { font-weight: bold; font-size: 14px; margin-bottom: 5px; border-bottom: 2px solid; padding-bottom: 2px;}
+    .tooltip-title { font-weight: bold; font-size: 13px; margin-bottom: 4px; border-bottom: 1px solid; padding-bottom: 2px;}
 
-    /* Controls Panel Styling - Positioned relative to the wrapper */
+    /* Controls Panel Styling - MADE MUCH SMALLER */
     #controls-panel { 
         position: absolute; 
-        top: 15px; 
-        left: 15px; 
+        top: 10px; 
+        left: 10px; 
         background: rgba(255, 255, 255, 0.95); 
-        padding: 15px; 
-        border-radius: 8px; 
+        padding: 10px; /* Reduced padding */
+        border-radius: 6px; 
         box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
-        font-size: 13px;
-        z-index: 1000; /* Keeps controls above the map */
-        width: 260px; 
-        max-height: 90%; /* Prevents it from breaking out of the map wrapper */
+        font-size: 11px; /* Reduced font size */
+        z-index: 1000; 
+        width: 220px; /* Reduced width */
+        max-height: 90%; 
         overflow-y: auto;
     }
-    .legend-title { font-weight: bold; font-size: 14px; margin-bottom: 10px; border-bottom: 1px solid #ddd; padding-bottom: 5px;}
-    .legend-item { display: flex; align-items: center; margin-bottom: 8px; }
-    .legend-color { width: 16px; height: 16px; margin-right: 10px; border-radius: 3px; border: 1.5px solid #999; flex-shrink: 0;}
-    .legend-line { width: 16px; height: 3px; margin-right: 10px; flex-shrink: 0;}
     
-    /* Filter Sections */
-    .filter-section { margin-top: 15px; border-top: 1px solid #ddd; padding-top: 10px; }
-    .input-group { display: flex; flex-direction: column; margin-top: 8px; gap: 5px; }
-    .input-group input { padding: 4px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;}
-    .action-btn { margin-top: 8px; width: 100%; padding: 6px; background: #2c3e50; color: white; border: none; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+    .legend-title { font-weight: bold; font-size: 12px; margin-bottom: 6px; border-bottom: 1px solid #ddd; padding-bottom: 4px;}
+    .legend-item { display: flex; align-items: center; margin-bottom: 5px; } /* Tighter spacing */
+    
+    /* Smaller colored boxes and lines */
+    .legend-color { width: 12px; height: 12px; margin-right: 6px; border-radius: 2px; border: 1px solid #999; flex-shrink: 0;}
+    .legend-line { width: 12px; height: 2px; margin-right: 6px; flex-shrink: 0;}
+    
+    /* Tighter Filter Sections */
+    .filter-section { margin-top: 10px; border-top: 1px solid #ddd; padding-top: 8px; }
+    .input-group { display: flex; flex-direction: column; margin-top: 5px; gap: 4px; }
+    .input-group input { padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; box-sizing: border-box;}
+    .action-btn { margin-top: 5px; width: 100%; padding: 4px; background: #2c3e50; color: white; border: none; border-radius: 3px; cursor: pointer; transition: 0.2s; font-size: 11px;}
     .action-btn:hover { background: #34495e; }
-    .count-text { margin-top: 8px; font-size: 0.9em; color: #666; font-style: italic;}
+    .count-text { margin-top: 4px; font-size: 0.9em; color: #666; font-style: italic;}
 </style>
 
 <div id="map-wrapper">
@@ -146,6 +147,7 @@
     const colorGenBorder = "#6da39a";
     const colorSeasFill = "#fb8072";
     const colorSeasBorder = "#d96f63";
+
 
     // IMPORTANT FOR WORDPRESS: Update these URLs to the actual location of your files on your server
         const tracksCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/filtered_tracks.csv";
@@ -295,4 +297,3 @@
     document.getElementById('apply-track-filter').addEventListener('click', renderTracks);
     document.getElementById('apply-krill-filter').addEventListener('click', renderKrillHeatmap);
 </script>
-      
