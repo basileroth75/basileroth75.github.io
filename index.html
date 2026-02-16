@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Krill & Boat Map</title>
+    <title>Krill & Fishing Events Map</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -100,15 +100,15 @@
         </div>
 
         <div class="legend-section">
-            <div class="legend-title">🚢 Boat Tracks & Filters</div>
+            <div class="legend-title">🚢 Fishing Events & Filters</div>
             
             <div class="legend-item">
-                <div class="legend-line" style="background: #377eb8;"></div>
-                <span>Boat 1</span>
+                <div class="legend-line" style="background: #377eb8; height: 3px;"></div>
+                <span>Antarctic Endurance</span>
             </div>
             <div class="legend-item">
-                <div class="legend-line" style="background: #e41a1c;"></div>
-                <span>Boat 2</span>
+                <div class="legend-line" style="background: #e41a1c; height: 3px;"></div>
+                <span>Saga Sea</span>
             </div>
 
             <div class="input-group" style="margin-top: 10px;">
@@ -132,8 +132,7 @@
                     </select>
                 </label>
 
-                <label>Max Speed (knots): <input type="number" id="max-speed" value="100" min="0" step="0.5"></label>
-                <button id="apply-track-filter" class="action-btn">Apply Track Filter</button>
+                <button id="apply-track-filter" class="action-btn">Apply Event Filter</button>
             </div>
             <div id="track-count" class="count-text"></div>
         </div>
@@ -169,14 +168,14 @@
     }).addTo(map);
 
     const zonesLayer = L.layerGroup().addTo(map); 
-    const tracks1Layer = L.layerGroup().addTo(map); // Boat 1
-    const tracks2Layer = L.layerGroup().addTo(map); // Boat 2
+    const tracks1Layer = L.layerGroup().addTo(map); 
+    const tracks2Layer = L.layerGroup().addTo(map); 
     const krillHeatmapLayer = L.layerGroup().addTo(map);
 
     const overlayMaps = {
         "🛡️ Protection Zones": zonesLayer,
-        "🚢 Boat 1 Tracks": tracks1Layer,
-        "🚢 Boat 2 Tracks": tracks2Layer,
+        "🚢 Antarctic Endurance": tracks1Layer,
+        "🚢 Saga Sea": tracks2Layer,
         "🐟 Krill Heatmap": krillHeatmapLayer
     };
     L.control.layers(null, overlayMaps, { collapsed: false, position: 'topright' }).addTo(map);
@@ -185,13 +184,15 @@
     let allKrillData = [];
 
 
-    const tracksCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/ANTARTIC_ENDURANCE.csv";
-    const tracks2CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/SAGA_SEA(NOR).csv";
+
+    // --- UPDATE YOUR NEW FISHING FILE PATHS HERE ---
+    const tracksCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/ANTARCTIC_ENDURANCE.csv";
+    const tracks2CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/SAGASEA.csv";
+    
+    // Kept original context URLs for zones and krill
     const zonesCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/domaine1-Zone_de_protection_general.csv";
     const zonesSaisonCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/domaine1-Zone_de_protection_saison.csv";
     const krillCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/processed_krill.csv";
-
-
 
     Promise.all([
         d3.csv(tracksCsvUrl),
@@ -213,7 +214,7 @@
             legendContainer.innerHTML += `
                 <div class="legend-item">
                     <div class="legend-color" style="background: ${color}; opacity: 0.6; border-color: ${borderColor};"></div>
-                    <span>Forbidden: ${period}</span>
+                    <span> ${period}</span>
                 </div>
             `;
         });
@@ -242,10 +243,25 @@
         renderZoneGroup(zonesData);
         renderZoneGroup(zonesSaisonData);
 
-
-        // --- TRACKS ---
-        tracks1Data.forEach(d => { d.boatSource = "Boat 1"; d.dateObj = new Date(d.timestamp); });
-        tracks2Data.forEach(d => { d.boatSource = "Boat 2"; d.dateObj = new Date(d.timestamp); });
+        // --- TRACKS (FISHING EVENTS) ---
+        // Variable Mapping updated: timestamp -> start/end, lat -> latitude, lon -> longitude, seg_id -> voyage
+        tracks1Data.forEach(d => { 
+            d.boatSource = "Antarctic Endurance"; 
+            d.dateObj = new Date(d.start); 
+            d.endDateObj = new Date(d.end); 
+            d.lat = parseFloat(d.latitude); 
+            d.lon = parseFloat(d.longitude); 
+            d.seg_id = d.voyage; 
+        });
+        
+        tracks2Data.forEach(d => { 
+            d.boatSource = "Saga Sea"; 
+            d.dateObj = new Date(d.start); 
+            d.endDateObj = new Date(d.end); 
+            d.lat = parseFloat(d.latitude); 
+            d.lon = parseFloat(d.longitude); 
+            d.seg_id = d.voyage; 
+        });
         
         allTracksData = [...tracks1Data, ...tracks2Data];
 
@@ -287,9 +303,6 @@
         const start = new Date(document.getElementById('start-date').value);
         const end = new Date(document.getElementById('end-date').value);
         end.setHours(23, 59, 59); 
-        
-        const maxSpeedInput = parseFloat(document.getElementById('max-speed').value);
-        const maxSpeed = isNaN(maxSpeedInput) ? Infinity : maxSpeedInput;
 
         const startMonth = parseInt(document.getElementById('start-month').value);
         const endMonth = parseInt(document.getElementById('end-month').value);
@@ -298,7 +311,6 @@
             if (!d.dateObj || isNaN(d.dateObj)) return false;
 
             const isRightTime = d.dateObj >= start && d.dateObj <= end;
-            const isUnderSpeed = (+d.speed) <= maxSpeed;
             
             const m = d.dateObj.getMonth();
             let isRightMonth = false;
@@ -308,36 +320,39 @@
                 isRightMonth = (m >= startMonth || m <= endMonth);
             }
 
-            return isRightTime && isUnderSpeed && isRightMonth;
+            return isRightTime && isRightMonth;
         });
 
-        document.getElementById('track-count').innerText = `Displaying ${filteredData.length} track points`;
+        document.getElementById('track-count').innerText = `Displaying ${filteredData.length} fishing events`;
 
         const tracksGrouped = d3.group(filteredData, d => d.boatSource, d => d.seg_id);
         const boatColorScale = d3.scaleOrdinal()
-            .domain(["Boat 1", "Boat 2"])
+            .domain(["Antarctic Endurance", "Saga Sea"])
             .range(["#377eb8", "#e41a1c"]); 
 
         tracksGrouped.forEach((segments, boatSource) => {
             const baseColor = boatColorScale(boatSource);
-            const targetLayer = boatSource === "Boat 1" ? tracks1Layer : tracks2Layer;
+            const targetLayer = boatSource === "Antarctic Endurance" ? tracks1Layer : tracks2Layer;
 
             segments.forEach((points, segId) => {
                 points.sort((a, b) => a.dateObj - b.dateObj); 
                 const latlngs = points.map(p => [+p.lat, +p.lon]);
 
+                // Connecting line styling updated since these are discrete point events now
                 if (latlngs.length > 1) {
-                    L.polyline(latlngs, { color: baseColor, weight: 1.5, opacity: 0.8 }).addTo(targetLayer);
+                    L.polyline(latlngs, { color: baseColor, weight: 1.5, opacity: 0.5, dashArray: '4, 4' }).addTo(targetLayer);
                 }
 
                 points.forEach(d => {
                     L.circleMarker([+d.lat, +d.lon], {
-                        radius: 2, fillColor: baseColor, color: "#fff", weight: 0.5, fillOpacity: 1
+                        radius: 4, fillColor: baseColor, color: "#fff", weight: 1, fillOpacity: 0.9
                     }).bindTooltip(`
                         <div class="custom-tooltip">
                             <div class="tooltip-title" style="border-color: ${baseColor}">${d.boatSource}</div>
-                            <b>Time:</b> ${d.dateObj.toLocaleString()}<br>
-                            <b>Speed:</b> ${(+d.speed).toFixed(2)} knots
+                            <b>Event:</b> ${d.type || 'Fishing'}<br>
+                            <b>Voyage ID:</b> ${d.seg_id}<br>
+                            <b>Start:</b> ${d.dateObj.toLocaleString()}<br>
+                            <b>End:</b> ${d.endDateObj.toLocaleString()}
                         </div>
                     `, { sticky: true }).addTo(targetLayer);
                 });
