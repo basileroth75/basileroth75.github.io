@@ -162,10 +162,10 @@ All children, except one, grow up. They soon know that they will grow up, and th
     const colorSeasBorder = "#d96f63";
 
     // IMPORTANT FOR WORDPRESS: Update these URLs to the actual location of your files on your server
-        const tracksCsvUrl = "../_data/data/filtered_tracks.csv";
-        const zonesCsvUrl = "../_data/data/domaine1-Zone_de_protection_general.csv";
-        const zonesSaisonCsvUrl = "../_data/data/domaine1-Zone_de_protection_saison.csv";
-        const krillCsvUrl = "../_data/data/processed_krill.csv";
+        const tracksCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/filtered_tracks.csv";
+        const zonesCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/domaine1-Zone_de_protection_general.csv";
+        const zonesSaisonCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/domaine1-Zone_de_protection_saison.csv";
+        const krillCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/processed_krill.csv";
 
 
 
