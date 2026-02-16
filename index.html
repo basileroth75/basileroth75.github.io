@@ -76,6 +76,8 @@
 
         .legend-title { font-weight: bold; font-size: 13px; margin-bottom: 8px; color: #2c3e50;}
         .legend-item { display: flex; align-items: center; margin-bottom: 5px; } 
+
+        
         
         .legend-color { width: 12px; height: 12px; margin-right: 6px; border-radius: 2px; border: 1px solid #999; flex-shrink: 0;}
         .legend-line { width: 12px; height: 2px; margin-right: 6px; flex-shrink: 0;}
@@ -97,6 +99,10 @@
         <div class="legend-section">
             <div class="legend-title">🛡️ Protection Zones</div>
             <div id="dynamic-zone-legend"></div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(144, 238, 144, 0.5); border: 1px solid #2ca25f;"></div>
+                <span>CCAMLR MPAs (WMS)</span>
+            </div>
         </div>
 
         <div class="legend-section">
@@ -172,8 +178,19 @@
     const tracks2Layer = L.layerGroup().addTo(map); 
     const krillHeatmapLayer = L.layerGroup().addTo(map);
 
+
+    // --- NEW: Add the CCAMLR MPA WMS Layer ---
+    const mpaWMSLayer = L.tileLayer.wms("https://gis.ccamlr.org:443/geoserver/gis/wms", {
+        layers: 'gis:mpas',
+        format: 'image/png',
+        transparent: true,
+        version: '1.1.1',
+        attribution: '<a href="https://www.ccamlr.org/en/science/marine-protected-areas-mpas">CCAMLR MPAs</a>'
+    }).addTo(map);
+
     const overlayMaps = {
         "🛡️ Protection Zones": zonesLayer,
+        "🌊 CCAMLR MPAs": mpaWMSLayer,  // <-- Add this line
         "🚢 Antarctic Endurance": tracks1Layer,
         "🚢 Saga Sea": tracks2Layer,
         "🐟 Krill Heatmap": krillHeatmapLayer
