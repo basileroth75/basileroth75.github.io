@@ -11,7 +11,6 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <style>
-        /* Reset body margins so there are no white borders around the screen */
         html, body {
             margin: 0;
             padding: 0;
@@ -19,9 +18,8 @@
             height: 100%;
         }
 
-        /* Fullscreen Wrapper Styling */
         #map-wrapper {
-            position: fixed; /* Forces it to break out of other containers */
+            position: fixed; 
             top: 0;
             left: 0;
             width: 100vw;
@@ -34,13 +32,8 @@
             z-index: 999; 
         }
         
-        #map { 
-            width: 100%; 
-            height: 100%; 
-            z-index: 1; 
-        }
+        #map { width: 100%; height: 100%; z-index: 1; }
 
-        /* Tooltip Styling */
         .custom-tooltip {
             background: rgba(255, 255, 255, 0.95);
             border: 1px solid #ccc;
@@ -54,7 +47,6 @@
         .custom-tooltip b { color: #555; }
         .tooltip-title { font-weight: bold; font-size: 13px; margin-bottom: 4px; border-bottom: 1px solid; padding-bottom: 2px;}
 
-        /* Controls Panel Styling */
         #controls-panel { 
             position: absolute; 
             top: 10px; 
@@ -65,7 +57,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
             font-size: 11px; 
             z-index: 1000; 
-            width: 220px; 
+            width: 240px; 
             max-height: 90%; 
             overflow-y: auto;
         }
@@ -78,7 +70,7 @@
         
         .filter-section { margin-top: 10px; border-top: 1px solid #ddd; padding-top: 8px; }
         .input-group { display: flex; flex-direction: column; margin-top: 5px; gap: 4px; }
-        .input-group input { padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; box-sizing: border-box;}
+        .input-group input, .input-group select { padding: 2px 4px; border: 1px solid #ccc; border-radius: 3px; font-size: 11px; box-sizing: border-box;}
         .action-btn { margin-top: 5px; width: 100%; padding: 4px; background: #2c3e50; color: white; border: none; border-radius: 3px; cursor: pointer; transition: 0.2s; font-size: 11px;}
         .action-btn:hover { background: #34495e; }
         .count-text { margin-top: 4px; font-size: 0.9em; color: #666; font-style: italic;}
@@ -92,14 +84,8 @@
     <div id="controls-panel">
         <div class="legend-title">Map Layers & Legend</div>
         
-        <div class="legend-item">
-            <div class="legend-color" style="background: rgba(141, 211, 199, 0.5); border-color: #6da39a;"></div>
-            <span>General Protection Zones</span>
-        </div>
-        <div class="legend-item">
-            <div class="legend-color" style="background: rgba(251, 128, 114, 0.5); border-color: #d96f63; border-style: dashed;"></div>
-            <span>Seasonal Protection Zones</span>
-        </div>
+        <div id="dynamic-zone-legend"></div>
+        <hr style="border: 0; border-top: 1px solid #ddd; margin: 8px 0;">
         
         <div class="legend-item">
             <input type="checkbox" id="toggle-boat1" checked style="margin-right: 6px; cursor: pointer;">
@@ -112,7 +98,7 @@
             <span>Boat 2</span>
         </div>
 
-        <div class="legend-item">
+        <div class="legend-item" style="margin-top: 8px;">
             <div class="legend-color" style="background: linear-gradient(to right, #2b83ba, #abdda4, #fdae61, #d7191c); border: 1px solid #999;"></div>
             <span>Krill Density (Heatmap)</span>
         </div>
@@ -120,8 +106,26 @@
         <div class="filter-section">
             <strong>Filter Tracks:</strong>
             <div class="input-group">
-                <label>From: <input type="date" id="start-date" value="2023-01-01"></label>
-                <label>To: <input type="date" id="end-date"></label>
+                <label>Date From: <input type="date" id="start-date" value="2020-01-01"></label>
+                <label>Date To: <input type="date" id="end-date"></label>
+                
+                <label>Month From: 
+                    <select id="start-month">
+                        <option value="0">January</option><option value="1">February</option><option value="2">March</option>
+                        <option value="3">April</option><option value="4">May</option><option value="5">June</option>
+                        <option value="6">July</option><option value="7">August</option><option value="8">September</option>
+                        <option value="9">October</option><option value="10">November</option><option value="11">December</option>
+                    </select>
+                </label>
+                <label>Month To: 
+                    <select id="end-month">
+                        <option value="0">January</option><option value="1">February</option><option value="2">March</option>
+                        <option value="3">April</option><option value="4">May</option><option value="5">June</option>
+                        <option value="6">July</option><option value="7">August</option><option value="8">September</option>
+                        <option value="9">October</option><option value="10">November</option><option value="11" selected>December</option>
+                    </select>
+                </label>
+
                 <label>Max Speed (knots): <input type="number" id="max-speed" value="100" min="0" step="0.5"></label>
                 <button id="apply-track-filter" class="action-btn">Apply Track Filter</button>
             </div>
@@ -141,6 +145,10 @@
 </div>
 
 <script>
+    // --- IMPORTANT: CHANGE THIS TO MATCH YOUR NEW CSV COLUMN NAME ---
+    const FORBIDDEN_COLUMN_NAME = "protected"; // <-- EDIT THIS LINE
+    // ----------------------------------------------------------------
+
     // 1. Initialize Map
     const map = L.map('map', { zoomControl: false }).setView([-60, -55], 5);
     L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -150,14 +158,12 @@
         maxZoom: 18
     }).addTo(map);
 
-    const generalZonesLayer = L.layerGroup().addTo(map);
-    const seasonalZonesLayer = L.layerGroup().addTo(map);
+    const zonesLayer = L.layerGroup().addTo(map); // Combined Layer for Zones
     const tracksLayer = L.layerGroup().addTo(map);
     const krillHeatmapLayer = L.layerGroup().addTo(map);
 
     const overlayMaps = {
-        "General Zones": generalZonesLayer,
-        "Seasonal Zones": seasonalZonesLayer,
+        "Protection Zones": zonesLayer,
         "🚢 Boat Tracks": tracksLayer,
         "🐟 Krill Heatmap": krillHeatmapLayer
     };
@@ -166,10 +172,7 @@
     let allTracksData = []; 
     let allKrillData = [];
 
-    const colorGenFill = "#8dd3c7";
-    const colorGenBorder = "#6da39a";
-    const colorSeasFill = "#fb8072";
-    const colorSeasBorder = "#d96f63";
+  
 
     const tracksCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/ANTARTIC_ENDURANCE.csv";
     const tracks2CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/SAGA_SEA(NOR).csv";
@@ -181,57 +184,72 @@
 
     Promise.all([
         d3.csv(tracksCsvUrl),
-        d3.csv(tracks2CsvUrl).catch(() => []), // Added .catch so the map doesn't break if the dummy URL fails
+        d3.csv(tracks2CsvUrl).catch(() => []), 
         d3.dsv(";", zonesCsvUrl),
         d3.dsv(";", zonesSaisonCsvUrl),
         d3.csv(krillCsvUrl)
     ]).then(([tracks1Data, tracks2Data, zonesData, zonesSaisonData, krillData]) => {
 
-        // General Zones
-        d3.group(zonesData, d => d.zone_id).forEach((points, zoneId) => {
-            points.sort((a, b) => +a.seq - +b.seq);
-            const latlngs = points.map(p => [+p.lat, +p.lon]);
+        // --- ZONES & DYNAMIC LEGEND ---
+        const allZonesData = [...zonesData, ...zonesSaisonData];
+        
+        // Find all unique forbidden periods in the combined datasets
+        const uniquePeriods = Array.from(new Set(allZonesData.map(d => d[FORBIDDEN_COLUMN_NAME] || 'Not Specified')));
+        
+        // Create a color scale assigning a distinct color to each unique period
+        const zoneColorScale = d3.scaleOrdinal(d3.schemeTableau10).domain(uniquePeriods);
 
-            L.polygon(latlngs, {
-                color: colorGenBorder, fillColor: colorGenFill,
-                weight: 2, dashArray: '4, 4', fillOpacity: 0.5
-            }).bindTooltip(`
-                <div class="custom-tooltip">
-                    <div class="tooltip-title" style="border-color: ${colorGenBorder}">General Protection Zone</div>
-                    <b>ID:</b> ${zoneId}
+        // Build the dynamic legend
+        const legendContainer = document.getElementById('dynamic-zone-legend');
+        uniquePeriods.forEach(period => {
+            const color = zoneColorScale(period);
+            const borderColor = d3.rgb(color).darker(0.5);
+            legendContainer.innerHTML += `
+                <div class="legend-item">
+                    <div class="legend-color" style="background: ${color}; opacity: 0.6; border-color: ${borderColor};"></div>
+                    <span>Forbidden: ${period}</span>
                 </div>
-            `, { sticky: true }).addTo(generalZonesLayer);
+            `;
         });
 
-        // Seasonal Zones
-        d3.group(zonesSaisonData, d => d.zone_id).forEach((points, zoneId) => {
-            points.sort((a, b) => +a.seq - +b.seq);
-            const latlngs = points.map(p => [+p.lat, +p.lon]);
+        // Function to draw the zones using the dynamic colors
+        function renderZoneGroup(data) {
+            d3.group(data, d => d.zone_id).forEach((points, zoneId) => {
+                points.sort((a, b) => +a.seq - +b.seq);
+                const period = points[0][FORBIDDEN_COLUMN_NAME] || 'Not Specified';
+                const fillColor = zoneColorScale(period);
+                const borderColor = d3.rgb(fillColor).darker(0.5);
+                const latlngs = points.map(p => [+p.lat, +p.lon]);
 
-            L.polygon(latlngs, {
-                color: colorSeasBorder, fillColor: colorSeasFill,
-                weight: 2.5, dashArray: '8, 5', fillOpacity: 0.5
-            }).bindTooltip(`
-                <div class="custom-tooltip">
-                    <div class="tooltip-title" style="border-color: ${colorSeasBorder}">Seasonal Protection Zone</div>
-                    <b>ID:</b> ${zoneId}
-                </div>
-            `, { sticky: true }).addTo(seasonalZonesLayer);
-        });
+                L.polygon(latlngs, {
+                    color: borderColor, fillColor: fillColor,
+                    weight: 2, dashArray: '4, 4', fillOpacity: 0.4
+                }).bindTooltip(`
+                    <div class="custom-tooltip">
+                        <div class="tooltip-title" style="border-color: ${borderColor}">Protection Zone</div>
+                        <b>ID:</b> ${zoneId}<br>
+                        <b>Protection periods:</b> ${period}
+                    </div>
+                `, { sticky: true }).addTo(zonesLayer);
+            });
+        }
 
-        // Tracks - Combine and Flag Sources
+        renderZoneGroup(zonesData);
+        renderZoneGroup(zonesSaisonData);
+
+
+        // --- TRACKS ---
         tracks1Data.forEach(d => { d.boatSource = "Boat 1"; d.dateObj = new Date(d.timestamp); });
         tracks2Data.forEach(d => { d.boatSource = "Boat 2"; d.dateObj = new Date(d.timestamp); });
         
         allTracksData = [...tracks1Data, ...tracks2Data];
 
-        // Ensure max date works even if data is missing
         let maxDate = allTracksData.length > 0 ? d3.max(allTracksData, d => d.dateObj) : new Date();
         document.getElementById('end-date').value = maxDate.toISOString().split('T')[0];
 
         renderTracks(); 
 
-        // Krill Heatmap
+        // --- KRILL ---
         let krillMinYear = 3000, krillMaxYear = 0;
         krillData.forEach(d => {
             d.yearNum = parseInt(d.year);
@@ -246,7 +264,6 @@
         });
         
         allKrillData = krillData.filter(d => d.quantity > 0 && !isNaN(d.lat) && !isNaN(d.lon));
-
         document.getElementById('krill-start-year').value = krillMinYear;
         document.getElementById('krill-end-year').value = krillMaxYear;
         document.getElementById('krill-start-year').min = krillMinYear;
@@ -256,11 +273,12 @@
 
     }).catch(error => {
         console.error("Error loading data:", error);
-        alert("Error loading data. Check the browser console.");
     });
 
     function renderTracks() {
         tracksLayer.clearLayers();
+        
+        // Parse basic filters
         const start = new Date(document.getElementById('start-date').value);
         const end = new Date(document.getElementById('end-date').value);
         end.setHours(23, 59, 59); 
@@ -271,12 +289,30 @@
         const maxSpeedInput = parseFloat(document.getElementById('max-speed').value);
         const maxSpeed = isNaN(maxSpeedInput) ? Infinity : maxSpeedInput;
 
+        // Parse Month Filters
+        const startMonth = parseInt(document.getElementById('start-month').value);
+        const endMonth = parseInt(document.getElementById('end-month').value);
+
         const filteredData = allTracksData.filter(d => {
+            if (!d.dateObj || isNaN(d.dateObj)) return false;
+
             const isRightTime = d.dateObj >= start && d.dateObj <= end;
             const isUnderSpeed = (+d.speed) <= maxSpeed;
             const isBoatVisible = (d.boatSource === "Boat 1" && showBoat1) || 
                                   (d.boatSource === "Boat 2" && showBoat2);
-            return isRightTime && isUnderSpeed && isBoatVisible;
+            
+            // Month Span Logic
+            const m = d.dateObj.getMonth();
+            let isRightMonth = false;
+            if (startMonth <= endMonth) {
+                // Normal span (e.g. February to April -> 1 to 3)
+                isRightMonth = (m >= startMonth && m <= endMonth);
+            } else {
+                // Wrap-around span (e.g. November to February -> 10 to 1)
+                isRightMonth = (m >= startMonth || m <= endMonth);
+            }
+
+            return isRightTime && isUnderSpeed && isBoatVisible && isRightMonth;
         });
 
         document.getElementById('track-count').innerText = `Displaying ${filteredData.length} track points`;
@@ -304,8 +340,7 @@
                         <div class="custom-tooltip">
                             <div class="tooltip-title" style="border-color: ${baseColor}">${d.boatSource}</div>
                             <b>Time:</b> ${d.dateObj.toLocaleString()}<br>
-                            <b>Speed:</b> ${(+d.speed).toFixed(2)} knots<br>
-                            <b>Lat/Lon:</b> ${(+d.lat).toFixed(4)}, ${(+d.lon).toFixed(4)}
+                            <b>Speed:</b> ${(+d.speed).toFixed(2)} knots
                         </div>
                     `, { sticky: true }).addTo(tracksLayer);
                 });
@@ -315,10 +350,8 @@
 
     function renderKrillHeatmap() {
         krillHeatmapLayer.clearLayers();
-        
         const startYear = parseInt(document.getElementById('krill-start-year').value);
         const endYear = parseInt(document.getElementById('krill-end-year').value);
-        
         const filteredKrill = allKrillData.filter(d => d.yearNum >= startYear && d.yearNum <= endYear);
         document.getElementById('krill-count').innerText = `Displaying ${filteredKrill.length} krill data points`;
         
