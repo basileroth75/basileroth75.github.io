@@ -62,7 +62,6 @@
             overflow-y: auto;
         }
         
-        /* New section grouping styles */
         .legend-section {
             margin-bottom: 12px;
             padding-bottom: 12px;
@@ -77,8 +76,6 @@
         .legend-title { font-weight: bold; font-size: 13px; margin-bottom: 8px; color: #2c3e50;}
         .legend-item { display: flex; align-items: center; margin-bottom: 5px; } 
 
-        
-        
         .legend-color { width: 12px; height: 12px; margin-right: 6px; border-radius: 2px; border: 1px solid #999; flex-shrink: 0;}
         .legend-line { width: 12px; height: 2px; margin-right: 6px; flex-shrink: 0;}
         
@@ -97,7 +94,7 @@
     <div id="controls-panel">
         
         <div class="legend-section">
-            <div class="legend-title">🛡️ Protection Zones</div>
+            <div class="legend-title">Protected Fishing Areas</div>
             <div id="dynamic-zone-legend"></div>
             <div class="legend-item">
                 <div class="legend-color" style="background: rgba(144, 238, 144, 0.5); border: 1px solid #2ca25f;"></div>
@@ -106,14 +103,14 @@
         </div>
 
         <div class="legend-section">
-            <div class="legend-title">🚢 Fishing Events & Filters</div>
+            <div class="legend-title">Boat tracking</div>
             
             <div class="legend-item">
-                <div class="legend-line" style="background: #377eb8; height: 3px;"></div>
+                <div class="legend-line" style="background: #377eb8; height: 6px;"></div>
                 <span>Antarctic Endurance</span>
             </div>
             <div class="legend-item">
-                <div class="legend-line" style="background: #e41a1c; height: 3px;"></div>
+                <div class="legend-line" style="background: #e41a1c; height: 6px;"></div>
                 <span>Saga Sea</span>
             </div>
 
@@ -144,7 +141,7 @@
         </div>
 
         <div class="legend-section">
-            <div class="legend-title">🐟 Krill Density</div>
+            <div class="legend-title">Krill Density</div>
             
             <div class="legend-item">
                 <div class="legend-color" style="background: linear-gradient(to right, #74add1, #e0f3f8, #fee090, #f46d43); border: 1px solid #999;"></div>
@@ -179,7 +176,7 @@
     const krillHeatmapLayer = L.layerGroup().addTo(map);
 
 
-    // --- NEW: Add the CCAMLR MPA WMS Layer ---
+    // CCAMLR MPA WMS Layer
     const mpaWMSLayer = L.tileLayer.wms("https://gis.ccamlr.org:443/geoserver/gis/wms", {
         layers: 'gis:mpas',
         format: 'image/png',
@@ -190,7 +187,7 @@
 
     const overlayMaps = {
         "🛡️ Protection Zones": zonesLayer,
-        "🌊 CCAMLR MPAs": mpaWMSLayer,  // <-- Add this line
+        "🌊 CCAMLR MPAs": mpaWMSLayer,
         "🚢 Antarctic Endurance": tracks1Layer,
         "🚢 Saga Sea": tracks2Layer,
         "🐟 Krill Heatmap": krillHeatmapLayer
@@ -200,16 +197,11 @@
     let allTracksData = []; 
     let allKrillData = [];
 
-
-
-    // --- UPDATE YOUR NEW FISHING FILE PATHS HERE ---
     const tracksCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/ANTARCTIC_ENDURANCE.csv";
     const tracks2CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/SAGASEA.csv";
-    
-    // Kept original context URLs for zones and krill
     const zonesCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/domaine1-Zone_de_protection_general.csv";
     const zonesSaisonCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/domaine1-Zone_de_protection_saison.csv";
-    const krillCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/processed_krill.csv";
+    const krillCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill//processed_full.csv";
 
     Promise.all([
         d3.csv(tracksCsvUrl),
@@ -221,9 +213,10 @@
 
         // --- ZONES & DYNAMIC LEGEND ---
         const allZonesData = [...zonesData, ...zonesSaisonData];
-const uniquePeriods = Array.from(new Set(allZonesData.map(d => 
-    d[FORBIDDEN_COLUMN_NAME] ? d[FORBIDDEN_COLUMN_NAME].trim() : 'Not Specified'
-)));        const zoneColorScale = d3.scaleOrdinal(d3.schemeTableau10).domain(uniquePeriods);
+        const uniquePeriods = Array.from(new Set(allZonesData.map(d => 
+            d[FORBIDDEN_COLUMN_NAME] ? d[FORBIDDEN_COLUMN_NAME].trim() : 'Not Specified'
+        )));        
+        const zoneColorScale = d3.scaleOrdinal(d3.schemeTableau10).domain(uniquePeriods);
 
         const legendContainer = document.getElementById('dynamic-zone-legend');
         uniquePeriods.forEach(period => {
@@ -240,8 +233,8 @@ const uniquePeriods = Array.from(new Set(allZonesData.map(d =>
         function renderZoneGroup(data) {
             d3.group(data, d => d.zone_id).forEach((points, zoneId) => {
                 points.sort((a, b) => +a.seq - +b.seq);
-const rawPeriod = points[0][FORBIDDEN_COLUMN_NAME];
-const period = rawPeriod ? rawPeriod.trim() : 'Not Specified';
+                const rawPeriod = points[0][FORBIDDEN_COLUMN_NAME];
+                const period = rawPeriod ? rawPeriod.trim() : 'Not Specified';
                 const fillColor = zoneColorScale(period);
                 const borderColor = d3.rgb(fillColor).darker(0.5);
                 const latlngs = points.map(p => [+p.lat, +p.lon]);
@@ -263,7 +256,6 @@ const period = rawPeriod ? rawPeriod.trim() : 'Not Specified';
         renderZoneGroup(zonesSaisonData);
 
         // --- TRACKS (FISHING EVENTS) ---
-        // Variable Mapping updated: timestamp -> start/end, lat -> latitude, lon -> longitude, seg_id -> voyage
         tracks1Data.forEach(d => { 
             d.boatSource = "Antarctic Endurance"; 
             d.dateObj = new Date(d.start); 
@@ -289,13 +281,12 @@ const period = rawPeriod ? rawPeriod.trim() : 'Not Specified';
 
         renderTracks(); 
 
-        // --- KRILL ---
+        // --- KRILL (UPDATED TO NEW FORMAT) ---
         let krillMinYear = 3000, krillMaxYear = 0;
         krillData.forEach(d => {
             d.yearNum = parseInt(d.year);
-            d.lat = parseFloat(d.decimalLatitude);
-            d.lon = parseFloat(d.decimalLongitude);
-            d.quantity = parseFloat(d.organismQuantity);
+            d.lat = parseFloat(d.dcmlLtt); // Updated column mapping
+            d.lon = parseFloat(d.dcmlLng); // Updated column mapping
             
             if (!isNaN(d.yearNum)) {
                 if (d.yearNum < krillMinYear) krillMinYear = d.yearNum;
@@ -303,11 +294,16 @@ const period = rawPeriod ? rawPeriod.trim() : 'Not Specified';
             }
         });
         
-        allKrillData = krillData.filter(d => d.quantity > 0 && !isNaN(d.lat) && !isNaN(d.lon));
-        document.getElementById('krill-start-year').value = krillMinYear;
-        document.getElementById('krill-end-year').value = krillMaxYear;
-        document.getElementById('krill-start-year').min = krillMinYear;
-        document.getElementById('krill-end-year').max = krillMaxYear;
+        // Removed quantity filter entirely, relying just on valid coordinates
+        allKrillData = krillData.filter(d => !isNaN(d.lat) && !isNaN(d.lon));
+        
+        // Set dynamic date ranges based on loaded dataset
+        if (krillMinYear <= krillMaxYear) {
+            document.getElementById('krill-start-year').value = krillMinYear;
+            document.getElementById('krill-end-year').value = krillMaxYear;
+            document.getElementById('krill-start-year').min = krillMinYear;
+            document.getElementById('krill-end-year').max = krillMaxYear;
+        }
 
         renderKrillHeatmap(); 
 
@@ -357,7 +353,6 @@ const period = rawPeriod ? rawPeriod.trim() : 'Not Specified';
                 points.sort((a, b) => a.dateObj - b.dateObj); 
                 const latlngs = points.map(p => [+p.lat, +p.lon]);
 
-                // Connecting line styling updated since these are discrete point events now
                 if (latlngs.length > 1) {
                     L.polyline(latlngs, { color: baseColor, weight: 1.5, opacity: 0.5, dashArray: '4, 4' }).addTo(targetLayer);
                 }
@@ -383,18 +378,21 @@ const period = rawPeriod ? rawPeriod.trim() : 'Not Specified';
         krillHeatmapLayer.clearLayers();
         const startYear = parseInt(document.getElementById('krill-start-year').value);
         const endYear = parseInt(document.getElementById('krill-end-year').value);
+        
         const filteredKrill = allKrillData.filter(d => d.yearNum >= startYear && d.yearNum <= endYear);
         document.getElementById('krill-count').innerText = `Displaying ${filteredKrill.length} krill data points`;
         
         if (filteredKrill.length === 0) return;
 
-        const quantities = filteredKrill.map(d => d.quantity).sort((a, b) => a - b);
-        const maxVal = quantities[Math.floor(quantities.length * 0.98)] || 1; 
-
-        const heatPoints = filteredKrill.map(d => [d.lat, d.lon, d.quantity]);
+        // Strip out the quantity and feed strictly lat/long coordinates to Leaflet.heat
+        const heatPoints = filteredKrill.map(d => [d.lat, d.lon]);
         
+        // With no quantity weight assigned, Leaflet.heat dynamically builds density 
+        // purely by overlapping individual points.
         L.heatLayer(heatPoints, {
-            radius: 20, blur: 20, maxZoom: 6, max: maxVal,
+            radius: 18,     // Adjusted for density map rather than raw amounts
+            blur: 20, 
+            maxZoom: 6,     // Helps visualize the clusters at different zoom levels
             gradient: { 0.3: '#74add1', 0.5: '#e0f3f8', 0.7: '#fee090', 1.0: '#f46d43' }
         }).addTo(krillHeatmapLayer);
     }
