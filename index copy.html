@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Krill & Boat Map</title>
+    <title>Krill & Fishing Events Map</title>
 
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -62,7 +62,6 @@
             overflow-y: auto;
         }
         
-        /* New section grouping styles */
         .legend-section {
             margin-bottom: 12px;
             padding-bottom: 12px;
@@ -76,7 +75,7 @@
 
         .legend-title { font-weight: bold; font-size: 13px; margin-bottom: 8px; color: #2c3e50;}
         .legend-item { display: flex; align-items: center; margin-bottom: 5px; } 
-        
+
         .legend-color { width: 12px; height: 12px; margin-right: 6px; border-radius: 2px; border: 1px solid #999; flex-shrink: 0;}
         .legend-line { width: 12px; height: 2px; margin-right: 6px; flex-shrink: 0;}
         
@@ -97,18 +96,22 @@
         <div class="legend-section">
             <div class="legend-title">🛡️ Protection Zones</div>
             <div id="dynamic-zone-legend"></div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(144, 238, 144, 0.5); border: 1px solid #2ca25f;"></div>
+                <span>CCAMLR MPAs (WMS)</span>
+            </div>
         </div>
 
         <div class="legend-section">
-            <div class="legend-title">🚢 Boat Tracks & Filters</div>
+            <div class="legend-title">🚢 Fishing Events & Filters</div>
             
             <div class="legend-item">
-                <div class="legend-line" style="background: #377eb8;"></div>
-                <span>Boat 1</span>
+                <div class="legend-line" style="background: #377eb8; height: 3px;"></div>
+                <span>Antarctic Endurance</span>
             </div>
             <div class="legend-item">
-                <div class="legend-line" style="background: #e41a1c;"></div>
-                <span>Boat 2</span>
+                <div class="legend-line" style="background: #e41a1c; height: 3px;"></div>
+                <span>Saga Sea</span>
             </div>
 
             <div class="input-group" style="margin-top: 10px;">
@@ -132,8 +135,9 @@
                     </select>
                 </label>
 
-                <label>Max Speed (knots): <input type="number" id="max-speed" value="100" min="0" step="0.5"></label>
-                <button id="apply-track-filter" class="action-btn">Apply Track Filter</button>
+                <button id="apply-track-filter" class="action-btn">Apply Static Filter</button>
+                <button id="play-animation" class="action-btn" style="background: #27ae60; margin-top: 8px;">▶ Play Time-Lapse</button>
+                <div id="animation-date-display" class="count-text" style="font-weight: bold; color: #e74c3c; text-align: center; margin-top: 6px;"></div>
             </div>
             <div id="track-count" class="count-text"></div>
         </div>
@@ -169,29 +173,41 @@
     }).addTo(map);
 
     const zonesLayer = L.layerGroup().addTo(map); 
-    const tracks1Layer = L.layerGroup().addTo(map); // Boat 1
-    const tracks2Layer = L.layerGroup().addTo(map); // Boat 2
+    const tracks1Layer = L.layerGroup().addTo(map); 
+    const tracks2Layer = L.layerGroup().addTo(map); 
     const krillHeatmapLayer = L.layerGroup().addTo(map);
+
+    // CCAMLR MPA WMS Layer
+    const mpaWMSLayer = L.tileLayer.wms("https://gis.ccamlr.org:443/geoserver/gis/wms", {
+        layers: 'gis:mpas',
+        format: 'image/png',
+        transparent: true,
+        version: '1.1.1',
+        attribution: '<a href="https://www.ccamlr.org/en/science/marine-protected-areas-mpas">CCAMLR MPAs</a>'
+    }).addTo(map);
 
     const overlayMaps = {
         "🛡️ Protection Zones": zonesLayer,
-        "🚢 Boat 1 Tracks": tracks1Layer,
-        "🚢 Boat 2 Tracks": tracks2Layer,
+        "🌊 CCAMLR MPAs": mpaWMSLayer,
+        "🚢 Antarctic Endurance": tracks1Layer,
+        "🚢 Saga Sea": tracks2Layer,
         "🐟 Krill Heatmap": krillHeatmapLayer
     };
     L.control.layers(null, overlayMaps, { collapsed: false, position: 'topright' }).addTo(map);
 
     let allTracksData = []; 
     let allKrillData = [];
+    
+    // Animation Global Variables
+    let animationInterval = null;
+    let currentSimDate = null;
 
-
-    const tracksCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/ANTARTIC_ENDURANCE.csv";
-    const tracks2CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/SAGA_SEA(NOR).csv";
+    // --- CSV URLS ---
+    const tracksCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/ANTARCTIC_ENDURANCE.csv";
+    const tracks2CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/SAGASEA.csv";
     const zonesCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/domaine1-Zone_de_protection_general.csv";
     const zonesSaisonCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/domaine1-Zone_de_protection_saison.csv";
     const krillCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/processed_krill.csv";
-
-
 
     Promise.all([
         d3.csv(tracksCsvUrl),
@@ -203,7 +219,9 @@
 
         // --- ZONES & DYNAMIC LEGEND ---
         const allZonesData = [...zonesData, ...zonesSaisonData];
-        const uniquePeriods = Array.from(new Set(allZonesData.map(d => d[FORBIDDEN_COLUMN_NAME] || 'Not Specified')));
+        const uniquePeriods = Array.from(new Set(allZonesData.map(d => 
+            d[FORBIDDEN_COLUMN_NAME] ? d[FORBIDDEN_COLUMN_NAME].trim() : 'Not Specified'
+        )));        
         const zoneColorScale = d3.scaleOrdinal(d3.schemeTableau10).domain(uniquePeriods);
 
         const legendContainer = document.getElementById('dynamic-zone-legend');
@@ -213,7 +231,7 @@
             legendContainer.innerHTML += `
                 <div class="legend-item">
                     <div class="legend-color" style="background: ${color}; opacity: 0.6; border-color: ${borderColor};"></div>
-                    <span>: ${period}</span>
+                    <span> ${period}</span>
                 </div>
             `;
         });
@@ -221,7 +239,8 @@
         function renderZoneGroup(data) {
             d3.group(data, d => d.zone_id).forEach((points, zoneId) => {
                 points.sort((a, b) => +a.seq - +b.seq);
-                const period = points[0][FORBIDDEN_COLUMN_NAME] || 'Not Specified';
+                const rawPeriod = points[0][FORBIDDEN_COLUMN_NAME];
+                const period = rawPeriod ? rawPeriod.trim() : 'Not Specified';
                 const fillColor = zoneColorScale(period);
                 const borderColor = d3.rgb(fillColor).darker(0.5);
                 const latlngs = points.map(p => [+p.lat, +p.lon]);
@@ -242,10 +261,24 @@
         renderZoneGroup(zonesData);
         renderZoneGroup(zonesSaisonData);
 
-
-        // --- TRACKS ---
-        tracks1Data.forEach(d => { d.boatSource = "Boat 1"; d.dateObj = new Date(d.timestamp); });
-        tracks2Data.forEach(d => { d.boatSource = "Boat 2"; d.dateObj = new Date(d.timestamp); });
+        // --- TRACKS (FISHING EVENTS) ---
+        tracks1Data.forEach(d => { 
+            d.boatSource = "Antarctic Endurance"; 
+            d.dateObj = new Date(d.start); 
+            d.endDateObj = new Date(d.end); 
+            d.lat = parseFloat(d.latitude); 
+            d.lon = parseFloat(d.longitude); 
+            d.seg_id = d.voyage; 
+        });
+        
+        tracks2Data.forEach(d => { 
+            d.boatSource = "Saga Sea"; 
+            d.dateObj = new Date(d.start); 
+            d.endDateObj = new Date(d.end); 
+            d.lat = parseFloat(d.latitude); 
+            d.lon = parseFloat(d.longitude); 
+            d.seg_id = d.voyage; 
+        });
         
         allTracksData = [...tracks1Data, ...tracks2Data];
 
@@ -258,9 +291,8 @@
         let krillMinYear = 3000, krillMaxYear = 0;
         krillData.forEach(d => {
             d.yearNum = parseInt(d.year);
-            d.lat = parseFloat(d.decimalLatitude);
-            d.lon = parseFloat(d.decimalLongitude);
-            d.quantity = parseFloat(d.organismQuantity);
+            d.lat = parseFloat(d.dcmlLtt); 
+            d.lon = parseFloat(d.dcmlLng); 
             
             if (!isNaN(d.yearNum)) {
                 if (d.yearNum < krillMinYear) krillMinYear = d.yearNum;
@@ -268,11 +300,14 @@
             }
         });
         
-        allKrillData = krillData.filter(d => d.quantity > 0 && !isNaN(d.lat) && !isNaN(d.lon));
-        document.getElementById('krill-start-year').value = krillMinYear;
-        document.getElementById('krill-end-year').value = krillMaxYear;
-        document.getElementById('krill-start-year').min = krillMinYear;
-        document.getElementById('krill-end-year').max = krillMaxYear;
+        allKrillData = krillData.filter(d => !isNaN(d.lat) && !isNaN(d.lon));
+        
+        if (krillMinYear <= krillMaxYear) {
+            document.getElementById('krill-start-year').value = krillMinYear;
+            document.getElementById('krill-end-year').value = krillMaxYear;
+            document.getElementById('krill-start-year').min = krillMinYear;
+            document.getElementById('krill-end-year').max = krillMaxYear;
+        }
 
         renderKrillHeatmap(); 
 
@@ -280,94 +315,180 @@
         console.error("Error loading data:", error);
     });
 
+    // --- STATIC TRACK RENDERING ---
     function renderTracks() {
+        // Stop animation if user manually clicks the static filter button
+        stopAnimation();
+
         tracks1Layer.clearLayers();
         tracks2Layer.clearLayers();
         
         const start = new Date(document.getElementById('start-date').value);
         const end = new Date(document.getElementById('end-date').value);
         end.setHours(23, 59, 59); 
-        
-        const maxSpeedInput = parseFloat(document.getElementById('max-speed').value);
-        const maxSpeed = isNaN(maxSpeedInput) ? Infinity : maxSpeedInput;
 
         const startMonth = parseInt(document.getElementById('start-month').value);
         const endMonth = parseInt(document.getElementById('end-month').value);
 
         const filteredData = allTracksData.filter(d => {
             if (!d.dateObj || isNaN(d.dateObj)) return false;
-
             const isRightTime = d.dateObj >= start && d.dateObj <= end;
-            const isUnderSpeed = (+d.speed) <= maxSpeed;
-            
             const m = d.dateObj.getMonth();
-            let isRightMonth = false;
-            if (startMonth <= endMonth) {
-                isRightMonth = (m >= startMonth && m <= endMonth);
-            } else {
-                isRightMonth = (m >= startMonth || m <= endMonth);
-            }
-
-            return isRightTime && isUnderSpeed && isRightMonth;
+            let isRightMonth = (startMonth <= endMonth) ? (m >= startMonth && m <= endMonth) : (m >= startMonth || m <= endMonth);
+            return isRightTime && isRightMonth;
         });
 
-        document.getElementById('track-count').innerText = `Displaying ${filteredData.length} track points`;
+        document.getElementById('track-count').innerText = `Displaying ${filteredData.length} static points`;
+        drawTrackData(filteredData, true); // true = draw static points
+    }
 
-        const tracksGrouped = d3.group(filteredData, d => d.boatSource, d => d.seg_id);
-        const boatColorScale = d3.scaleOrdinal()
-            .domain(["Boat 1", "Boat 2"])
-            .range(["#377eb8", "#e41a1c"]); 
+    // --- ANIMATION LOGIC ---
+    function stopAnimation() {
+        if (animationInterval) {
+            clearInterval(animationInterval);
+            animationInterval = null;
+        }
+        document.getElementById('play-animation').innerText = "▶ Play Time-Lapse";
+        document.getElementById('play-animation').style.background = "#27ae60";
+        document.getElementById('animation-date-display').innerText = "";
+    }
+
+    function toggleAnimation() {
+        const btn = document.getElementById('play-animation');
+        const endSimDate = new Date(document.getElementById('end-date').value);
+        endSimDate.setHours(23, 59, 59);
+
+        if (animationInterval) {
+            // Pause the animation
+            clearInterval(animationInterval);
+            animationInterval = null;
+            btn.innerText = "▶ Resume Animation";
+            btn.style.background = "#f39c12"; // Orange for paused
+        } else {
+            // Play or Resume
+            if (!currentSimDate || currentSimDate > endSimDate) {
+                currentSimDate = new Date(document.getElementById('start-date').value);
+            }
+            
+            btn.innerText = "⏸ Pause Animation";
+            btn.style.background = "#e74c3c"; // Red for active
+            
+            // Loop that ticks forward in time
+            animationInterval = setInterval(() => {
+                currentSimDate.setDate(currentSimDate.getDate() + 1); // Advance by 1 day per frame
+
+                if (currentSimDate > endSimDate) {
+                    stopAnimation();
+                    document.getElementById('animation-date-display').innerText = "Animation Finished";
+                    return;
+                }
+
+                document.getElementById('animation-date-display').innerText = `Simulated Date: ${currentSimDate.toISOString().split('T')[0]}`;
+                renderAnimationFrame();
+            }, 100); // 100 milliseconds per frame
+        }
+    }
+
+    function renderAnimationFrame() {
+        tracks1Layer.clearLayers();
+        tracks2Layer.clearLayers();
+
+        const startMonth = parseInt(document.getElementById('start-month').value);
+        const endMonth = parseInt(document.getElementById('end-month').value);
+
+        // Filter data UP TO the current simulation date
+        const filteredTimelineData = allTracksData.filter(d => {
+            if (!d.dateObj || isNaN(d.dateObj)) return false;
+            
+            const isBeforeSimDate = d.dateObj >= new Date(document.getElementById('start-date').value) && d.dateObj <= currentSimDate;
+            const m = d.dateObj.getMonth();
+            let isRightMonth = (startMonth <= endMonth) ? (m >= startMonth && m <= endMonth) : (m >= startMonth || m <= endMonth);
+
+            return isBeforeSimDate && isRightMonth;
+        });
+
+        // Update the count text
+        document.getElementById('track-count').innerText = `Tracking ${filteredTimelineData.length} points over time`;
+
+        // Draw the tracks in animation mode (false = don't draw static dots everywhere)
+        drawTrackData(filteredTimelineData, false); 
+    }
+
+    // --- REUSABLE DRAWING FUNCTION ---
+    function drawTrackData(dataToDraw, isStatic) {
+        const tracksGrouped = d3.group(dataToDraw, d => d.boatSource, d => d.seg_id);
+        const boatColorScale = d3.scaleOrdinal().domain(["Antarctic Endurance", "Saga Sea"]).range(["#377eb8", "#e41a1c"]); 
 
         tracksGrouped.forEach((segments, boatSource) => {
             const baseColor = boatColorScale(boatSource);
-            const targetLayer = boatSource === "Boat 1" ? tracks1Layer : tracks2Layer;
+            const targetLayer = boatSource === "Antarctic Endurance" ? tracks1Layer : tracks2Layer;
 
             segments.forEach((points, segId) => {
                 points.sort((a, b) => a.dateObj - b.dateObj); 
                 const latlngs = points.map(p => [+p.lat, +p.lon]);
 
+                // Draw connecting line
                 if (latlngs.length > 1) {
-                    L.polyline(latlngs, { color: baseColor, weight: 1.5, opacity: 0.8 }).addTo(targetLayer);
+                    L.polyline(latlngs, { color: baseColor, weight: 1.5, opacity: 0.5, dashArray: '4, 4' }).addTo(targetLayer);
                 }
 
-                points.forEach(d => {
-                    L.circleMarker([+d.lat, +d.lon], {
-                        radius: 2, fillColor: baseColor, color: "#fff", weight: 0.5, fillOpacity: 1
-                    }).bindTooltip(`
-                        <div class="custom-tooltip">
-                            <div class="tooltip-title" style="border-color: ${baseColor}">${d.boatSource}</div>
-                            <b>Time:</b> ${d.dateObj.toLocaleString()}<br>
-                            <b>Speed:</b> ${(+d.speed).toFixed(2)} knots
-                        </div>
-                    `, { sticky: true }).addTo(targetLayer);
-                });
+                if (isStatic) {
+                    // Draw ALL points (Static Mode)
+                    points.forEach(d => {
+                        L.circleMarker([+d.lat, +d.lon], {
+                            radius: 4, fillColor: baseColor, color: "#fff", weight: 1, fillOpacity: 0.9
+                        }).bindTooltip(`
+                            <div class="custom-tooltip">
+                                <div class="tooltip-title" style="border-color: ${baseColor}">${d.boatSource}</div>
+                                <b>Event:</b> ${d.type || 'Fishing'}<br>
+                                <b>Voyage ID:</b> ${d.seg_id}<br>
+                                <b>Start:</b> ${d.dateObj.toLocaleString()}<br>
+                                <b>End:</b> ${d.endDateObj.toLocaleString()}
+                            </div>
+                        `, { sticky: true }).addTo(targetLayer);
+                    });
+                } else {
+                    // Draw ONLY the "Head" point (Animation Mode)
+                    if (points.length > 0) {
+                        const currentPos = points[points.length - 1]; 
+                        L.circleMarker([+currentPos.lat, +currentPos.lon], {
+                            radius: 6, fillColor: baseColor, color: "#fff", weight: 2, fillOpacity: 1
+                        }).bindTooltip(`
+                            <div class="custom-tooltip">
+                                <div class="tooltip-title" style="border-color: ${baseColor}">${currentPos.boatSource}</div>
+                                <b>Date:</b> ${currentPos.dateObj.toLocaleDateString()}<br>
+                                <b>Voyage ID:</b> ${currentPos.seg_id}
+                            </div>
+                        `, { sticky: true }).addTo(targetLayer);
+                    }
+                }
             });
         });
     }
 
+    // --- KRILL HEATMAP ---
     function renderKrillHeatmap() {
         krillHeatmapLayer.clearLayers();
         const startYear = parseInt(document.getElementById('krill-start-year').value);
         const endYear = parseInt(document.getElementById('krill-end-year').value);
+        
         const filteredKrill = allKrillData.filter(d => d.yearNum >= startYear && d.yearNum <= endYear);
         document.getElementById('krill-count').innerText = `Displaying ${filteredKrill.length} krill data points`;
         
         if (filteredKrill.length === 0) return;
 
-        const quantities = filteredKrill.map(d => d.quantity).sort((a, b) => a - b);
-        const maxVal = quantities[Math.floor(quantities.length * 0.98)] || 1; 
-
-        const heatPoints = filteredKrill.map(d => [d.lat, d.lon, d.quantity]);
+        const heatPoints = filteredKrill.map(d => [d.lat, d.lon]);
         
         L.heatLayer(heatPoints, {
-            radius: 20, blur: 20, maxZoom: 6, max: maxVal,
+            radius: 18, blur: 20, maxZoom: 6,
             gradient: { 0.3: '#74add1', 0.5: '#e0f3f8', 0.7: '#fee090', 1.0: '#f46d43' }
         }).addTo(krillHeatmapLayer);
     }
 
-    // Event Listeners
+    // --- EVENT LISTENERS ---
     document.getElementById('apply-track-filter').addEventListener('click', renderTracks);
     document.getElementById('apply-krill-filter').addEventListener('click', renderKrillHeatmap);
+    document.getElementById('play-animation').addEventListener('click', toggleAnimation);
 </script>
 
 </body>
