@@ -158,8 +158,11 @@
 </div>
 
 <script>
-    const FORBIDDEN_COLUMN_NAME = "protected";
+    // --- IMPORTANT: CHANGE THIS TO MATCH YOUR NEW CSV COLUMN NAME ---
+    const FORBIDDEN_COLUMN_NAME = "protected"; // <-- EDIT THIS LINE
+    // ----------------------------------------------------------------
 
+    // 1. Initialize Map
     const map = L.map('map', { zoomControl: false }).setView([-60, -55], 5);
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -168,6 +171,7 @@
         maxZoom: 18
     }).addTo(map);
 
+    // Create Separate Layers for the right-hand control
     const zonesLayer = L.layerGroup().addTo(map); 
     const tracks1Layer = L.layerGroup().addTo(map); // Boat 1
     const tracks2Layer = L.layerGroup().addTo(map); // Boat 2
@@ -281,6 +285,7 @@
     });
 
     function renderTracks() {
+        // Clear BOTH layers separately
         tracks1Layer.clearLayers();
         tracks2Layer.clearLayers();
         
@@ -320,6 +325,7 @@
 
         tracksGrouped.forEach((segments, boatSource) => {
             const baseColor = boatColorScale(boatSource);
+            // Target the correct layer grouping based on the boat
             const targetLayer = boatSource === "Boat 1" ? tracks1Layer : tracks2Layer;
 
             segments.forEach((points, segId) => {
@@ -361,6 +367,7 @@
         
         L.heatLayer(heatPoints, {
             radius: 20, blur: 20, maxZoom: 6, max: maxVal,
+            // Changed to softer pastel colors
             gradient: { 0.3: '#74add1', 0.5: '#e0f3f8', 0.7: '#fee090', 1.0: '#f46d43' }
         }).addTo(krillHeatmapLayer);
     }
