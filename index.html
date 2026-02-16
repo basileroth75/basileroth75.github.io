@@ -204,8 +204,9 @@
 
         // --- ZONES & DYNAMIC LEGEND ---
         const allZonesData = [...zonesData, ...zonesSaisonData];
-        const uniquePeriods = Array.from(new Set(allZonesData.map(d => d[FORBIDDEN_COLUMN_NAME] || 'Not Specified')));
-        const zoneColorScale = d3.scaleOrdinal(d3.schemeTableau10).domain(uniquePeriods);
+const uniquePeriods = Array.from(new Set(allZonesData.map(d => 
+    d[FORBIDDEN_COLUMN_NAME] ? d[FORBIDDEN_COLUMN_NAME].trim() : 'Not Specified'
+)));        const zoneColorScale = d3.scaleOrdinal(d3.schemeTableau10).domain(uniquePeriods);
 
         const legendContainer = document.getElementById('dynamic-zone-legend');
         uniquePeriods.forEach(period => {
@@ -222,7 +223,8 @@
         function renderZoneGroup(data) {
             d3.group(data, d => d.zone_id).forEach((points, zoneId) => {
                 points.sort((a, b) => +a.seq - +b.seq);
-                const period = points[0][FORBIDDEN_COLUMN_NAME] || 'Not Specified';
+const rawPeriod = points[0][FORBIDDEN_COLUMN_NAME];
+const period = rawPeriod ? rawPeriod.trim() : 'Not Specified';
                 const fillColor = zoneColorScale(period);
                 const borderColor = d3.rgb(fillColor).darker(0.5);
                 const latlngs = points.map(p => [+p.lat, +p.lon]);
