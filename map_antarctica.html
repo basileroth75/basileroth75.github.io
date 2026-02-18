@@ -43,13 +43,13 @@
 
         #controls-panel { 
             position: absolute; top: 15px; left: 15px; 
-            background: rgba(20, 25, 35, 0.75); 
+            background: rgba(20, 25, 35, 0.85); 
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             color: #e0e6ed; border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 12px 14px; border-radius: 12px; 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); 
             font-size: 12px; z-index: 1000; 
-            width: 260px; max-height: 95vh; overflow-y: auto;
+            width: 280px; max-height: 95vh; overflow-y: auto;
         }
         
         #controls-panel::-webkit-scrollbar { width: 6px; }
@@ -89,9 +89,23 @@
         .toggle-item .legend-line, .toggle-item .legend-color { margin-right: 0; }
 
         /* Remove the default blue outline when clicking on map shapes */
-        .leaflet-interactive:focus {
-            outline: none;
+        .leaflet-interactive:focus { outline: none; }
+
+        /* --- ANIMATION CONTROLS STYLES --- */
+        .anim-controls { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .play-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        #play-btn { width: 70px; margin-top: 0; }
+        #play-btn.playing { background: #e41a1c; }
+        #play-btn.playing:hover { background: #fb6a4a; }
+        #anim-date-display { font-size: 12px; font-weight: 600; color: #fff; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 4px; text-align: right; min-width: 90px;}
+        
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%; 
+            background: #ffffff; cursor: pointer; margin-top: -5px; box-shadow: 0 0 6px rgba(0,0,0,0.6);
         }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(255, 255, 255, 0.2); border-radius: 2px; }
     </style>
 </head>
 <body>
@@ -155,6 +169,34 @@
                 </div>
                 <button id="apply-track-filter" class="action-btn">Apply boat tracking Filter</button>
             </div>
+
+            <div class="anim-controls">
+                <div class="input-row" style="margin-bottom: 4px;">
+                    <label>Tail Length
+                        <select id="tail-length">
+                            <option value="36500">Show All (No Fade)</option>
+                            <option value="180" selected>6 Months</option>
+                            <option value="90">90 Days</option>
+                            <option value="45">45 Days</option>
+                            <option value="15">15 Days</option>
+                        </select>
+                    </label>
+                    <label>Play Speed
+                        <select id="play-speed">
+                            <option value="400" selected>Slow</option>
+                            <option value="200">Normal</option>
+                            <option value="80">Fast</option>
+                        </select>
+                    </label>
+                </div>
+                
+                <div class="play-row">
+                    <button id="play-btn" class="action-btn">▶ Play</button>
+                    <span id="anim-date-display">...</span>
+                </div>
+                <input type="range" id="time-slider" min="0" max="100" value="100">
+            </div>
+
             <div id="track-count" class="count-text"></div>
         </div>
 
@@ -211,8 +253,8 @@
     map.createPane('labels');
     map.getPane('labels').style.zIndex = 650;
     map.getPane('labels').style.pointerEvents = 'none'; // Labels don't block mouse events
-map.createPane('heatmapPane');
-map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overlays (400)
+    map.createPane('heatmapPane');
+    map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overlays (400)
 
     // Add the labels-only layer to the new pane
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png', {
@@ -238,6 +280,11 @@ map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overla
     let allKrillData = [];
     let allWhaleData = [];
 
+    // Animation State
+    let animMinTime, animMaxTime, animCurrentTime;
+    let isPlaying = false;
+    let playInterval;
+
     const tracksCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/boat1_analyzed.csv";
     const tracks2CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/boat2_analyzed.csv";
     const zonesGeoJsonUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/zones_with_months.geojson";
@@ -257,10 +304,7 @@ map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overla
             f.properties.protected ? f.properties.protected.trim() : 'Not Specified'
         )));
         
-        // Sort periods to apply colors logically (most restrictive = red)
         uniquePeriods.sort((a, b) => a.localeCompare(b));
-        
-        // Use a yellow-to-red color scheme for a "warning" feel
         const zoneColorScale = d3.scaleOrdinal(d3.schemeYlOrRd[uniquePeriods.length]).domain(uniquePeriods);
 
         const legendContainer = document.getElementById('dynamic-zone-legend');
@@ -269,9 +313,7 @@ map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overla
 
         function formatPeriod(period, forLegend = false) {
             const trimmedPeriod = period.trim();
-            if (trimmedPeriod === 'All year') {
-                return 'Restricted all year';
-            }
+            if (trimmedPeriod === 'All year') { return 'Restricted all year'; }
             if (trimmedPeriod.includes('-')) {
                 const [startMonthNum, endMonthNum] = trimmedPeriod.split('-').map(s => parseInt(s.trim()));
                 if (!isNaN(startMonthNum) && !isNaN(endMonthNum)) {
@@ -280,7 +322,7 @@ map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overla
                     return forLegend ? `From ${startMonthName} to ${endMonthName}` : `Restricted from ${startMonthName} to ${endMonthName}`;
                 }
             }
-            return period; // Fallback for "Not Specified" or other formats
+            return period;
         }
 
         uniquePeriods.forEach(period => {
@@ -302,26 +344,15 @@ map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overla
                 const period = props.protected ? props.protected.trim() : 'Not Specified';
                 const borderColor = d3.rgb(zoneColorScale(period)).darker(1.2);
                 
-                // GeoJSON coords are [lon, lat], Leaflet needs [lat, lon], so we reverse them.
                 const latlngs = feature.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
 
-                // Use the plugin's built-in StripePattern
                 const stripes = new L.StripePattern({
-                    angle: 45,
-                    color: borderColor,
-                    weight: 4,       // The thickness of the stripe line
-                    spaceWeight: 8,  // The amount of transparent space between stripes
-                    opacity: 0.2
+                    angle: 45, color: borderColor, weight: 4, spaceWeight: 8, opacity: 0.2
                 });
                 stripes.addTo(map);
 
-                // Apply the pattern using fillPattern
                 const polygon = L.polygon(latlngs, {
-                    color: borderColor, 
-                    weight: 1,
-                    fill: true,
-                    fillPattern: stripes, 
-                    fillOpacity: 1 // Set to 1 so the stripes show fully
+                    color: borderColor, weight: 1, fill: true, fillPattern: stripes, fillOpacity: 1 
                 }).bindTooltip(`
                     <div class="custom-tooltip">
                         <div class="tooltip-title" style="border-color: ${borderColor}">Protection Zone</div>
@@ -330,23 +361,21 @@ map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overla
                     </div>
                 `, { sticky: true });
 
-                // Add click-to-zoom functionality
                 polygon.on('click', function(e) {
-                    // flyToBounds provides a smoother animation.
-                    // The padding option makes the final zoom level less tight.
-                    map.flyToBounds(e.target.getBounds(), {
-                        padding: [50, 50] // Adds 50px padding around the zone
-                    });
+                    map.flyToBounds(e.target.getBounds(), { padding: [50, 50] });
                 });
 
                 polygon.addTo(zonesLayer);
             });
         }
         renderZones(zonesGeoJson);
+        
         // --- TRACKS ---
-        tracks1Data.forEach(d => { d.boatSource = "Antarctic Endurance"; d.dateObj = new Date(d.start); d.endDateObj = new Date(d.end); d.lat = parseFloat(d.latitude); d.lon = parseFloat(d.longitude); d.seg_id = d.voyage; });
-        tracks2Data.forEach(d => { d.boatSource = "Saga Sea"; d.dateObj = new Date(d.start); d.endDateObj = new Date(d.end); d.lat = parseFloat(d.latitude); d.lon = parseFloat(d.longitude); d.seg_id = d.voyage; });
-        allTracksData = [...tracks1Data, ...tracks2Data];
+        tracks1Data.forEach(d => { d.boatSource = "Antarctic Endurance"; d.dateObj = new Date(d.start); d.endDateObj = new Date(d.end); d.lat = parseFloat(d.latitude); d.lon = parseFloat(d.longitude); d.seg_id = d.voyage; d.time = d.dateObj.getTime(); });
+        tracks2Data.forEach(d => { d.boatSource = "Saga Sea"; d.dateObj = new Date(d.start); d.endDateObj = new Date(d.end); d.lat = parseFloat(d.latitude); d.lon = parseFloat(d.longitude); d.seg_id = d.voyage; d.time = d.dateObj.getTime();});
+        
+        // Sort by time for proper playback
+        allTracksData = [...tracks1Data, ...tracks2Data].sort((a,b) => a.time - b.time);
 
         if (allTracksData.length > 0) {
             const minDate = d3.min(allTracksData, d => d.dateObj);
@@ -356,6 +385,8 @@ map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overla
         } else {
             document.getElementById('end-date').value = new Date().toISOString().split('T')[0];
         }
+        
+        initOrUpdateAnimation();
         renderTracks(); 
 
         // --- KRILL ---
@@ -369,7 +400,6 @@ map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overla
             document.getElementById('krill-start-year').value = krillMinYear; document.getElementById('krill-end-year').value = krillMaxYear;
             document.getElementById('krill-start-year').min = krillMinYear; document.getElementById('krill-end-year').max = krillMaxYear;
         }
-        renderKrillHeatmap(); 
 
         // --- WHALES ---
         let whaleMinYear = 3000, whaleMaxYear = 0;
@@ -382,49 +412,150 @@ map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overla
             document.getElementById('whale-start-year').value = whaleMinYear; document.getElementById('whale-end-year').value = whaleMaxYear;
             document.getElementById('whale-start-year').min = whaleMinYear; document.getElementById('whale-end-year').max = whaleMaxYear;
         }
+
+        // --- RESTORED: Heatmaps draw on load so checkbox works ---
+        renderKrillHeatmap(); 
         renderWhaleHeatmap();
 
     }).catch(error => console.error("Error loading data:", error));
 
+
+    // --- TIMELAPSE ANIMATION LOGIC ---
+    function initOrUpdateAnimation() {
+        animMinTime = new Date(document.getElementById('start-date').value).getTime();
+        
+        const endDateInput = new Date(document.getElementById('end-date').value);
+        endDateInput.setHours(23, 59, 59); // Ensure it catches the whole final day
+        animMaxTime = endDateInput.getTime();
+        
+        if (!isPlaying) { animCurrentTime = animMaxTime; }
+
+        const slider = document.getElementById('time-slider');
+        slider.min = animMinTime; slider.max = animMaxTime; slider.value = animCurrentTime;
+        updateAnimDateDisplay();
+    }
+
+    function updateAnimDateDisplay() {
+        const d = new Date(parseInt(animCurrentTime));
+        const options = { year: 'numeric', month: 'short', day: 'numeric' };
+        document.getElementById('anim-date-display').innerText = d.toLocaleDateString('en-US', options);
+    }
+
+    document.getElementById('play-btn').addEventListener('click', function() {
+        const slider = document.getElementById('time-slider');
+        
+        if (isPlaying) {
+            isPlaying = false;
+            this.innerText = "▶ Play";
+            this.classList.remove('playing');
+            clearInterval(playInterval);
+        } else {
+            isPlaying = true;
+            this.innerText = "⏸ Pause";
+            this.classList.add('playing');
+            
+            // Restart from beginning if at the end
+            if (animCurrentTime >= animMaxTime) {
+                animCurrentTime = animMinTime;
+                slider.value = animCurrentTime;
+            }
+            
+            const totalFrames = parseInt(document.getElementById('play-speed').value); 
+            const stepMs = (animMaxTime - animMinTime) / totalFrames;
+
+            playInterval = setInterval(() => {
+                animCurrentTime += stepMs;
+                if (animCurrentTime >= animMaxTime) {
+                    animCurrentTime = animMaxTime;
+                    isPlaying = false;
+                    document.getElementById('play-btn').innerText = "▶ Play";
+                    document.getElementById('play-btn').classList.remove('playing');
+                    clearInterval(playInterval);
+                }
+                slider.value = animCurrentTime;
+                updateAnimDateDisplay();
+                renderTracks();
+            }, 50); 
+        }
+    });
+
+    document.getElementById('time-slider').addEventListener('input', function() {
+        animCurrentTime = parseInt(this.value); 
+        updateAnimDateDisplay(); 
+        renderTracks();
+    });
+
+    // --- RESTORED BOAT FILTER BUTTON ---
+    document.getElementById('apply-track-filter').addEventListener('click', () => {
+        initOrUpdateAnimation(); 
+        renderTracks();
+    });
+
+    document.getElementById('tail-length').addEventListener('change', renderTracks);
+
+    // --- RENDER TRACKS (WITH MONTH FILTERING) ---
     function renderTracks() {
         tracks1Layer.clearLayers();
         tracks2Layer.clearLayers();
         
-        const start = new Date(document.getElementById('start-date').value);
-        const end = new Date(document.getElementById('end-date').value);
-        end.setHours(23, 59, 59); 
+        const tailLengthDays = parseInt(document.getElementById('tail-length').value);
+        const maxAgeMs = tailLengthDays * 24 * 60 * 60 * 1000;
+        const currentEndMs = parseInt(animCurrentTime);
+        const startStrTime = new Date(document.getElementById('start-date').value).getTime();
 
         const startMonth = parseInt(document.getElementById('start-month').value);
         const endMonth = parseInt(document.getElementById('end-month').value);
+        
+        // Check if animation is totally finished (or slider at max)
+        const isFinished = (currentEndMs >= animMaxTime);
+        
+        // If finished, show the full trajectory. Otherwise, only show points within the tail window
+        const tailStartMs = isFinished ? 0 : (currentEndMs - maxAgeMs);
 
+        // Filter points logically up to the animation frame AND within the month/date criteria
         const filteredData = allTracksData.filter(d => {
-            if (!d.dateObj || isNaN(d.dateObj)) return false;
-            const isRightTime = d.dateObj >= start && d.dateObj <= end;
+            // 1. Must be before current animation frame and after start date
+            if (d.time > currentEndMs || d.time < startStrTime) return false;
+            
+            // 2. Must be within selected months
             const m = d.dateObj.getMonth();
             let isRightMonth = false;
-            if (startMonth <= endMonth) { isRightMonth = (m >= startMonth && m <= endMonth); } 
-            else { isRightMonth = (m >= startMonth || m <= endMonth); }
-            return isRightTime && isRightMonth;
+            if (startMonth <= endMonth) { 
+                isRightMonth = (m >= startMonth && m <= endMonth); 
+            } else { 
+                isRightMonth = (m >= startMonth || m <= endMonth); 
+            }
+            
+            return isRightMonth;
         });
 
-        document.getElementById('track-count').innerText = `${filteredData.length} fishing events`;
+        document.getElementById('track-count').innerText = `${filteredData.length} visible tracking points`;
 
         const tracksGrouped = d3.group(filteredData, d => d.boatSource, d => d.seg_id);
-        const boatColorScale = d3.scaleOrdinal().domain(["Antarctic Endurance", "Saga Sea"]).range(["#377eb8", "#e41a1c"]); 
-        boatColorScale.range(["#377eb8", "#ff7f00"]); // Change Saga Sea to orange
+        const boatColorScale = d3.scaleOrdinal().domain(["Antarctic Endurance", "Saga Sea"]).range(["#377eb8", "#ff7f00"]); 
+        
         tracksGrouped.forEach((segments, boatSource) => {
             const baseColor = boatColorScale(boatSource);
             const targetLayer = boatSource === "Antarctic Endurance" ? tracks1Layer : tracks2Layer;
 
             segments.forEach((points, segId) => {
                 points.sort((a, b) => a.dateObj - b.dateObj); 
-                const latlngs = points.map(p => [+p.lat, +p.lon]);
+                
+                // --- 1. Draw The Trajectory Line ---
+                // We only draw lines for the points that happened recently (within the Tail Length)
+                const recentPointsForLine = points.filter(p => p.time >= tailStartMs);
+                const tailLatlngs = recentPointsForLine.map(p => [+p.lat, +p.lon]);
 
-                if (latlngs.length > 1) {
-                    L.polyline(latlngs, { color: baseColor, weight: 1.5, opacity: 0.3, dashArray: '4, 4' }).addTo(targetLayer);
+                if (tailLatlngs.length > 1) {
+                    L.polyline(tailLatlngs, { 
+                        color: baseColor, weight: 1.5, opacity: 0.4, dashArray: '4, 4' 
+                    }).addTo(targetLayer);
                 }
 
-                points.forEach(d => {
+                // --- 2. Draw Permanent Marker Dots ---
+                points.forEach((d, index) => {
+                    const isHead = (index === points.length - 1); 
+                    
                     let markerOptions;
                     let tooltipContent = `
                         <div class="custom-tooltip">
@@ -435,9 +566,14 @@ map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overla
                     `;
 
                     if (d.is_cheating === 'True') {
+                        // Keep Violations bright Red
                         markerOptions = { radius: 4, fillColor: baseColor, color: '#e41a1c', weight: 2.5, fillOpacity: 1, opacity: 1 };
                         tooltipContent += `<br><b style="color: #e41a1c;">Violation:</b> Fishing in restricted zone`;
+                    } else if (isHead && !isFinished) { 
+                        // Current boat position during animation gets a bright white outline
+                        markerOptions = { radius: 5, fillColor: baseColor, color: '#ffffff', weight: 2, fillOpacity: 1, opacity: 1 };
                     } else {
+                        // Old history points become smaller and partially faded, but never disappear
                         markerOptions = {
                             radius: 3, fillColor: baseColor, color: "#1a1a1a", 
                             weight: 1.5, fillOpacity: 0.5, opacity: 0.5
@@ -454,28 +590,31 @@ map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overla
         });
     }
 
+    // --- HEATMAP FUNCTIONS ---
     function renderKrillHeatmap() {
         krillHeatmapLayer.clearLayers();
         const startYear = parseInt(document.getElementById('krill-start-year').value);
         const endYear = parseInt(document.getElementById('krill-end-year').value);
         const filteredKrill = allKrillData.filter(d => d.yearNum >= startYear && d.yearNum <= endYear);
+        
         document.getElementById('krill-count').innerText = `${filteredKrill.length} krill data points`;
         if (filteredKrill.length === 0) return;
+        
         const heatPoints = filteredKrill.map(d => [d.lat, d.lon]);
         
         L.heatLayer(heatPoints, {
-        pane: 'heatmapPane', // Add this line
-        radius: 10, 
-        blur: 18, // Slightly lower blur makes it crisper
-        maxZoom: 4, 
-        max: 10,  // INCREASE THIS (experiment with 20, 50, or 100)
-        gradient: { 
-                0.1: '#ffeda0', // Bright pale yellow (pops cleanly on light blue)
-                0.6: '#feb24c', // Warm orange
-                0.8: '#f03b20', // Bright red
-                1.0: '#bd0026'  // Deep, dark red for maximum density
+            pane: 'heatmapPane', 
+            radius: 10, 
+            blur: 18, 
+            maxZoom: 4, 
+            max: 10,  
+            gradient: { 
+                0.1: '#ffeda0', 
+                0.6: '#feb24c', 
+                0.8: '#f03b20', 
+                1.0: '#bd0026'  
             }
-    }).addTo(krillHeatmapLayer);
+        }).addTo(krillHeatmapLayer);
     }
 
     function renderWhaleHeatmap() {
@@ -483,29 +622,45 @@ map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overla
         const startYear = parseInt(document.getElementById('whale-start-year').value);
         const endYear = parseInt(document.getElementById('whale-end-year').value);
         const filteredWhales = allWhaleData.filter(d => d.yearNum >= startYear && d.yearNum <= endYear);
+        
         document.getElementById('whale-count').innerText = `${filteredWhales.length} whale data points`;
         if (filteredWhales.length === 0) return;
+        
         const heatPoints = filteredWhales.map(d => [d.lat, d.lon]);
 
         L.heatLayer(heatPoints, {
-            pane: 'heatmapPane', // Add this line
+            pane: 'heatmapPane', 
             radius: 10, 
-            blur: 18, // Slightly lower blur makes it crisper
+            blur: 18, 
             maxZoom: 4, 
-            max: 8,  // INCREASE THIS (experiment with 20, 50, or 100)
+            max: 8, 
             gradient: { 
-                0.4: '#bcbddc', // Soft lavender (blends smoothly into the light blue sea)
-                0.6: '#9e9ac8', // Medium purple
-                0.8: '#756bb1', // Rich, vibrant purple
-                1.0: '#54278f'  // Very dark, almost-black purple for hotspots
-        }
-            // gradient: { 0.2: '#abdda4', 0.5: '#e6f598', 0.8: '#ffffbf', 1.0: '#fee08b' } // New green-to-yellow gradient
+                0.4: '#bcbddc', 
+                0.6: '#9e9ac8', 
+                0.8: '#756bb1', 
+                1.0: '#54278f'  
+            }
         }).addTo(whaleHeatmapLayer);
     }
 
-    document.getElementById('apply-track-filter').addEventListener('click', renderTracks);
-    document.getElementById('apply-krill-filter').addEventListener('click', renderKrillHeatmap);
-    document.getElementById('apply-whale-filter').addEventListener('click', renderWhaleHeatmap);
+    // --- EVENT LISTENERS FOR HEATMAP APPLY BUTTONS ---
+    document.getElementById('apply-krill-filter').addEventListener('click', () => {
+        renderKrillHeatmap();
+        const toggle = document.getElementById('toggle-krill');
+        if (!toggle.checked) {
+            toggle.checked = true;
+            map.addLayer(krillHeatmapLayer);
+        }
+    });
+
+    document.getElementById('apply-whale-filter').addEventListener('click', () => {
+        renderWhaleHeatmap();
+        const toggle = document.getElementById('toggle-whale');
+        if (!toggle.checked) {
+            toggle.checked = true;
+            map.addLayer(whaleHeatmapLayer);
+        }
+    });
 
     // --- Layer Toggle Logic ---
     function setupLayerToggle(checkboxId, layer) {
