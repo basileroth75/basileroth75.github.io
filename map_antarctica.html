@@ -65,7 +65,8 @@
             padding: 14px; border-radius: 12px; 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); 
             font-size: 12px; z-index: 1000; 
-            max-height: calc(100vh - 90px); overflow-y: auto;
+            max-height: 65vh; /* <-- Changed from calc(100vh - 90px) */
+            overflow-y: auto;
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
         .panel-container.hidden { opacity: 0; pointer-events: none; transform: translateY(-10px); }
