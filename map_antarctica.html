@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marine Data Explorer: Krill, Whales & Fishing</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/leaflet.pattern@0.1.0/dist/leaflet.pattern.js"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #1a1a1a;
+        }
+
+        #map-wrapper {
+            position: fixed; 
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            margin: 0; z-index: 999; overflow: hidden;
+        }
+        #map { width: 100%; height: 100%; z-index: 1; }
+
+        .custom-tooltip {
+            background: rgba(20, 25, 35, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            padding: 10px 14px; color: #e0e6ed; font-size: 12px; line-height: 1.5;
+        }
+        .custom-tooltip b { color: #ffffff; }
+        .tooltip-title { font-weight: 600; font-size: 13px; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 4px;}
+        .leaflet-tooltip-left::before, .leaflet-tooltip-right::before, 
+        .leaflet-tooltip-top::before, .leaflet-tooltip-bottom::before { display: none; }
+        .leaflet-tooltip { background: transparent; border: none; box-shadow: none; padding: 0; }
+
+        #controls-panel { 
+            position: absolute; top: 15px; left: 15px; 
+            background: rgba(20, 25, 35, 0.75); 
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            color: #e0e6ed; border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 14px; border-radius: 12px; 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); 
+            font-size: 12px; z-index: 1000; 
+            width: 260px; max-height: 95vh; overflow-y: auto;
+        }
+        
+        #controls-panel::-webkit-scrollbar { width: 6px; }
+        #controls-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        
+        .legend-section { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
+        .legend-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .legend-title { font-weight: 600; font-size: 11px; margin-bottom: 8px; color: #ffffff; letter-spacing: 0.5px; text-transform: uppercase;}
+        .legend-item { display: flex; align-items: center; margin-bottom: 4px; } 
+        .legend-color { width: 12px; height: 12px; margin-right: 8px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;}
+        .legend-line { width: 12px; height: 6px; margin-right: 8px; flex-shrink: 0; border-radius: 2px;}
+        
+        .input-group { display: flex; flex-direction: column; margin-top: 6px; gap: 6px; }
+        .input-row { display: flex; gap: 8px; width: 100%; }
+        .input-row label { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; color: #a0aec0; font-size: 10px;}
+        
+        .input-group input, .input-group select { 
+            padding: 4px; background: rgba(255, 255, 255, 0.05); 
+            border: 1px solid rgba(255, 255, 255, 0.2); color: white; 
+            border-radius: 4px; outline: none; font-family: inherit; font-size: 10px;
+            width: 100%; box-sizing: border-box;
+        }
+        .input-group input:focus, .input-group select:focus { border-color: #3182bd; background: rgba(255,255,255,0.1);}
+        ::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.7; cursor: pointer; }
+
+        .action-btn { 
+            margin-top: 4px; width: 100%; padding: 6px; background: #3182bd; color: white; 
+            border: none; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; 
+            font-size: 11px; font-weight: 500; font-family: inherit;
+        }
+        .action-btn:hover { background: #6baed6; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(49, 130, 189, 0.3);}
+        .action-btn:active { transform: translateY(0); }
+        .count-text { margin-top: 4px; font-size: 10px; color: #a0aec0; font-style: italic;}
+
+        .toggle-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+        .toggle-item input[type="checkbox"] { margin: 0; }
+        .toggle-item .legend-line, .toggle-item .legend-color { margin-right: 0; }
+
+        /* Remove the default blue outline when clicking on map shapes */
+        .leaflet-interactive:focus {
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map-wrapper">
+    <div id="map"></div>
+
+    <div id="controls-panel">
+        
+        <div class="legend-section">
+            <div class="legend-title">Protected Marine Areas</div>
+            <label class="toggle-item legend-item">
+                <input type="checkbox" id="toggle-zones" checked>
+                <span>Restricted fishing areas</span>
+            </label>
+            <div id="dynamic-zone-legend"></div>
+            <label class="toggle-item legend-item">
+                <input type="checkbox" id="toggle-mpa" checked>
+                <div class="legend-color" style="background: rgba(144, 238, 144, 0.3); border: 1px solid #2ca25f;"></div>
+                <span>CCAMLR MPAs</span>
+            </label>
+        </div>
+
+        <div class="legend-section">
+            <div class="legend-title">Boat tracking</div>
+            <label class="toggle-item legend-item"><input type="checkbox" id="toggle-track1" checked>
+                <div class="legend-line" style="background: #377eb8;"></div>
+                <span>Antarctic Endurance</span>
+            </label>
+            <label class="toggle-item legend-item"><input type="checkbox" id="toggle-track2" checked>
+                <div class="legend-line" style="background: #ff7f00;"></div>
+                <span>Saga Sea</span>
+            </label>
+            <div class="legend-item">
+                <div class="legend-color" style="border-radius: 50%; width: 10px; height: 10px; border: 2.5px solid #e41a1c; box-sizing: border-box;"></div>
+                <span>Restricted Area Violation</span>
+            </div>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <label>Date From <input type="date" id="start-date" value="2020-01-01"></label>
+                    <label>Date To <input type="date" id="end-date"></label>
+                </div>
+                <div class="input-row">
+                    <label>Month From 
+                        <select id="start-month">
+                            <option value="0">Jan</option><option value="1">Feb</option><option value="2">Mar</option>
+                            <option value="3">Apr</option><option value="4">May</option><option value="5">Jun</option>
+                            <option value="6">Jul</option><option value="7">Aug</option><option value="8">Sep</option>
+                            <option value="9">Oct</option><option value="10">Nov</option><option value="11">Dec</option>
+                        </select>
+                    </label>
+                    <label>Month To 
+                        <select id="end-month">
+                            <option value="0">Jan</option><option value="1">Feb</option><option value="2">Mar</option>
+                            <option value="3">Apr</option><option value="4">May</option><option value="5">Jun</option>
+                            <option value="6">Jul</option><option value="7">Aug</option><option value="8">Sep</option>
+                            <option value="9">Oct</option><option value="10">Nov</option><option value="11" selected>Dec</option>
+                        </select>
+                    </label>
+                </div>
+                <button id="apply-track-filter" class="action-btn">Apply boat tracking Filter</button>
+            </div>
+            <div id="track-count" class="count-text"></div>
+        </div>
+
+        <div class="legend-section">
+            <div class="legend-title">Krill Density</div>
+            <label class="toggle-item legend-item">
+                <input type="checkbox" id="toggle-krill">
+                <div class="legend-color" style="background: linear-gradient(to right, #ffeda0, #feb24c, #f03b20, #bd0026); border: 1px solid rgba(255,255,255,0.2); width: 150px; height: 8px;"></div>
+            </label>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <label>From Year <input type="number" id="krill-start-year"></label>
+                    <label>To Year <input type="number" id="krill-end-year"></label>
+                </div>
+                <button id="apply-krill-filter" class="action-btn">Apply Krill Filter</button>
+            </div>
+            <div id="krill-count" class="count-text"></div>
+        </div>
+
+        <div class="legend-section">
+            <div class="legend-title">Whale Occurrences</div>
+            <label class="toggle-item legend-item">
+                <input type="checkbox" id="toggle-whale">
+                <div class="legend-color" style="background: linear-gradient(to right, #bcbddc, #9e9ac8, #756bb1, #54278f); border: 1px solid rgba(255,255,255,0.2); width: 150px; height: 8px;"></div>
+            </label>
+
+            <div class="input-group">
+                <div class="input-row">
+                    <label>From Year <input type="number" id="whale-start-year"></label>
+                    <label>To Year <input type="number" id="whale-end-year"></label>
+                </div>
+                <button id="apply-whale-filter" class="action-btn">Apply Whale Filter</button>
+            </div>
+            <div id="whale-count" class="count-text"></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const FORBIDDEN_COLUMN_NAME = "protected";
+
+    const map = L.map('map', { zoomControl: false }).setView([-60, -55], 4.5);
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    // Base ocean map
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
+        maxZoom: 20
+    }).addTo(map);
+
+    // Create a pane for labels to ensure they are drawn on top
+    map.createPane('labels');
+    map.getPane('labels').style.zIndex = 650;
+    map.getPane('labels').style.pointerEvents = 'none'; // Labels don't block mouse events
+map.createPane('heatmapPane');
+map.getPane('heatmapPane').style.zIndex = 350; // Below markers (600) and overlays (400)
+
+    // Add the labels-only layer to the new pane
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; <a href="https://www.carto.com/attributions">CARTO</a>',
+        pane: 'labels'
+    }).addTo(map);
+
+    const zonesLayer = L.layerGroup().addTo(map); 
+    const tracks1Layer = L.layerGroup().addTo(map); 
+    const tracks2Layer = L.layerGroup().addTo(map); 
+    const krillHeatmapLayer = L.layerGroup();
+    const whaleHeatmapLayer = L.layerGroup();
+
+    const mpaWMSLayer = L.tileLayer.wms("https://gis.ccamlr.org:443/geoserver/gis/wms", {
+        layers: 'gis:mpas',
+        format: 'image/png',
+        transparent: true,
+        version: '1.1.1',
+        attribution: '<a href="https://www.ccamlr.org/en/science/marine-protected-areas-mpas">CCAMLR MPAs</a>'
+    }).addTo(map);
+
+    let allTracksData = []; 
+    let allKrillData = [];
+    let allWhaleData = [];
+
+    const tracksCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/boat1_analyzed.csv";
+    const tracks2CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/boat2_analyzed.csv";
+    const zonesGeoJsonUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/zones_with_months.geojson";
+    const krillCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/processed_full.csv";
+    const whaleCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/whale_gbif_2000-2026_fixed.csv";
+
+    Promise.all([
+        d3.csv(tracksCsvUrl),
+        d3.csv(tracks2CsvUrl).catch(() => []), 
+        d3.json(zonesGeoJsonUrl),
+        d3.csv(krillCsvUrl),
+        d3.csv(whaleCsvUrl)
+    ]).then(([tracks1Data, tracks2Data, zonesGeoJson, krillData, whaleData]) => {
+
+        // --- ZONES ---
+        const uniquePeriods = Array.from(new Set(zonesGeoJson.features.map(f => 
+            f.properties.protected ? f.properties.protected.trim() : 'Not Specified'
+        )));
+        
+        // Sort periods to apply colors logically (most restrictive = red)
+        uniquePeriods.sort((a, b) => a.localeCompare(b));
+        
+        // Use a yellow-to-red color scheme for a "warning" feel
+        const zoneColorScale = d3.scaleOrdinal(d3.schemeYlOrRd[uniquePeriods.length]).domain(uniquePeriods);
+
+        const legendContainer = document.getElementById('dynamic-zone-legend');
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"];
+
+        function formatPeriod(period, forLegend = false) {
+            const trimmedPeriod = period.trim();
+            if (trimmedPeriod === 'All year') {
+                return 'Restricted all year';
+            }
+            if (trimmedPeriod.includes('-')) {
+                const [startMonthNum, endMonthNum] = trimmedPeriod.split('-').map(s => parseInt(s.trim()));
+                if (!isNaN(startMonthNum) && !isNaN(endMonthNum)) {
+                    const startMonthName = monthNames[startMonthNum - 1];
+                    const endMonthName = monthNames[endMonthNum - 1];
+                    return forLegend ? `From ${startMonthName} to ${endMonthName}` : `Restricted from ${startMonthName} to ${endMonthName}`;
+                }
+            }
+            return period; // Fallback for "Not Specified" or other formats
+        }
+
+        uniquePeriods.forEach(period => {
+            const color = zoneColorScale(period);
+            const borderColor = d3.rgb(color).darker(1.2);
+            legendContainer.innerHTML += `
+                <div class="legend-item">
+                    <div class="legend-color" style="background: ${color}; opacity: 0.5; border-color: ${borderColor};"></div>
+                    <span> ${formatPeriod(period, true)}</span>
+                </div>
+            `;
+        });
+
+        function renderZones(geoJson) {
+            geoJson.features.forEach(feature => {
+                const props = feature.properties;
+                const zoneId = props.zone_id;
+                const displayPeriod = formatPeriod(props.protected);
+                const period = props.protected ? props.protected.trim() : 'Not Specified';
+                const borderColor = d3.rgb(zoneColorScale(period)).darker(1.2);
+                
+                // GeoJSON coords are [lon, lat], Leaflet needs [lat, lon], so we reverse them.
+                const latlngs = feature.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+
+                // Use the plugin's built-in StripePattern
+                const stripes = new L.StripePattern({
+                    angle: 45,
+                    color: borderColor,
+                    weight: 4,       // The thickness of the stripe line
+                    spaceWeight: 8,  // The amount of transparent space between stripes
+                    opacity: 0.2
+                });
+                stripes.addTo(map);
+
+                // Apply the pattern using fillPattern
+                const polygon = L.polygon(latlngs, {
+                    color: borderColor, 
+                    weight: 1,
+                    fill: true,
+                    fillPattern: stripes, 
+                    fillOpacity: 1 // Set to 1 so the stripes show fully
+                }).bindTooltip(`
+                    <div class="custom-tooltip">
+                        <div class="tooltip-title" style="border-color: ${borderColor}">Protection Zone</div>
+                        <b>ID:</b> ${zoneId}<br>
+                        <b>Restriction:</b> ${displayPeriod}
+                    </div>
+                `, { sticky: true });
+
+                // Add click-to-zoom functionality
+                polygon.on('click', function(e) {
+                    // flyToBounds provides a smoother animation.
+                    // The padding option makes the final zoom level less tight.
+                    map.flyToBounds(e.target.getBounds(), {
+                        padding: [50, 50] // Adds 50px padding around the zone
+                    });
+                });
+
+                polygon.addTo(zonesLayer);
+            });
+        }
+        renderZones(zonesGeoJson);
+        // --- TRACKS ---
+        tracks1Data.forEach(d => { d.boatSource = "Antarctic Endurance"; d.dateObj = new Date(d.start); d.endDateObj = new Date(d.end); d.lat = parseFloat(d.latitude); d.lon = parseFloat(d.longitude); d.seg_id = d.voyage; });
+        tracks2Data.forEach(d => { d.boatSource = "Saga Sea"; d.dateObj = new Date(d.start); d.endDateObj = new Date(d.end); d.lat = parseFloat(d.latitude); d.lon = parseFloat(d.longitude); d.seg_id = d.voyage; });
+        allTracksData = [...tracks1Data, ...tracks2Data];
+
+        if (allTracksData.length > 0) {
+            const minDate = d3.min(allTracksData, d => d.dateObj);
+            const maxDate = d3.max(allTracksData, d => d.dateObj);
+            document.getElementById('start-date').value = minDate.toISOString().split('T')[0];
+            document.getElementById('end-date').value = maxDate.toISOString().split('T')[0];
+        } else {
+            document.getElementById('end-date').value = new Date().toISOString().split('T')[0];
+        }
+        renderTracks(); 
+
+        // --- KRILL ---
+        let krillMinYear = 3000, krillMaxYear = 0;
+        krillData.forEach(d => {
+            d.yearNum = parseInt(d.year); d.lat = parseFloat(d.dcmlLtt); d.lon = parseFloat(d.dcmlLng); 
+            if (!isNaN(d.yearNum)) { if (d.yearNum < krillMinYear) krillMinYear = d.yearNum; if (d.yearNum > krillMaxYear) krillMaxYear = d.yearNum; }
+        });
+        allKrillData = krillData.filter(d => !isNaN(d.lat) && !isNaN(d.lon));
+        if (krillMinYear <= krillMaxYear) {
+            document.getElementById('krill-start-year').value = krillMinYear; document.getElementById('krill-end-year').value = krillMaxYear;
+            document.getElementById('krill-start-year').min = krillMinYear; document.getElementById('krill-end-year').max = krillMaxYear;
+        }
+        renderKrillHeatmap(); 
+
+        // --- WHALES ---
+        let whaleMinYear = 3000, whaleMaxYear = 0;
+        whaleData.forEach(d => {
+            d.yearNum = parseInt(d.year); d.lat = parseFloat(d.decimalLatitude); d.lon = parseFloat(d.decimalLongitude);
+            if (!isNaN(d.yearNum)) { if (d.yearNum < whaleMinYear) whaleMinYear = d.yearNum; if (d.yearNum > whaleMaxYear) whaleMaxYear = d.yearNum; }
+        });
+        allWhaleData = whaleData.filter(d => !isNaN(d.lat) && !isNaN(d.lon));
+        if (whaleMinYear <= whaleMaxYear) {
+            document.getElementById('whale-start-year').value = whaleMinYear; document.getElementById('whale-end-year').value = whaleMaxYear;
+            document.getElementById('whale-start-year').min = whaleMinYear; document.getElementById('whale-end-year').max = whaleMaxYear;
+        }
+        renderWhaleHeatmap();
+
+    }).catch(error => console.error("Error loading data:", error));
+
+    function renderTracks() {
+        tracks1Layer.clearLayers();
+        tracks2Layer.clearLayers();
+        
+        const start = new Date(document.getElementById('start-date').value);
+        const end = new Date(document.getElementById('end-date').value);
+        end.setHours(23, 59, 59); 
+
+        const startMonth = parseInt(document.getElementById('start-month').value);
+        const endMonth = parseInt(document.getElementById('end-month').value);
+
+        const filteredData = allTracksData.filter(d => {
+            if (!d.dateObj || isNaN(d.dateObj)) return false;
+            const isRightTime = d.dateObj >= start && d.dateObj <= end;
+            const m = d.dateObj.getMonth();
+            let isRightMonth = false;
+            if (startMonth <= endMonth) { isRightMonth = (m >= startMonth && m <= endMonth); } 
+            else { isRightMonth = (m >= startMonth || m <= endMonth); }
+            return isRightTime && isRightMonth;
+        });
+
+        document.getElementById('track-count').innerText = `${filteredData.length} fishing events`;
+
+        const tracksGrouped = d3.group(filteredData, d => d.boatSource, d => d.seg_id);
+        const boatColorScale = d3.scaleOrdinal().domain(["Antarctic Endurance", "Saga Sea"]).range(["#377eb8", "#e41a1c"]); 
+        boatColorScale.range(["#377eb8", "#ff7f00"]); // Change Saga Sea to orange
+        tracksGrouped.forEach((segments, boatSource) => {
+            const baseColor = boatColorScale(boatSource);
+            const targetLayer = boatSource === "Antarctic Endurance" ? tracks1Layer : tracks2Layer;
+
+            segments.forEach((points, segId) => {
+                points.sort((a, b) => a.dateObj - b.dateObj); 
+                const latlngs = points.map(p => [+p.lat, +p.lon]);
+
+                if (latlngs.length > 1) {
+                    L.polyline(latlngs, { color: baseColor, weight: 1.5, opacity: 0.3, dashArray: '4, 4' }).addTo(targetLayer);
+                }
+
+                points.forEach(d => {
+                    let markerOptions;
+                    let tooltipContent = `
+                        <div class="custom-tooltip">
+                            <div class="tooltip-title" style="border-color: ${baseColor}">${d.boatSource}</div>
+                            <b>Event:</b> ${d.type || 'Fishing'}<br>
+                            <b>Start:</b> ${d.dateObj.toLocaleString()}<br>
+                            <b>End:</b> ${d.endDateObj.toLocaleString()}
+                    `;
+
+                    if (d.is_cheating === 'True') {
+                        markerOptions = { radius: 4, fillColor: baseColor, color: '#e41a1c', weight: 2.5, fillOpacity: 1, opacity: 1 };
+                        tooltipContent += `<br><b style="color: #e41a1c;">Violation:</b> Fishing in restricted zone`;
+                    } else {
+                        markerOptions = {
+                            radius: 3, fillColor: baseColor, color: "#1a1a1a", 
+                            weight: 1.5, fillOpacity: 0.5, opacity: 0.5
+                        };
+                    }
+
+                    tooltipContent += `</div>`;
+
+                    L.circleMarker([+d.lat, +d.lon], markerOptions)
+                     .bindTooltip(tooltipContent, { sticky: true })
+                     .addTo(targetLayer);
+                });
+            });
+        });
+    }
+
+    function renderKrillHeatmap() {
+        krillHeatmapLayer.clearLayers();
+        const startYear = parseInt(document.getElementById('krill-start-year').value);
+        const endYear = parseInt(document.getElementById('krill-end-year').value);
+        const filteredKrill = allKrillData.filter(d => d.yearNum >= startYear && d.yearNum <= endYear);
+        document.getElementById('krill-count').innerText = `${filteredKrill.length} krill data points`;
+        if (filteredKrill.length === 0) return;
+        const heatPoints = filteredKrill.map(d => [d.lat, d.lon]);
+        
+        L.heatLayer(heatPoints, {
+        pane: 'heatmapPane', // Add this line
+        radius: 10, 
+        blur: 18, // Slightly lower blur makes it crisper
+        maxZoom: 4, 
+        max: 10,  // INCREASE THIS (experiment with 20, 50, or 100)
+        gradient: { 
+                0.1: '#ffeda0', // Bright pale yellow (pops cleanly on light blue)
+                0.6: '#feb24c', // Warm orange
+                0.8: '#f03b20', // Bright red
+                1.0: '#bd0026'  // Deep, dark red for maximum density
+            }
+    }).addTo(krillHeatmapLayer);
+    }
+
+    function renderWhaleHeatmap() {
+        whaleHeatmapLayer.clearLayers();
+        const startYear = parseInt(document.getElementById('whale-start-year').value);
+        const endYear = parseInt(document.getElementById('whale-end-year').value);
+        const filteredWhales = allWhaleData.filter(d => d.yearNum >= startYear && d.yearNum <= endYear);
+        document.getElementById('whale-count').innerText = `${filteredWhales.length} whale data points`;
+        if (filteredWhales.length === 0) return;
+        const heatPoints = filteredWhales.map(d => [d.lat, d.lon]);
+
+        L.heatLayer(heatPoints, {
+            pane: 'heatmapPane', // Add this line
+            radius: 10, 
+            blur: 18, // Slightly lower blur makes it crisper
+            maxZoom: 4, 
+            max: 8,  // INCREASE THIS (experiment with 20, 50, or 100)
+            gradient: { 
+                0.4: '#bcbddc', // Soft lavender (blends smoothly into the light blue sea)
+                0.6: '#9e9ac8', // Medium purple
+                0.8: '#756bb1', // Rich, vibrant purple
+                1.0: '#54278f'  // Very dark, almost-black purple for hotspots
+        }
+            // gradient: { 0.2: '#abdda4', 0.5: '#e6f598', 0.8: '#ffffbf', 1.0: '#fee08b' } // New green-to-yellow gradient
+        }).addTo(whaleHeatmapLayer);
+    }
+
+    document.getElementById('apply-track-filter').addEventListener('click', renderTracks);
+    document.getElementById('apply-krill-filter').addEventListener('click', renderKrillHeatmap);
+    document.getElementById('apply-whale-filter').addEventListener('click', renderWhaleHeatmap);
+
+    // --- Layer Toggle Logic ---
+    function setupLayerToggle(checkboxId, layer) {
+        document.getElementById(checkboxId).addEventListener('change', function() {
+            this.checked ? map.addLayer(layer) : map.removeLayer(layer);
+        });
+    }
+    setupLayerToggle('toggle-zones', zonesLayer);
+    setupLayerToggle('toggle-mpa', mpaWMSLayer);
+    setupLayerToggle('toggle-track1', tracks1Layer);
+    setupLayerToggle('toggle-track2', tracks2Layer);
+    setupLayerToggle('toggle-krill', krillHeatmapLayer);
+    setupLayerToggle('toggle-whale', whaleHeatmapLayer);
+</script>
+
+</body>
+</html>
