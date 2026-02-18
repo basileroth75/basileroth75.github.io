@@ -41,42 +41,68 @@
         .leaflet-tooltip-top::before, .leaflet-tooltip-bottom::before { display: none; }
         .leaflet-tooltip { background: transparent; border: none; box-shadow: none; padding: 0; }
 
-        #controls-panel { 
-            position: absolute; top: 15px; left: 15px; 
+        /* --- NEW FLOATING BUTTONS STYLES --- */
+        .floating-btn-container { position: absolute; top: 15px; z-index: 1000; }
+        .floating-btn-container.left { left: 15px; }
+        .floating-btn-container.right { right: 15px; }
+        
+        .floating-btn { 
+            background: rgba(20, 25, 35, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            color: #fff; border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 14px; border-radius: 8px; cursor: pointer;
+            font-family: inherit; font-size: 13px; font-weight: 600;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: all 0.2s ease;
+        }
+        .floating-btn:hover { background: rgba(50, 60, 80, 0.9); transform: translateY(-1px); }
+
+        /* --- SEPARATED PANELS STYLES --- */
+        .panel-container { 
+            position: absolute; top: 65px; 
             background: rgba(20, 25, 35, 0.85); 
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
             color: #e0e6ed; border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 14px; border-radius: 12px; 
+            padding: 14px; border-radius: 12px; 
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); 
             font-size: 12px; z-index: 1000; 
-            width: 280px; max-height: 95vh; overflow-y: auto;
+            max-height: calc(100vh - 90px); overflow-y: auto;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
+        .panel-container.hidden { opacity: 0; pointer-events: none; transform: translateY(-10px); }
+        #layer-panel { left: 15px; width: 290px; }
+        #legend-panel { right: 15px; width: 240px; }
         
-        #controls-panel::-webkit-scrollbar { width: 6px; }
-        #controls-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+        .panel-container::-webkit-scrollbar { width: 6px; }
+        .panel-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
         
-        .legend-section { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); }
-        .legend-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-        .legend-title { font-weight: 600; font-size: 11px; margin-bottom: 8px; color: #ffffff; letter-spacing: 0.5px; text-transform: uppercase;}
-        .legend-item { display: flex; align-items: center; margin-bottom: 4px; } 
-        .legend-color { width: 12px; height: 12px; margin-right: 8px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;}
-        .legend-line { width: 12px; height: 6px; margin-right: 8px; flex-shrink: 0; border-radius: 2px;}
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .panel-header h3 { margin: 0; font-size: 13px; font-weight: 600; color: #fff; text-transform: uppercase; letter-spacing: 0.5px;}
+        .close-btn { background: transparent; border: none; color: #a0aec0; font-size: 20px; cursor: pointer; padding: 0; line-height: 1; transition: color 0.2s; }
+        .close-btn:hover { color: #fff; }
+
+        .control-section { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+        .control-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .section-title { font-weight: 600; font-size: 11px; margin-bottom: 8px; color: #ffffff; letter-spacing: 0.5px; text-transform: uppercase;}
         
-        .input-group { display: flex; flex-direction: column; margin-top: 6px; gap: 6px; }
+        .legend-item { display: flex; align-items: center; margin-bottom: 6px; font-size: 11px;} 
+        .legend-color { width: 14px; height: 14px; margin-right: 8px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0;}
+        .legend-line { width: 14px; height: 4px; margin-right: 8px; flex-shrink: 0; border-radius: 2px;}
+        
+        .input-group { display: flex; flex-direction: column; margin-top: 8px; gap: 6px; }
         .input-row { display: flex; gap: 8px; width: 100%; }
         .input-row label { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; color: #a0aec0; font-size: 10px;}
         
         .input-group input, .input-group select { 
-            padding: 4px; background: rgba(255, 255, 255, 0.05); 
+            padding: 5px; background: rgba(255, 255, 255, 0.05); 
             border: 1px solid rgba(255, 255, 255, 0.2); color: white; 
-            border-radius: 4px; outline: none; font-family: inherit; font-size: 10px;
+            border-radius: 4px; outline: none; font-family: inherit; font-size: 11px;
             width: 100%; box-sizing: border-box;
         }
         .input-group input:focus, .input-group select:focus { border-color: #3182bd; background: rgba(255,255,255,0.1);}
         ::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.7; cursor: pointer; }
 
         .action-btn { 
-            margin-top: 4px; width: 100%; padding: 6px; background: #3182bd; color: white; 
+            margin-top: 6px; width: 100%; padding: 6px; background: #3182bd; color: white; 
             border: none; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; 
             font-size: 11px; font-weight: 500; font-family: inherit;
         }
@@ -84,11 +110,9 @@
         .action-btn:active { transform: translateY(0); }
         .count-text { margin-top: 4px; font-size: 10px; color: #a0aec0; font-style: italic;}
 
-        .toggle-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-        .toggle-item input[type="checkbox"] { margin: 0; }
-        .toggle-item .legend-line, .toggle-item .legend-color { margin-right: 0; }
+        .toggle-item { display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 6px; }
+        .toggle-item input[type="checkbox"] { margin: 0; cursor: pointer; }
 
-        /* Remove the default blue outline when clicking on map shapes */
         .leaflet-interactive:focus { outline: none; }
 
         /* --- ANIMATION CONTROLS STYLES --- */
@@ -113,36 +137,39 @@
 <div id="map-wrapper">
     <div id="map"></div>
 
-    <div id="controls-panel">
+    <div class="floating-btn-container left">
+        <button id="btn-layers" class="floating-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 12 12 17 22 12"></polyline><polyline points="2 17 12 22 22 17"></polyline></svg>
+            Layers & Filters
+        </button>
+    </div>
+    <div class="floating-btn-container right">
+        <button id="btn-legend" class="floating-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+            Legend
+        </button>
+    </div>
+
+    <div id="layer-panel" class="panel-container hidden">
+        <div class="panel-header">
+            <h3>Layers & Filters</h3>
+            <button class="close-btn" id="close-layers">×</button>
+        </div>
         
-        <div class="legend-section">
-            <div class="legend-title">Protected Marine Areas</div>
-            <label class="toggle-item legend-item">
-                <input type="checkbox" id="toggle-zones" checked>
-                <span>Restricted fishing areas</span>
+        <div class="control-section">
+            <div class="section-title">Protected Marine Areas</div>
+            <label class="toggle-item">
+                <input type="checkbox" id="toggle-zones" checked> Restricted fishing areas
             </label>
-            <div id="dynamic-zone-legend"></div>
-            <label class="toggle-item legend-item">
-                <input type="checkbox" id="toggle-mpa" checked>
-                <div class="legend-color" style="background: rgba(144, 238, 144, 0.3); border: 1px solid #2ca25f;"></div>
-                <span>CCAMLR MPAs</span>
+            <label class="toggle-item">
+                <input type="checkbox" id="toggle-mpa" checked> CCAMLR MPAs
             </label>
         </div>
 
-        <div class="legend-section">
-            <div class="legend-title">Boat tracking</div>
-            <label class="toggle-item legend-item"><input type="checkbox" id="toggle-track1" checked>
-                <div class="legend-line" style="background: #377eb8;"></div>
-                <span>Antarctic Endurance</span>
-            </label>
-            <label class="toggle-item legend-item"><input type="checkbox" id="toggle-track2" checked>
-                <div class="legend-line" style="background: #ff7f00;"></div>
-                <span>Saga Sea</span>
-            </label>
-            <div class="legend-item">
-                <div class="legend-color" style="border-radius: 50%; width: 10px; height: 10px; border: 2.5px solid #e41a1c; box-sizing: border-box;"></div>
-                <span>Restricted Area Violation</span>
-            </div>
+        <div class="control-section">
+            <div class="section-title">Boat tracking</div>
+            <label class="toggle-item"><input type="checkbox" id="toggle-track1" checked> Antarctic Endurance</label>
+            <label class="toggle-item"><input type="checkbox" id="toggle-track2" checked> Saga Sea</label>
 
             <div class="input-group">
                 <div class="input-row">
@@ -167,14 +194,14 @@
                         </select>
                     </label>
                 </div>
-                <button id="apply-track-filter" class="action-btn">Apply boat tracking Filter</button>
+                <button id="apply-track-filter" class="action-btn">Apply boat tracking filter</button>
             </div>
 
             <div class="anim-controls">
                 <div class="input-row" style="margin-bottom: 4px;">
                     <label>Tail Length
                         <select id="tail-length">
-                            <option value="36500">Show All (No Fade)</option>
+                            <option value="36500">Show All</option>
                             <option value="180" selected>6 Months</option>
                             <option value="90">90 Days</option>
                             <option value="45">45 Days</option>
@@ -196,15 +223,13 @@
                 </div>
                 <input type="range" id="time-slider" min="0" max="100" value="100">
             </div>
-
             <div id="track-count" class="count-text"></div>
         </div>
 
-        <div class="legend-section">
-            <div class="legend-title">Krill Density</div>
-            <label class="toggle-item legend-item">
-                <input type="checkbox" id="toggle-krill">
-                <div class="legend-color" style="background: linear-gradient(to right, #ffeda0, #feb24c, #f03b20, #bd0026); border: 1px solid rgba(255,255,255,0.2); width: 150px; height: 8px;"></div>
+        <div class="control-section">
+            <div class="section-title">Krill Density</div>
+            <label class="toggle-item">
+                <input type="checkbox" id="toggle-krill"> Show Krill Density
             </label>
 
             <div class="input-group">
@@ -217,11 +242,10 @@
             <div id="krill-count" class="count-text"></div>
         </div>
 
-        <div class="legend-section">
-            <div class="legend-title">Whale Occurrences</div>
-            <label class="toggle-item legend-item">
-                <input type="checkbox" id="toggle-whale">
-                <div class="legend-color" style="background: linear-gradient(to right, #bcbddc, #9e9ac8, #756bb1, #54278f); border: 1px solid rgba(255,255,255,0.2); width: 150px; height: 8px;"></div>
+        <div class="control-section" style="margin-bottom: 0;">
+            <div class="section-title">Whale Occurrences</div>
+            <label class="toggle-item">
+                <input type="checkbox" id="toggle-whale"> Show Whale Occurrences
             </label>
 
             <div class="input-group">
@@ -233,11 +257,71 @@
             </div>
             <div id="whale-count" class="count-text"></div>
         </div>
+    </div>
 
+    <div id="legend-panel" class="panel-container hidden">
+        <div class="panel-header">
+            <h3>Legend</h3>
+            <button class="close-btn" id="close-legend">×</button>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Protected Marine Areas</div>
+            <div id="dynamic-zone-legend"></div>
+            <div class="legend-item" style="margin-top: 6px;">
+                <div class="legend-color" style="background: rgba(144, 238, 144, 0.3); border: 1px solid #2ca25f;"></div>
+                <span>CCAMLR MPAs</span>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Boat tracking</div>
+            <div class="legend-item">
+                <div class="legend-line" style="background: #377eb8;"></div>
+                <span>Antarctic Endurance</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line" style="background: #ff7f00;"></div>
+                <span>Saga Sea</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="border-radius: 50%; width: 10px; height: 10px; border: 2.5px solid #e41a1c; box-sizing: border-box;"></div>
+                <span>Restricted Area Violation</span>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Krill Density</div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(to right, #ffeda0, #feb24c, #f03b20, #bd0026); border: 1px solid rgba(255,255,255,0.2); width: 100%; height: 10px;"></div>
+            </div>
+        </div>
+
+        <div class="control-section" style="margin-bottom: 0;">
+            <div class="section-title">Whale Occurrences</div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(to right, #bcbddc, #9e9ac8, #756bb1, #54278f); border: 1px solid rgba(255,255,255,0.2); width: 100%; height: 10px;"></div>
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
+    // --- UI TOGGLE LOGIC ---
+    document.getElementById('btn-layers').addEventListener('click', () => {
+        document.getElementById('layer-panel').classList.toggle('hidden');
+    });
+    document.getElementById('btn-legend').addEventListener('click', () => {
+        document.getElementById('legend-panel').classList.toggle('hidden');
+    });
+    document.getElementById('close-layers').addEventListener('click', () => {
+        document.getElementById('layer-panel').classList.add('hidden');
+    });
+    document.getElementById('close-legend').addEventListener('click', () => {
+        document.getElementById('legend-panel').classList.add('hidden');
+    });
+
+
     const FORBIDDEN_COLUMN_NAME = "protected";
 
     const map = L.map('map', { zoomControl: false }).setView([-60, -55], 4.5);
@@ -413,7 +497,6 @@
             document.getElementById('whale-start-year').min = whaleMinYear; document.getElementById('whale-end-year').max = whaleMaxYear;
         }
 
-        // --- RESTORED: Heatmaps draw on load so checkbox works ---
         renderKrillHeatmap(); 
         renderWhaleHeatmap();
 
@@ -485,7 +568,7 @@
         renderTracks();
     });
 
-    // --- RESTORED BOAT FILTER BUTTON ---
+    // --- BOAT FILTER BUTTON ---
     document.getElementById('apply-track-filter').addEventListener('click', () => {
         initOrUpdateAnimation(); 
         renderTracks();
