@@ -373,14 +373,14 @@
     const tracksCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/boat1_analyzed.csv";
     const tracks2CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/boat2_analyzed.csv";
     const zonesGeoJsonUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/zones_with_months.geojson";
-    const krillCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/processed_full.csv";
+    const krillCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/Krill_2011_2022.csv";
     const whaleCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/whale_gbif_2000-2026_fixed.csv";
 
     Promise.all([
         d3.csv(tracksCsvUrl),
         d3.csv(tracks2CsvUrl).catch(() => []), 
         d3.json(zonesGeoJsonUrl),
-        d3.csv(krillCsvUrl),
+        d3.dsv(";", krillCsvUrl),
         d3.csv(whaleCsvUrl)
     ]).then(([tracks1Data, tracks2Data, zonesGeoJson, krillData, whaleData]) => {
 
@@ -477,10 +477,14 @@
         // --- KRILL ---
         let krillMinYear = 3000, krillMaxYear = 0;
         krillData.forEach(d => {
-            d.yearNum = parseInt(d.year); d.lat = parseFloat(d.dcmlLtt); d.lon = parseFloat(d.dcmlLng); 
+            const dateParts = d.Date.split('/');
+            d.yearNum = parseInt(dateParts[2]);
+            d.lat = parseFloat(d.latitude); 
+            d.lon = parseFloat(d.Longitude); 
+            d.quantity = parseFloat(d.Quantity);
             if (!isNaN(d.yearNum)) { if (d.yearNum < krillMinYear) krillMinYear = d.yearNum; if (d.yearNum > krillMaxYear) krillMaxYear = d.yearNum; }
         });
-        allKrillData = krillData.filter(d => !isNaN(d.lat) && !isNaN(d.lon));
+        allKrillData = krillData.filter(d => !isNaN(d.lat) && !isNaN(d.lon) && !isNaN(d.quantity));
         if (krillMinYear <= krillMaxYear) {
             document.getElementById('krill-start-year').value = krillMinYear; document.getElementById('krill-end-year').value = krillMaxYear;
             document.getElementById('krill-start-year').min = krillMinYear; document.getElementById('krill-end-year').max = krillMaxYear;
@@ -684,14 +688,14 @@
         document.getElementById('krill-count').innerText = `${filteredKrill.length} krill data points`;
         if (filteredKrill.length === 0) return;
         
-        const heatPoints = filteredKrill.map(d => [d.lat, d.lon]);
+        const heatPoints = filteredKrill.map(d => [d.lat, d.lon, d.quantity]);
         
         L.heatLayer(heatPoints, {
             pane: 'heatmapPane', 
             radius: 10, 
             blur: 18, 
             maxZoom: 4, 
-            max: 10,  
+            max: d3.quantile(heatPoints.map(p => p[2]), 0.95), // Use 95th percentile for max intensity
             gradient: { 
                 0.1: '#ffeda0', 
                 0.6: '#feb24c', 
