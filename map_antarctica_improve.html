@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marine Data Explorer: Krill, Whales & Fishing</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.heat/0.2.0/leaflet-heat.js"></script>
@@ -30,7 +30,7 @@
 
         /* --- PREMIUM TOOLTIPS --- */
         .custom-tooltip {
-            background: rgba(10, 12, 16, 0.85);
+            background: rgba(20, 24, 28, 0.95);
             backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
@@ -46,96 +46,106 @@
         /* --- FLOATING BUTTONS --- */
         .floating-btn {
             position: absolute; top: 20px;
-            background: rgba(15, 17, 21, 0.45); /* LESS OPAQUE */
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); /* SLIGHTLY LESS BLUR */
-            color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 10px 16px; border-radius: 20px; 
+            background: #1c2024;
+            color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 10px 16px; border-radius: 8px; 
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); 
-            font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
-            z-index: 1000; cursor: pointer; transition: all 0.3s ease;
+            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+            z-index: 1000; cursor: pointer; transition: all 0.2s ease;
             display: flex; align-items: center; gap: 8px; font-family: inherit;
         }
-        .floating-btn:hover { background: rgba(255, 255, 255, 0.15); color: #fff; transform: translateY(-1px);}
+        .floating-btn:hover { background: #2a2e33; color: #fff; }
         .floating-btn.hidden { opacity: 0; pointer-events: none; transform: translateY(-10px); }
 
-        /* --- PANEL STYLES --- */
+        /* --- REDESIGNED UI PANELS (Inspired by bird-tracking) --- */
         .panel-container { 
             position: absolute; top: 20px; 
-            background: rgba(15, 17, 21, 0.45); /* LESS OPAQUE */
-            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); /* SLIGHTLY LESS BLUR */
+            backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
             color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 20px; border-radius: 16px; 
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5); 
-            font-size: 11px; z-index: 1000; 
-            width: 290px; max-height: 90vh; overflow-y: auto;
+            padding: 20px; border-radius: 12px; 
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); 
+            font-size: 12px; z-index: 1000; 
+            width: 320px; max-height: 90vh; overflow-y: auto;
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
         .panel-container.hidden { opacity: 0; pointer-events: none; transform: translateY(-10px); }
-        .panel-container::-webkit-scrollbar { width: 4px; }
-        .panel-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+        .panel-container::-webkit-scrollbar { width: 6px; }
+        .panel-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
         
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .panel-title { font-weight: 600; font-size: 11px; color: #fff; text-transform: uppercase; letter-spacing: 1.5px; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+        .panel-title { font-weight: 700; font-size: 14px; color: #fff; letter-spacing: 0.5px; }
         .close-btn { background: transparent; border: none; color: #64748b; font-size: 20px; cursor: pointer; padding: 0; line-height: 1; transition: color 0.2s; }
         .close-btn:hover { color: #f8fafc; }
 
-        .control-section { margin-bottom: 24px; }
+        .control-section { margin-bottom: 16px; }
         .control-section:last-child { margin-bottom: 0; }
-        .section-title { font-weight: 600; font-size: 10px; margin-bottom: 14px; color: #64748b; text-transform: uppercase; letter-spacing: 1.2px;}
+        .section-title { font-weight: 600; font-size: 11px; margin-bottom: 16px; color: #8b949e; text-transform: uppercase; letter-spacing: 1px;}
         
-        /* Items & Toggles */
-        .toggle-item, .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .toggle-item { cursor: pointer; transition: opacity 0.2s; }
-        .toggle-item:hover { opacity: 0.8; }
+        /* Checkboxes & Items */
+        .toggle-item, .legend-item { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .toggle-item { cursor: pointer; transition: color 0.2s; }
+        .toggle-item:hover { color: #fff; }
         
         .toggle-item input[type="checkbox"] { 
             appearance: none; -webkit-appearance: none; width: 16px; height: 16px; flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #0d1117; border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center;
             transition: all 0.2s ease;
         }
-        .toggle-item input[type="checkbox"]:checked { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.4); }
-        .toggle-item input[type="checkbox"]:checked::after { content: '✔'; color: #fff; font-size: 10px; font-weight: bold; }
+        .toggle-item input[type="checkbox"]:checked { background: #38bdf8; border-color: #38bdf8; }
+        .toggle-item input[type="checkbox"]:checked::after { content: '✔'; color: #000; font-size: 10px; font-weight: bold; }
 
-        .legend-color { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; box-shadow: 0 0 4px rgba(0,0,0,0.5);}
-        .legend-line { width: 16px; height: 3px; flex-shrink: 0; border-radius: 2px; box-shadow: 0 0 4px rgba(0,0,0,0.5);}
-        .legend-gradient { width: 100%; height: 6px; border-radius: 4px; margin-top: 6px; box-shadow: inset 0 0 2px rgba(0,0,0,0.5); }
+        .legend-color { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+        .legend-line { width: 16px; height: 3px; flex-shrink: 0; border-radius: 2px; }
+        .legend-gradient-group { margin-bottom: 8px; }
+        .legend-gradient-group:last-child { margin-bottom: 0; }
+        .legend-gradient-label { font-size: 11px; color: #8b949e; margin-bottom: 6px; }
+        .legend-gradient-bar { width: 100%; height: 8px; border-radius: 4px; box-shadow: inset 0 0 2px rgba(0,0,0,0.5); }
+        .gradient-labels { display: flex; justify-content: space-between; font-size: 10px; color: #64748b; margin-top: 4px; }
         
-        /* Pill Buttons */
+        /* --- TIMELINE STYLES --- */
+        .anim-controls { background: #0d1117; padding: 16px; border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .timeline-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+        .date-label { text-align: left; font-size: 10px; color: #8b949e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0;}
+        #anim-date-display { text-align: right; font-size: 16px; font-weight: 700; color: #fff; letter-spacing: -0.5px; margin-bottom: 0;}
+
+        .play-row { display: flex; align-items: center; gap: 8px; }
         .action-btn { 
-            padding: 8px 10px; background: rgba(255, 255, 255, 0.08); color: #f8fafc; 
-            border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px; 
+            flex: 1; padding: 8px; background: #21262d; color: #c9d1d9; 
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; 
             cursor: pointer; transition: all 0.2s ease; 
-            font-size: 10px; font-weight: 600; letter-spacing: 0.5px;
-            display: flex; justify-content: center; align-items: center; font-family: inherit;
+            font-size: 11px; font-weight: 600; font-family: inherit;
         }
-        .action-btn:hover { background: rgba(255, 255, 255, 0.15); transform: scale(1.02);}
-        .action-btn:active { transform: scale(0.98); }
-        .count-text { margin-top: 6px; font-size: 9px; color: #64748b; text-align: left; font-style: italic;}
-
-        /* --- ANIMATION CONTROLS STYLES --- */
-        .anim-controls { 
-            background: rgba(0, 0, 0, 0.25); padding: 16px; border-radius: 12px; 
-            border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
-        }
-        .play-row { display: flex; align-items: center; justify-content: center; gap: 12px; }
-        #play-btn { width: 85px; flex-shrink: 0; }
-        #play-btn.playing { background: rgba(220, 38, 38, 0.8); border-color: #ef4444;}
-        #speed-btn { width: 85px; flex-shrink: 0; }
+        .action-btn:hover { background: #30363d; color: #fff; }
+        #play-btn.playing { background: #1f6feb; color: #fff; border-color: #1f6feb; }
         
-        .date-label { text-align: center; font-size: 9px; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;}
-        #anim-date-display { text-align: center; font-size: 16px; font-weight: 600; color: #38bdf8; letter-spacing: 1px; }
-
-        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin-top: 14px; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin-top: 16px; }
         input[type=range]:focus { outline: none; }
         input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%; 
-            background: #f8fafc; cursor: pointer; margin-top: -5px; box-shadow: 0 0 8px rgba(0,0,0,0.8);
-            transition: transform 0.1s;
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; 
+            background: #38bdf8; cursor: pointer; margin-top: -6px; border: 2px solid #fff;
         }
-        input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
-        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
-        .leaflet-interactive:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: #30363d; border-radius: 2px; }
+
+        /* --- BOAT PROFILE CARD --- */
+        .entity-profile { display: flex; align-items: center; gap: 14px; background: #0d1117; padding: 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: background-color 0.2s ease; }
+        .entity-profile:hover { background: #21262d; }
+        .entity-profile.selected { background: #21262d; border-color: #38bdf8; }
+        .entity-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid #00e5ff; flex-shrink: 0; background: #21262d; }
+        .entity-details { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+        .entity-name { font-size: 13px; font-weight: 600; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;}
+        .entity-legend-row { display: flex; align-items: center; gap: 10px; font-size: 11px; color: #8b949e; margin-top: 8px; }
+        .entity-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; }
+        .entity-info-item { font-size: 10px; }
+        .entity-info-item-label { color: #8b949e; }
+        .entity-info-item-value { color: #c9d1d9; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+        .count-text { font-size: 10px; color: #8b949e; text-align: left; margin-left: 28px; }
+
+        /* --- HIGHLIGHT EFFECT --- */
+        .highlight-pulse {
+            animation: pulse-animation 1.5s ease-out;
+        }
+        @keyframes pulse-animation { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -145,93 +155,158 @@
 
     <button id="btn-layers" class="floating-btn" style="left: 20px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        Controls
+        Map Layers
     </button>
     <button id="btn-legend" class="floating-btn hidden" style="right: 20px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-        Legend
+       Fishing vessels tracking and Domain-1 MPA
     </button>
 
     <div id="left-panel" class="panel-container hidden" style="left: 20px; right: auto;">
         <div class="panel-header">
-            <div class="panel-title">Controls & Filters</div>
+            <div class="panel-title">Map Layers</div>
             <button id="close-layers" class="close-btn">×</button>
         </div>
 
         <div class="control-section">
-            <div class="section-title">Protected Areas</div>
-            <label class="toggle-item"><input type="checkbox" id="toggle-zones" checked> <span>Restricted fishing areas</span></label>
-            <label class="toggle-item"><input type="checkbox" id="toggle-mpa" checked> <span>CCAMLR MPAs</span></label>
+            <div class="section-title">Marine Protection</div>
+            <label class="toggle-item"><input type="checkbox" id="toggle-zones" checked> <span>Domain-1 Marine Protected Areas</span></label>
+            <label class="toggle-item"><input type="checkbox" id="toggle-mpa" checked> <span>South Orkney Islands MPA</span></label>
         </div>
 
         <div class="control-section">
-            <div class="section-title">Boat Tracking</div>
+            <div class="section-title">Vessel Tracking</div>
             <label class="toggle-item"><input type="checkbox" id="toggle-track1" checked> <span>Antarctic Endurance</span></label>
-            <label class="toggle-item"><input type="checkbox" id="toggle-track2" checked> <span>Saga Sea</span></label>
-            <div id="track-count" class="count-text"></div>
+            <label class="toggle-item"><input type="checkbox" id="toggle-track2"> <span>Saga Sea</span></label>
         </div>
 
         <div class="control-section">
-            <div class="section-title">Heatmaps</div>
-            <label class="toggle-item" style="margin-bottom: 6px;"><input type="checkbox" id="toggle-krill"> <span>Show Krill Density</span></label>
-            <div id="krill-count" class="count-text" style="margin-bottom: 12px;"></div>
+            <div class="section-title">Marine Life Data</div>
+            <label class="toggle-item"><input type="checkbox" id="toggle-krill"> <span>Krill Density Heatmap</span></label>
+            <div id="krill-count" class="count-text" style="margin-bottom: 12px;">...</div>
             
-            <label class="toggle-item" style="margin-bottom: 6px;"><input type="checkbox" id="toggle-whale"> <span>Show Whale Occurrences</span></label>
-            <div id="whale-count" class="count-text"></div>
+            <label class="toggle-item"><input type="checkbox" id="toggle-whale"> <span>Whale Occurrences</span></label>
+            <div id="whale-count" class="count-text">...</div>
         </div>
     </div>
 
     <div id="right-panel" class="panel-container" style="right: 20px; left: auto;">
         <div class="panel-header">
-            <div class="panel-title">Boat tracking and fishing events</div>
+            <div class="panel-title">Fishing Vessels vs Domain-1 MPA</div>
             <button id="close-legend" class="close-btn">×</button>
         </div>
 
         <div class="control-section anim-controls">
-            <div class="date-label">Timeline</div>
-            <div id="anim-date-display" style="margin-bottom: 16px;">...</div>
+            <div class="timeline-header">
+                <div class="date-label">Current Timeline</div>
+                <div id="anim-date-display">...</div>
+            </div>
             <div class="play-row">
                 <button id="play-btn" class="action-btn">▶ Play</button>
-                <button id="speed-btn" class="action-btn">⏩ Slow</button>
+                <button id="speed-btn" class="action-btn">Speed: Slow</button>
             </div>
             <input type="range" id="time-slider" min="0" max="100" value="100">
         </div>
 
         <div class="control-section">
-            <div class="section-title">Protected Marine Areas</div>
-            
+            <div class="section-title">Tracked Vessels</div>
+            <div class="entity-profile" id="focus-vessel-1-btn" title="Click to focus on vessel">
+                <img src="_data/data/antarctic.png" alt="Boat" class="entity-avatar" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%2321262d\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\'/></svg>'">
+                <div class="entity-details">
+                    <div class="entity-name">Antarctic Endurance</div>
+                    <div class="entity-info-grid">
+                        <div class="entity-info-item">
+                            <div class="entity-info-item-label">Flag</div>
+                            <div class="entity-info-item-value">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 16" style="width: 18px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.1);">
+                                    <rect width="22" height="16" fill="#ef2b2d"/><path fill="#fff" d="M6 0h4v16H6z"/><path fill="#fff" d="M0 6h22v4H0z"/><path fill="#002868" d="M7 0h2v16H7z"/><path fill="#002868" d="M0 7h22v2H0z"/>
+                                </svg>
+                                <span>NOR</span>
+                            </div>
+                        </div>
+                        <div class="entity-info-item">
+                            <div class="entity-info-item-label">IMO</div>
+                            <div class="entity-info-item-value">9827891</div>
+                        </div>
+                        <div class="entity-info-item">
+                            <div class="entity-info-item-label">MMSI</div>
+                            <div class="entity-info-item-value">257400000</div>
+                        </div>
+                    </div>
+                    <div class="entity-legend-row">
+                        <div class="legend-color" style="border-radius: 50%; width: 6px; height: 6px; background: #00e5ff;"></div>
+                        <span>Identified Fishing Event</span>
+                    </div>
+        
+                </div>
+            </div>            
+            <div class="entity-profile" id="focus-vessel-2-btn" title="Click to focus on vessel" style="margin-top: 12px;">
+                <img src="_data/data/saga.png" alt="Boat" class="entity-avatar" style="border-color: #39ff14;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%2321262d\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\'/></svg>'">
+                <div class="entity-details">
+                    <div class="entity-name">Saga Sea</div>
+                    <div class="entity-info-grid">
+                        <div class="entity-info-item">
+                            <div class="entity-info-item-label">Flag</div>
+                            <div class="entity-info-item-value">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 16" style="width: 18px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.1);">
+                                    <rect width="22" height="16" fill="#ef2b2d"/><path fill="#fff" d="M6 0h4v16H6z"/><path fill="#fff" d="M0 6h22v4H0z"/><path fill="#002868" d="M7 0h2v16H7z"/><path fill="#002868" d="M0 7h22v2H0z"/>
+                                </svg>
+                                <span>NOR</span>
+                            </div>
+                        </div>
+                        <div class="entity-info-item">
+                            <div class="entity-info-item-label">IMO</div>
+                            <div class="entity-info-item-value">7390416</div>
+                        </div>
+                        <div class="entity-info-item">
+                            <div class="entity-info-item-label">MMSI</div>
+                            <div class="entity-info-item-value">259539000</div>
+                        </div>
+                    </div>
+                    <div class="entity-legend-row">
+                        <div class="legend-color" style="border-radius: 50%; width: 6px; height: 6px; background: #39ff14;"></div>
+                        <span>Identified Fishing Event</span>
+                    </div>
+        
+                </div>
+            </div>
+            <div class="legend-item" style="margin-top: 16px; padding-left: 4px;">
+                <div class="legend-color" style="border-radius: 50%; width: 10px; height: 10px; border: 1.5px solid #ef4444; background: transparent;"></div>
+                <span style="color: #ef4444; font-weight: 500; font-size: 11px;">Potential Restricted Zone Violation</span>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Proposed Domain-1 Marine Protected Areas</div>
             <div id="dynamic-zone-legend" style="margin-bottom: 12px;"></div>
-            
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Existing Marine Protected Areas</div>
             <div class="legend-item">
-                <div class="legend-color" style="background: rgba(144, 238, 144, 0.3); border: 1px solid #2ca25f;"></div>
-                <span>CCAMLR MPAs</span>
+                <div class="legend-color" style="background: rgba(44, 162, 95, 0.3); border: 1px solid #2ca25f;"></div>
+                <span style="color: #8b949e; font-size: 11px;">South Orkney Islands MPA</span>
             </div>
         </div>
 
         <div class="control-section">
-            <div class="section-title">Boat Tracking</div>
-            <div class="legend-item">
-                <div class="legend-line" style="background: #00e5ff; background: #00e5ff;"></div>
-                <span>Antarctic Endurance</span>
+            <div class="section-title">Marine Life Heatmaps</div>
+            <div class="legend-gradient-group">
+                <div class="legend-gradient-label">Krill Density</div>
+                <div class="legend-gradient-bar" style="background: linear-gradient(to right, #ffffd4, #fed98e, #fe9929, #d95f0e, #993404);"></div>
+                <div class="gradient-labels">
+                    <span>Low</span>
+                    <span>High</span>
+                </div>
             </div>
-            <div class="legend-item">
-                <div class="legend-line" style="background: #39ff14;"></div>
-                <span>Saga Sea</span>
+            <div class="legend-gradient-group">
+                <div class="legend-gradient-label">Whale Occurrences</div>
+                <div class="legend-gradient-bar" style="background: linear-gradient(to right, #f7fcf5, #ccece6, #99d8c9, #66c2a4, #2ca25f, #006d2c);"></div>
+                <div class="gradient-labels">
+                    <span>Low</span>
+                    <span>High</span>
+                </div>
             </div>
-            <div class="legend-item">
-                <div class="legend-color" style="border-radius: 50%; width: 10px; height: 10px; border: 1.5px solid #ff0000; background: transparent; box-shadow: none;"></div>
-                <span style="font-size: 10px; color: #ef4444;">Restricted Area Violation</span>
-            </div>
-        </div>
-
-        <div class="control-section">
-            <div class="section-title">Krill Density</div>
-            <div class="legend-gradient" style="background: linear-gradient(to right, #4a1486, #e31a1c, #fd8d3c, #ffffcc);"></div>
-        </div>
-
-        <div class="control-section" style="margin-bottom: 0;">
-            <div class="section-title">Whale Occurrences</div>
-            <div class="legend-gradient" style="background: linear-gradient(to right, #08519c, #2171b5, #6baed6, #00ffff);"></div>
         </div>
     </div>
 </div>
@@ -256,43 +331,68 @@
         document.getElementById('btn-legend').classList.remove('hidden');
     });
 
-
-    const map = L.map('map', { zoomControl: false }).setView([-60, -55], 3.5);
-    // Moved zoom control to bottom right to keep top clear for panels
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
-
+    // 🚀 HYBRID RENDERING OPTIMIZATION
+    // Map remains SVG by default so that L.StripePattern for zones renders correctly.
+    const map = L.map('map', { 
+        zoomControl: false,
+    }).setView([-60, -55], 3.5);
+    L.control.zoom({ position: 'bottomleft' }).addTo(map);
+    
+    // We create a specific high-performance Canvas Renderer for the thousands of moving tracks
+const canvasRenderer = L.canvas({ pane: 'tracksPane' });
     // Base dark map
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         maxZoom: 20
     }).addTo(map);
 
-    // Create panes for ordering
     map.createPane('labels');
     map.getPane('labels').style.zIndex = 650;
     map.getPane('labels').style.pointerEvents = 'none';
+    // Pane for heatmaps, behind everything except the base map
     map.createPane('heatmapPane');
-    map.getPane('heatmapPane').style.zIndex = 350;
+    map.getPane('heatmapPane').style.zIndex = 250;
+    // Pane for zones, to keep them below tracks
+    map.createPane('zonesPane');
+    map.getPane('zonesPane').style.zIndex = 400;
+    map.getPane('zonesPane').style.pointerEvents = 'none';
+    // Pane for tracks, ensuring they are on top of zones and other overlays
+    map.createPane('tracksPane');
+    map.getPane('tracksPane').style.zIndex = 620;
 
-    // Add labels layer
+    // Ensure tooltips are always on top of everything
+    map.getPane('tooltipPane').style.zIndex = 800;
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_only_labels/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; CARTO',
-        pane: 'labels'
+        attribution: '&copy; CARTO', pane: 'labels'
     }).addTo(map);
 
-    const zonesLayer = L.layerGroup().addTo(map); 
-    const tracks1Layer = L.layerGroup().addTo(map); 
-    const tracks2Layer = L.layerGroup().addTo(map); 
+    const zonesLayer = L.layerGroup({ pane: 'zonesPane' }).addTo(map); 
+    const tracks1Layer = L.layerGroup({ pane: 'tracksPane' }).addTo(map);
+    const tracks2Layer = L.layerGroup({ pane: 'tracksPane' });
+    const permanentMarkersLayer1 = L.layerGroup({ pane: 'tracksPane' }).addTo(tracks1Layer);
+    const movingTrackLayer1 = L.layerGroup({ pane: 'tracksPane' }).addTo(tracks1Layer);
+    const permanentMarkersLayer2 = L.layerGroup({ pane: 'tracksPane' }).addTo(tracks2Layer);
+    const movingTrackLayer2 = L.layerGroup({ pane: 'tracksPane' }).addTo(tracks2Layer);
+
     const krillHeatmapLayer = L.layerGroup();
     const whaleHeatmapLayer = L.layerGroup();
+    const mpaLayer = L.layerGroup({ pane: 'zonesPane' }).addTo(map); // New layer for MPAs
 
-    const mpaWMSLayer = L.tileLayer.wms("https://gis.ccamlr.org:443/geoserver/gis/wms", {
-        layers: 'gis:mpas',
-        format: 'image/png',
-        transparent: true,
-        version: '1.1.1',
-        attribution: '<a href="https://www.ccamlr.org/en/science/marine-protected-areas-mpas">CCAMLR MPAs</a>'
-    }).addTo(map);
+    const southOrkneyMpaCoordinates = [
+        [-61.5, -41.0], [-61.5, -44.0], [-62.0, -44.0], [-62.0, -46.0], 
+        [-61.5, -46.0], [-61.5, -48.0], [-64.0, -48.0], [-64.0, -41.0], 
+        [-61.5, -41.0]  
+    ];
+
+    // Draw the MPA polygon with styling that matches the legend
+    const southOrkneyMpa = L.polygon(southOrkneyMpaCoordinates, {
+    pane: 'zonesPane',     
+    interactive: false,    // <-- Add this line
+    color: '#2ca25f',      
+    weight: 1,             
+    fillColor: '#2ca25f',  
+    fillOpacity: 0.3       
+}).addTo(mpaLayer);
 
     let allTracksData = []; 
     let allKrillData = [];
@@ -301,33 +401,34 @@
     // Global Animation State
     let globalMinTime, globalMaxTime;
     let animMinTime, animMaxTime, animCurrentTime;
+    let lastProcessedTime = -1; 
     
     // Playback state
     let isPlaying = false;
     let playInterval;
-    let speedLevel = 0; // Start at index 1 (Medium)
-    const speedFrames = [600, 300, 120]; 
-    const speedText = ["⏩ Slow", "⏩ Med", "⏩ Fast"];
+    let speedLevel = 0; 
+    const speedFrames = [1200, 600, 200]; 
+    const speedText = ["Speed: Slow", "Speed: Normal", "Speed: Fast"];
 
-    const tracksCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/boat1_analyzed.csv";
-    const tracks2CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/boat2_analyzed.csv";
+    // const tracksCsvUrl = "_data/data/filtered_boat_activity.csv"; 
+    const tracks1CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/boat_activity_analyzed.csv";
+    const tracks2CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/boat_activity_analyzed_2.csv";
     const zonesGeoJsonUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/zones_with_months.geojson";
     const krillCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/Krill_2011_2022.csv";
     const whaleCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/whale_gbif_2000-2026_fixed.csv";
 
     Promise.all([
-        d3.csv(tracksCsvUrl),
-        d3.csv(tracks2CsvUrl).catch(() => []), 
+        d3.csv(tracks1CsvUrl),
+        d3.csv(tracks2CsvUrl),
         d3.json(zonesGeoJsonUrl),
         d3.dsv(";", krillCsvUrl),
         d3.csv(whaleCsvUrl)
     ]).then(([tracks1Data, tracks2Data, zonesGeoJson, krillData, whaleData]) => {
 
-        // --- ZONES ---
+        // --- ZONES (Restored Pattern Logic) ---
         const uniquePeriods = Array.from(new Set(zonesGeoJson.features.map(f => 
             f.properties.protected ? f.properties.protected.trim() : 'Not Specified'
         )));
-        
         uniquePeriods.sort((a, b) => a.localeCompare(b));
         const zoneColorScale = d3.scaleOrdinal(d3.schemeYlOrRd[uniquePeriods.length]).domain(uniquePeriods);
 
@@ -340,9 +441,7 @@
             if (trimmedPeriod.includes('-')) {
                 const [startMonthNum, endMonthNum] = trimmedPeriod.split('-').map(s => parseInt(s.trim()));
                 if (!isNaN(startMonthNum) && !isNaN(endMonthNum)) {
-                    const startMonthName = monthNames[startMonthNum - 1];
-                    const endMonthName = monthNames[endMonthNum - 1];
-                    return forLegend ? `From ${startMonthName} to ${endMonthName}` : `Restricted from ${startMonthName} to ${endMonthName}`;
+                    return forLegend ? `From ${monthNames[startMonthNum - 1]} to ${monthNames[endMonthNum - 1]}` : `Restricted from ${monthNames[startMonthNum - 1]} to ${monthNames[endMonthNum - 1]}`;
                 }
             }
             return period;
@@ -352,58 +451,52 @@
             const color = zoneColorScale(period);
             const borderColor = d3.rgb(color).darker(1.2);
             legendContainer.innerHTML += `
-                <div class="legend-item" style="margin-bottom: 6px; font-size: 10px; color: #94a3b8;">
-                    <div class="legend-color" style="background: ${color}; opacity: 0.5; border-color: ${borderColor};"></div>
+                <div class="legend-item" style="margin-bottom: 8px; font-size: 11px; color: #8b949e;">
+                    <div class="legend-color" style="background: ${color}; opacity: 0.5; border: 1px solid ${borderColor};"></div>
                     <span> ${formatPeriod(period, true)}</span>
                 </div>
             `;
         });
 
-        function renderZones(geoJson) {
-            geoJson.features.forEach(feature => {
-                const props = feature.properties;
-                const zoneId = props.zone_id;
-                const displayPeriod = formatPeriod(props.protected);
-                const period = props.protected ? props.protected.trim() : 'Not Specified';
-                const borderColor = d3.rgb(zoneColorScale(period)).darker(1.2);
-                
-                const latlngs = feature.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
+        zonesGeoJson.features.forEach(feature => {
+            const props = feature.properties;
+            const displayPeriod = formatPeriod(props.protected);
+            const period = props.protected ? props.protected.trim() : 'Not Specified';
+            const borderColor = d3.rgb(zoneColorScale(period)).darker(1.2);
+            const latlngs = feature.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
 
-                const stripes = new L.StripePattern({
-                    angle: 45, color: borderColor, weight: 4, spaceWeight: 8, opacity: 0.2
-                });
-                stripes.addTo(map);
-
-                const polygon = L.polygon(latlngs, {
-                    color: borderColor, weight: 1, fill: true, fillPattern: stripes, fillOpacity: 1 
-                }).bindTooltip(`
-                    <div class="custom-tooltip">
-                        <div class="tooltip-title" style="border-color: ${borderColor}">Protection Zone</div>
-                        <b>ID:</b> ${zoneId}<br>
-                        <b>Restriction:</b> ${displayPeriod}
-                    </div>
-                `, { sticky: true });
-
-                polygon.on('click', function(e) {
-                    map.flyToBounds(e.target.getBounds(), { padding: [50, 50] });
-                });
-
-                polygon.addTo(zonesLayer);
-            });
-        }
-        renderZones(zonesGeoJson);
+            const polygon = L.polygon(latlngs, { 
+                pane: 'zonesPane',
+                interactive: false,
+                color: borderColor, 
+                weight: 2, // Increased border weight for visibility
+                fill: false // No fill
+            }).addTo(zonesLayer);
+        });
         
         // --- TRACKS ---
-        tracks1Data.forEach(d => { d.boatSource = "Antarctic Endurance"; d.dateObj = new Date(d.start); d.endDateObj = new Date(d.end); d.lat = parseFloat(d.latitude); d.lon = parseFloat(d.longitude); d.seg_id = d.voyage; d.time = d.dateObj.getTime(); });
-        tracks2Data.forEach(d => { d.boatSource = "Saga Sea"; d.dateObj = new Date(d.start); d.endDateObj = new Date(d.end); d.lat = parseFloat(d.latitude); d.lon = parseFloat(d.longitude); d.seg_id = d.voyage; d.time = d.dateObj.getTime();});
+        tracks1Data.forEach(d => { 
+            d.boatSource = "Antarctic Endurance"; 
+            d.dateObj = new Date(d.date); 
+            d.lat = parseFloat(d.latitude); 
+            d.lon = parseFloat(d.longitude); 
+            d.time = d.dateObj.getTime(); 
+        });
+        tracks2Data.forEach(d => { 
+            d.boatSource = "Saga Sea"; 
+            d.dateObj = new Date(d.date); 
+            d.lat = parseFloat(d.latitude); 
+            d.lon = parseFloat(d.longitude); 
+            d.time = d.dateObj.getTime(); 
+            d.type = d.type || 'Fishing';
+        });
         
-        // Sort by time for proper playback
         allTracksData = [...tracks1Data, ...tracks2Data].sort((a,b) => a.time - b.time);
 
         if (allTracksData.length > 0) {
             globalMinTime = d3.min(allTracksData, d => d.dateObj).getTime();
-            const maxD = d3.max(allTracksData, d => d.dateObj);
-            maxD.setHours(23, 59, 59); // catch full last day
+            const maxD = d3.max(allTracksData, d => d.dateObj) || new Date();
+            maxD.setHours(23, 59, 59); 
             globalMaxTime = maxD.getTime();
         } else {
             globalMinTime = new Date().getTime();
@@ -413,25 +506,16 @@
         initOrUpdateAnimation();
         renderTracks(); 
 
-        // --- KRILL ---
-        krillData.forEach(d => {
-            d.lat = parseFloat(d.latitude); 
-            d.lon = parseFloat(d.Longitude); 
-            d.quantity = parseFloat(d.Quantity);
-        });
+        // --- KRILL & WHALES ---
+        krillData.forEach(d => { d.lat = parseFloat(d.latitude); d.lon = parseFloat(d.Longitude); d.quantity = parseFloat(d.Quantity);});
         allKrillData = krillData.filter(d => !isNaN(d.lat) && !isNaN(d.lon) && !isNaN(d.quantity));
 
-        // --- WHALES ---
-        whaleData.forEach(d => {
-            d.lat = parseFloat(d.decimalLatitude); d.lon = parseFloat(d.decimalLongitude);
-        });
+        whaleData.forEach(d => { d.lat = parseFloat(d.decimalLatitude); d.lon = parseFloat(d.decimalLongitude); });
         allWhaleData = whaleData.filter(d => !isNaN(d.lat) && !isNaN(d.lon));
 
-        // Pre-render heatmaps, but they start hidden until toggled by user
         renderKrillHeatmap(); 
         renderWhaleHeatmap();
 
-        // Start playing automatically once everything is loaded
         document.getElementById('play-btn').click();
 
     }).catch(error => console.error("Error loading data:", error));
@@ -439,10 +523,12 @@
 
     // --- TIMELAPSE ANIMATION LOGIC ---
     function initOrUpdateAnimation() {
-        animMinTime = globalMinTime;
+        animMinTime = new Date('2019-01-01').getTime();
         animMaxTime = globalMaxTime;
-        
         if (!isPlaying) { animCurrentTime = animMinTime; }
+        lastProcessedTime = -1;
+        permanentMarkersLayer1.clearLayers();
+        permanentMarkersLayer2.clearLayers();
 
         const slider = document.getElementById('time-slider');
         slider.min = animMinTime; slider.max = animMaxTime; slider.value = animCurrentTime;
@@ -451,41 +537,24 @@
 
     function updateAnimDateDisplay() {
         const d = new Date(parseInt(animCurrentTime));
-        // ONLY display Month and Year as requested
-        const options = { year: 'numeric', month: 'short' };
+        const options = { month: 'long', year: 'numeric' };
         document.getElementById('anim-date-display').innerText = d.toLocaleDateString('en-US', options);
     }
 
-    // SPEED BUTTON LOGIC
     document.getElementById('speed-btn').addEventListener('click', function() {
         speedLevel = (speedLevel + 1) % 3;
         this.innerText = speedText[speedLevel];
-        
-        // If currently playing, restart the interval with the new speed
-        if (isPlaying) {
-            clearInterval(playInterval);
-            startPlayback();
-        }
+        if (isPlaying) { clearInterval(playInterval); startPlayback(); }
     });
 
-    // PLAY/PAUSE LOGIC
     document.getElementById('play-btn').addEventListener('click', function() {
         if (isPlaying) {
-            isPlaying = false;
-            this.innerText = "▶ Play";
-            this.classList.remove('playing');
-            clearInterval(playInterval);
+            isPlaying = false; this.innerText = "▶ Play"; this.classList.remove('playing'); clearInterval(playInterval);
         } else {
-            isPlaying = true;
-            this.innerText = "⏸ Pause";
-            this.classList.add('playing');
-            
-            // Restart from beginning if at the end
+            isPlaying = true; this.innerText = "⏸ Pause"; this.classList.add('playing');
             if (animCurrentTime >= animMaxTime) {
-                animCurrentTime = animMinTime;
-                document.getElementById('time-slider').value = animCurrentTime;
+                animCurrentTime = animMinTime; document.getElementById('time-slider').value = animCurrentTime;
             }
-            
             startPlayback();
         }
     });
@@ -496,12 +565,7 @@
 
         playInterval = setInterval(() => {
             animCurrentTime += stepMs;
-            
-            // INFINITE LOOP LOGIC: Restart instead of stopping
-            if (animCurrentTime >= animMaxTime) {
-                animCurrentTime = animMinTime;
-            }
-            
+            if (animCurrentTime >= animMaxTime) { animCurrentTime = animMinTime; }
             document.getElementById('time-slider').value = animCurrentTime;
             updateAnimDateDisplay();
             renderTracks();
@@ -510,144 +574,118 @@
 
     document.getElementById('time-slider').addEventListener('input', function() {
         animCurrentTime = parseInt(this.value); 
-        updateAnimDateDisplay(); 
-        renderTracks();
+        updateAnimDateDisplay(); renderTracks();
     });
 
-    // --- RENDER TRACKS ---
+    // --- RENDER TRACKS (Canvas Only for performance) ---
     function renderTracks() {
-        tracks1Layer.clearLayers();
-        tracks2Layer.clearLayers();
-        
-        // Lengthened tail length to 1 full year (365 days) for a slower dissolve
-        const tailLengthDays = 365;
-        const maxAgeMs = tailLengthDays * 24 * 60 * 60 * 1000;
         const currentEndMs = parseInt(animCurrentTime);
-        
-        // Check if animation is totally finished (or slider at max)
         const isFinished = (currentEndMs >= animMaxTime);
-        
-        // If finished, show full trajectory. Otherwise, only show points within tail window
+        const tailLengthDays = 80;
+        const maxAgeMs = tailLengthDays * 24 * 60 * 60 * 1000;
         const tailStartMs = isFinished ? 0 : (currentEndMs - maxAgeMs);
-
-        // Filter out future points based on slider
-        const filteredData = allTracksData.filter(d => d.time <= currentEndMs);
-
-        document.getElementById('track-count').innerText = `${filteredData.length} visible tracking points`;
-
-        const tracksGrouped = d3.group(filteredData, d => d.boatSource, d => d.seg_id);
-        const boatColorScale = d3.scaleOrdinal()
-            .domain(["Antarctic Endurance", "Saga Sea"])
-            .range(["#00e5ff", "#39ff14"]); // Neon Cyan and Neon Green
+        const boatColors = { "Antarctic Endurance": "#00e5ff", "Saga Sea": "#39ff14" };
         
-        tracksGrouped.forEach((segments, boatSource) => {
-            const baseColor = boatColorScale(boatSource);
-            const targetLayer = boatSource === "Antarctic Endurance" ? tracks1Layer : tracks2Layer;
+        if (currentEndMs < lastProcessedTime) {
+            permanentMarkersLayer1.clearLayers();
+            permanentMarkersLayer2.clearLayers();
+            lastProcessedTime = animMinTime - 1;
+        }
 
-            segments.forEach((points, segId) => {
-                points.sort((a, b) => a.dateObj - b.dateObj); 
-                
-                // --- 1. Draw The Trajectory Line (Smooth Fading Trail) ---
-                const recentPointsForLine = points.filter(p => p.time >= tailStartMs);
-                
-                if (recentPointsForLine.length > 1) {
-                    for (let i = 0; i < recentPointsForLine.length - 1; i++) {
-                        const p1 = recentPointsForLine[i];
-                        const p2 = recentPointsForLine[i+1];
-                        
-                        let ageFactor = 1;
-                        if (!isFinished && maxAgeMs > 0) {
-                            ageFactor = (p2.time - tailStartMs) / maxAgeMs;
-                            ageFactor = Math.max(0, Math.min(1, ageFactor));
-                        }
+        const newlyVisiblePoints = allTracksData.filter(d => d.time > lastProcessedTime && d.time <= currentEndMs);
 
-                        let segmentOpacity = isFinished ? 0.4 : (ageFactor * 0.8 + 0.05);
-                        let segmentWeight = isFinished ? 1.5 : (ageFactor * 2.5 + 0.5);
+        lastProcessedTime = currentEndMs;
+        movingTrackLayer1.clearLayers();
+        movingTrackLayer2.clearLayers();
 
-                        L.polyline([[p1.lat, p1.lon], [p2.lat, p2.lon]], { 
-                            color: baseColor, 
-                            weight: segmentWeight, 
-                            opacity: segmentOpacity,
-                            lineCap: 'round',
-                            lineJoin: 'round'
-                        }).addTo(targetLayer);
-                    }
-                }
+        const tracksGrouped = d3.group(allTracksData, d => d.boatSource);
 
-                // --- 2. Draw Permanent Marker Dots ---
-                points.forEach((d, index) => {
-                    const isHead = (index === points.length - 1); 
-                    const isViolation = String(d.is_cheating).toLowerCase() === 'true';
-                    
-                    let markerOptions;
+        tracksGrouped.forEach((points, boatSource) => {
+            const baseColor = boatColors[boatSource];
+            const permanentMarkersLayer = boatSource === "Antarctic Endurance" ? permanentMarkersLayer1 : permanentMarkersLayer2;
+            const movingTrackLayer = boatSource === "Antarctic Endurance" ? movingTrackLayer1 : movingTrackLayer2;
+
+            const boatNewlyVisible = newlyVisiblePoints.filter(p => p.boatSource === boatSource);
+            boatNewlyVisible.forEach(d => {
+                const isViolation = String(d.is_cheating).toLowerCase() === 'true';
+                const isFishing = String(d.type).toLowerCase() === 'fishing';
+
+                if (isViolation || isFishing) {
                     let tooltipContent = `
                         <div class="custom-tooltip">
                             <div class="tooltip-title" style="border-color: ${baseColor}">${d.boatSource}</div>
-                            <b>Event:</b> ${d.type || 'Fishing'}<br>
-                            <b>Start:</b> ${d.dateObj.toLocaleString()}<br>
-                            <b>End:</b> ${d.endDateObj.toLocaleString()}
+                            <b>Event:</b> ${d.type || 'Movement'}<br>
+                            <b>Time:</b> ${d.dateObj.toLocaleString()}<br>
                     `;
 
                     if (isViolation) {
-                        tooltipContent += `<br><b style="color: #ef4444; font-size: 12px; margin-top:4px; display:inline-block;">⚠️ Restricted Zone Violation</b>`;
-                    } else if (isHead && !isFinished) { 
-                        markerOptions = { radius: 5, fillColor: baseColor, color: '#ffffff', weight: 2, fillOpacity: 1, opacity: 1 };
-                    } else {
-                        markerOptions = { radius: 1.5, fillColor: baseColor, color: "transparent", weight: 0, fillOpacity: 0.2, opacity: 0 };
+                        tooltipContent += `<br><b style="color: #ef4444; font-size: 12px; margin-top:4px; display:inline-block;">⚠️ Potential Zone Violation</b></div>`;
+                        L.circleMarker([+d.lat, +d.lon], { renderer: canvasRenderer, radius: 6, fillColor: 'transparent', color: '#ef4444', weight: 1.5, opacity: 0.8, fillOpacity: 0 }).addTo(permanentMarkersLayer);
+                        L.circleMarker([+d.lat, +d.lon], { renderer: canvasRenderer, radius: 3, fillColor: baseColor, color: '#ffffff', weight: 1.5, fillOpacity: 1, opacity: 1 }).bindTooltip(tooltipContent, { sticky: true }).addTo(permanentMarkersLayer);
+                    } else if (isFishing) {
+                        tooltipContent += `</div>`;
+                        L.circleMarker([+d.lat, +d.lon], { renderer: canvasRenderer, radius: 1.5, fillColor: baseColor, color: "transparent", weight: 0, fillOpacity: 0.6, opacity: 0 }).bindTooltip(tooltipContent, { sticky: true }).addTo(permanentMarkersLayer);
                     }
-                    tooltipContent += `</div>`;
-
-                    if (isViolation) {
-                        // 1. Subtle, hollow red ring
-                        L.circleMarker([+d.lat, +d.lon], {
-                            radius: 5, fillColor: 'transparent', color: '#ef4444', weight: 1.5, opacity: 0.8, fillOpacity: 0
-                        }).addTo(targetLayer);
-
-                        // 2. Solid core matching the boat's color
-                        L.circleMarker([+d.lat, +d.lon], {
-                            radius: 3, fillColor: baseColor, color: '#ffffff', weight: 1.5, fillOpacity: 1, opacity: 1
-                        }).bindTooltip(tooltipContent, { sticky: true }).addTo(targetLayer);
-                    } else {
-                        L.circleMarker([+d.lat, +d.lon], markerOptions)
-                         .bindTooltip(tooltipContent, { sticky: true }).addTo(targetLayer);
-                    }
-                });
+                }
             });
+
+            const trailPoints = points.filter(d => d.time >= tailStartMs && d.time <= currentEndMs);
+
+            if (trailPoints.length > 1) {
+                for (let i = 0; i < trailPoints.length - 1; i++) {
+                    const p1 = trailPoints[i]; const p2 = trailPoints[i+1];
+                    let ageFactor = 1;
+                    if (!isFinished && maxAgeMs > 0) {
+                        ageFactor = (p2.time - tailStartMs) / maxAgeMs;
+                        ageFactor = Math.sqrt(Math.max(0, Math.min(1, ageFactor)));
+                    }
+
+                    L.polyline([[p1.lat, p1.lon], [p2.lat, p2.lon]], { 
+                        renderer: canvasRenderer, 
+                        color: baseColor, 
+                        weight: isFinished ? 1.5 : (ageFactor * 2.5 + 0.5), 
+                        opacity: isFinished ? 0.4 : (ageFactor * 0.8 + 0.05), 
+                        lineCap: 'round', lineJoin: 'round'
+                    }).addTo(movingTrackLayer);
+                }
+            }
+
+            if (trailPoints.length > 0 && !isFinished) {
+                const headPoint = trailPoints[trailPoints.length - 1];
+                L.circleMarker([+headPoint.lat, +headPoint.lon], {
+                    renderer: canvasRenderer, radius: 5, fillColor: baseColor, color: '#ffffff', weight: 2, fillOpacity: 1, opacity: 1
+                }).bindTooltip(`
+                    <div class="custom-tooltip">
+                        <div class="tooltip-title" style="border-color: ${baseColor}">${headPoint.boatSource}</div>
+                        <b>Event:</b> ${headPoint.type || 'Movement'}<br>
+                        <b>Time:</b> ${headPoint.dateObj.toLocaleString()}
+                    </div>
+                `, { sticky: true }).addTo(movingTrackLayer);
+            }
         });
     }
 
     // --- HEATMAP FUNCTIONS ---
     function renderKrillHeatmap() {
         krillHeatmapLayer.clearLayers();
-        document.getElementById('krill-count').innerText = `${allKrillData.length} krill points`;
+        document.getElementById('krill-count').innerText = `${allKrillData.length} records mapped`;
         if (allKrillData.length === 0) return;
         
-        const heatPoints = allKrillData.map(d => [d.lat, d.lon, d.quantity]);
-        
-        L.heatLayer(heatPoints, {
-            pane: 'heatmapPane', 
-            radius: 12, 
-            blur: 20, 
-            maxZoom: 4, 
-            max: d3.quantile(heatPoints.map(p => p[2]), 0.95),
-            gradient: { 0.2: '#4a1486', 0.5: '#e31a1c', 0.8: '#fd8d3c', 1.0: '#ffffcc' }
+        L.heatLayer(allKrillData.map(d => [d.lat, d.lon, d.quantity]), {
+            pane: 'heatmapPane', radius: 9, blur: 20, maxZoom: 4, 
+            max: d3.quantile(allKrillData.map(p => p.quantity), 0.95), // Use 95th percentile to avoid outliers
+            gradient: { 0.01: '#ffffd4', 0.4: '#fed98e', 0.6: '#fe9929', 0.8: '#d95f0e', 1.0: '#993404' } // Yellow-Orange-Brown
         }).addTo(krillHeatmapLayer);
     }
 
     function renderWhaleHeatmap() {
         whaleHeatmapLayer.clearLayers();
-        document.getElementById('whale-count').innerText = `${allWhaleData.length} whale points`;
+        document.getElementById('whale-count').innerText = `${allWhaleData.length} occurrences mapped`;
         if (allWhaleData.length === 0) return;
         
-        const heatPoints = allWhaleData.map(d => [d.lat, d.lon]);
-
-        L.heatLayer(heatPoints, {
-            pane: 'heatmapPane', 
-            radius: 12, 
-            blur: 20, 
-            maxZoom: 4, 
-            max: 8, 
-            gradient: { 0.2: '#08519c', 0.5: '#2171b5', 0.8: '#6baed6', 1.0: '#00ffff' }
+        L.heatLayer(allWhaleData.map(d => [d.lat, d.lon]), {
+            pane: 'heatmapPane', radius: 12, blur: 20, maxZoom: 4, max: 20, 
+            gradient: { 0.2: '#f7fcf5', 0.4: '#ccece6', 0.6: '#99d8c9', 0.8: '#66c2a4', 0.9: '#2ca25f', 1.0: '#006d2c' } // Sequential Green
         }).addTo(whaleHeatmapLayer);
     }
 
@@ -658,11 +696,40 @@
         });
     }
     setupLayerToggle('toggle-zones', zonesLayer);
-    setupLayerToggle('toggle-mpa', mpaWMSLayer);
-    setupLayerToggle('toggle-track1', tracks1Layer);
-    setupLayerToggle('toggle-track2', tracks2Layer);
+    setupLayerToggle('toggle-mpa', mpaLayer);    
     setupLayerToggle('toggle-krill', krillHeatmapLayer);
     setupLayerToggle('toggle-whale', whaleHeatmapLayer);
+
+    function setupVesselToggle(checkboxId, layer, profileId) {
+        const checkbox = document.getElementById(checkboxId);
+        const profile = document.getElementById(profileId);
+        checkbox.addEventListener('change', function() {
+            this.checked ? map.addLayer(layer) : map.removeLayer(layer);
+            profile.classList.toggle('selected', this.checked);
+        });
+    }
+    setupVesselToggle('toggle-track1', tracks1Layer, 'focus-vessel-1-btn');
+    setupVesselToggle('toggle-track2', tracks2Layer, 'focus-vessel-2-btn');
+
+    // --- FOCUS ON VESSEL ---
+    function setupFocusHandler(buttonId, vesselName) {
+        const button = document.getElementById(buttonId);
+        const checkbox = document.getElementById(buttonId === 'focus-vessel-1-btn' ? 'toggle-track1' : 'toggle-track2');
+
+        button.addEventListener('click', () => {
+            // Toggle visibility
+            checkbox.checked = !checkbox.checked;
+            checkbox.dispatchEvent(new Event('change'));
+
+        });
+    }
+    setupFocusHandler('focus-vessel-1-btn', "Antarctic Endurance");
+    setupFocusHandler('focus-vessel-2-btn', "Saga Sea");
+
+    // Set initial selected state based on checkbox state
+    document.getElementById('focus-vessel-1-btn').classList.toggle('selected', document.getElementById('toggle-track1').checked);
+    document.getElementById('focus-vessel-2-btn').classList.toggle('selected', document.getElementById('toggle-track2').checked);
+
 </script>
 
 </body>
