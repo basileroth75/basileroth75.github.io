@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article WordPress - Parité, Évolution et Mobilité</title>
+    <style>
+        /* --- WordPress Layout Styles --- */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; 
+            background-color: #f0f0f1; 
+            margin: 0; 
+            padding: 0; 
+            color: #3c434a; 
+        }
+        .site-header { 
+            background: #ffffff; 
+            padding: 25px 20px; 
+            border-bottom: 1px solid #dcd7ca; 
+            text-align: center; 
+        }
+        .site-title { 
+            font-size: 2.2em; 
+            margin: 0; 
+            color: #1d2327; 
+            font-weight: 600;
+        }
+        .container { 
+            display: block; 
+            max-width: 800px; 
+            margin: 40px auto; 
+            padding: 0 20px;
+        }
+        .content-area { 
+            background: #ffffff; 
+            padding: 40px 50px; 
+            border-radius: 4px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04); 
+        }
+        .entry-title { font-size: 2.5em; margin-top: 0; color: #1d2327;}
+        .entry-meta { color: #646970; font-size: 0.9em; margin-bottom: 30px; }
+        .entry-content { line-height: 1.7; font-size: 1.1em; }
+        .entry-content p { margin-bottom: 20px; }
+
+        /* --- Scientific / Academic Container Styles --- */
+        .wp-scientific-figure {
+            background-color: #F7F7F9;
+            border: 1px solid #D1D5DB;
+            padding: 20px 15px;
+            max-width: 480px; 
+            margin: 40px auto; 
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #333;
+            position: relative;
+        }
+        .wp-scientific-figure-large {
+            max-width: 650px; 
+        }
+        .wp-scientific-figure-xl {
+            max-width: 800px; 
+        }
+        .figure-header {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #E5E7EB;
+            padding-bottom: 12px;
+        }
+        .figure-title {
+            font-size: 15px; 
+            font-weight: bold;
+            color: #111;
+            margin: 0 0 5px 0;
+            line-height: 1.3;
+        }
+        .figure-caption {
+            font-size: 12px;
+            color: #555;
+            line-height: 1.4;
+        }
+        .legend-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            font-size: 11px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .color-box {
+            width: 12px;
+            height: 12px;
+            border: 1px solid #999;
+        }
+        
+        /* D3 Chart Specifics */
+        .x-axis text, .y-axis text {
+            font-size: 10px;
+            fill: #555;
+        }
+        .domain, .tick line {
+            stroke: #D1D5DB;
+        }
+
+        /* Tooltip Styles */
+        .d3-tooltip, .dumbbell-tooltip, .chord-tooltip {
+            position: absolute;
+            text-align: left;
+            padding: 10px 12px;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.98);
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            pointer-events: none;
+            opacity: 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: #333;
+            z-index: 9999;
+            transition: opacity 0.1s ease-in-out;
+        }
+        .tooltip-title {
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 4px;
+            color: #111;
+        }
+        .tooltip-data { margin-bottom: 3px; }
+
+        /* Dumbbell Specifics */
+        #wp-dumbbell-container { 
+            position: relative;
+            width: 100%;
+            overflow-x: auto;
+        }
+        .filter-container {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .filter-container label {
+            cursor: pointer;
+            font-size: 11px;
+            color: #555;
+            background-color: #e9e9e9;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .filter-container input[type="checkbox"] {
+            margin-right: 5px;
+            vertical-align: middle;
+        }
+
+        /* Chord Specifics */
+        #chart-all text { 
+            font-size: 10px; 
+            pointer-events: none; 
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            fill: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="site-header">
+        <h1 class="site-title">Test</h1>
+    </header>
+
+    <div class="container">
+        <main class="content-area">
+            <article>
+                <h1 class="entry-title">Analyse des listes des élections municipales 2026</h1>
+                <div class="entry-meta">Édité le 2 mars 2026 | data</div>
+                
+                <div class="entry-content">                    
+                    <p>Cette étude se concentre sur les villes de plus de 1000 habitants.</p>
+                    <p>Le graphique ci-dessous illustre le % de femmes qui sont têtes de liste par nuance politique. La moyenne nationale se situe aux alentours de 25,4 %. Lors des précédentes élections municipales de 2020, cette moyenne était de 23,1%.</p>
+
+                    <div class="wp-scientific-figure">
+                        <div class="figure-header">
+                            <h2 class="figure-title">Figure 1. Parité hommes-femmes par nuance politique</h2>
+                            <p class="figure-caption">Proportion de femmes et d'hommes têtes de liste. Survolez ou cliquez sur les barres pour voir les effectifs exacts.</p>
+                        </div>
+
+                        <div class="legend-container">
+                            <div class="legend-item">
+                                <div class="color-box" style="background-color: #555;"></div>
+                                <span>Femmes</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="color-box" style="background-color: #555; opacity: 0.3;"></div>
+                                <span>Hommes</span>
+                            </div>
+                            <div class="legend-item">
+                                <svg width="24" height="14"><line x1="0" y1="7" x2="24" y2="7" stroke="#991B1B" stroke-dasharray="4,3" stroke-width="2"></line></svg>
+                                <span>Moy. nationale (25,4 %)</span>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center; margin-bottom: 15px;">
+                            <button id="filter-button" style="padding: 6px 10px; font-size: 11px; cursor: pointer; border: 1px solid #ccc; background-color: #e9e9e9; border-radius: 4px; font-family: inherit;">Afficher toutes les nuances</button>
+                        </div>
+
+                        <div id="d3-academic-chart"></div>
+                    </div>
+
+                    <p>Il est aussi pertinent d'étudier le nombre de listes présentées par nuance politique en 2026 afin de voir quel parti s'implique le plus dans ces élections. Il est aussi important d'étudier l'évolution depuis la précédenté élection municipale, datant de 2020. Le graphique suivant illustre l'évolution du nombre de listes municipales présentées par chaque nuance politique.</p>
+
+                    <div class="wp-scientific-figure wp-scientific-figure-large">
+                        <div class="figure-header">
+                            <h2 class="figure-title">Figure 2. Évolution du nombre de listes par parti (2020 vs 2026)</h2>
+                            <p class="figure-caption">Comparaison du volume de listes présentées. Survolez les lignes pour afficher le détail de la progression ou du recul.</p>
+                        </div>
+
+                        <div class="legend-container" style="justify-content: center;">
+                            <div class="legend-item">
+                                <span style="display:inline-block; width:10px; height:10px; background:#d3d3d3; border-radius:50%;"></span> 
+                                <span>2020</span>
+                            </div>
+                            <div class="legend-item" style="margin-left: 15px;">
+                                <span style="display:inline-block; width:10px; height:10px; background:#333; border-radius:50%;"></span> 
+                                <span>2026</span>
+                            </div>
+                        </div>
+
+                        <div id="wp-dumbbell-container">
+                            <div class="filter-container">
+                                <label>
+                                    <input type="checkbox" id="filter-small-parties" checked> 
+                                    Masquer les partis avec moins de 20 listes
+                                </label>
+                            </div>
+                            <div id="dumbbell-chart"></div>
+                        </div>
+                    </div>
+
+                    <p>Afin de comprendre ces évolutions dans le nombre de listes présentées, on peut aussi regarder les mouvements des candidats aux élections entre les différentes nuances politiques. Le diagramme circulaire ci-dessous illustre les trajectoires politiques individuelles entre 2020 et 2026.</p>
+
+                    <div class="wp-scientific-figure wp-scientific-figure-large">
+                        <div class="figure-header">
+                            <h2 class="figure-title">Figure 3. Mobilité politique des candidats (2020 - 2026)</h2>
+                            <p class="figure-caption">Ce diagramme illustre les flux de candidats entre les nuances politiques d'une élection à l'autre. Survolez un arc externe pour isoler un parti, ou une corde interne pour voir le détail des transferts.</p>
+                        </div>
+
+                        <div id="chart-all" style="text-align: center;"></div>
+                    </div>
+
+                    <p>Pour aller plus loin dans l'analyse de cette recomposition politique, le diagramme ci-dessous détaille spécifiquement les mouvements des candidats issus de Renaissance / LREM et des Républicains vers les autres nuances politiques.</p>
+                    
+                    <div class="wp-scientific-figure wp-scientific-figure-xl">
+                        <div class="figure-header">
+                            <h2 class="figure-title">Figure 4. Transitions spécifiques : Renaissance / LREM & Les Républicains</h2>
+                            <p class="figure-caption">Ce graphique illustre la répartition détaillée des candidats au départ de Renaissance / LREM et de LR vers leurs nouvelles nuances en 2026. L'épaisseur des liens est proportionnelle au volume de candidats.</p>
+                        </div>
+
+                        <div id="multi_sankey" style="width: 100%; height: 600px;"></div>
+                    </div>
+                    
+                    <strong>Sources :</strong>
+                    <ul style="list-style-type: none; padding-left: 0; margin-top: 10px; font-size: 0.95em;">
+                        <li style="margin-bottom: 8px;">
+                            <a href="https://www.data.gouv.fr/datasets/elections-municipales-2026-listes-candidates-au-premier-tour" target="_blank" style="color: #0073aa; text-decoration: none;">
+                                Data.gouv.fr - Élections municipales 2026 : Listes candidates
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.data.gouv.fr/datasets/elections-municipales-2020-resultats-1er-tour" target="_blank" style="color: #0073aa; text-decoration: none;">
+                                Data.gouv.fr - Élections municipales 2020 : Résultats du 1er tour
+                            </a>
+                        </li>
+                    </ul>                
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+    
+    <script>
+        /* =========================================
+           COMMUN : PALETTE DE COULEURS
+           ========================================= */
+        const globalColorMapping = {
+            "Divers": "#999999", "Divers centre": "#6B99A1", "Divers droite": "#5C80A6",
+            "Divers gauche": "#DF9B9B", "Droite souverainiste (ex-DLF)": "#334D66",
+            "Ecologiste": "#70A37F", "Extrême droite": "#1A252F", "Extrême gauche": "#8B3E3E",
+            "Gilets jaunes": "#B8A355", "Horizons": "#5FA8D3", "La France insoumise": "#B56565",
+            "Les Républicains": "#4D7094", "Les Écologistes (ex-EELV)": "#5C8A6B",
+            "Modem": "#C28F5B", "Parti communiste français": "#A05252",
+            "Parti radical de gauche": "#D48B8B", "Parti socialiste": "#C97A7A",
+            "Rassemblement National": "#2B3E50", "Reconquête": "#4B2C5E",
+            "Renaissance / LREM": "#C2A85B", "Régionalistes": "#6B8E8E",
+            "Union de l'extrême droite": "#1A252F", "Union de la droite": "#3D5C7A",
+            "Union de la gauche": "#C97A7A", "Union des Démocrates et Indépendants": "#6B99A1",
+            "Union des droites pour la République": "#1F2D3A", "Union du centre": "#6B99A1"
+        };
+        const fallbackColor = "#8C8C8C";
+
+        /* =========================================
+           SCRIPT 1 : GRAPHIQUE DES PARITÉS
+           ========================================= */
+        (function() {
+            const data1 = [{"Code":"LDSV","Party_Name":"Liste de droite souverainiste","Total":6,"Females":0.0,"Males":6.0,"Female_Pct":0.0,"Male_Pct":1.0,"Color":"#334D66"},{"Code":"LUD","Party_Name":"Liste d'union à droite","Total":50,"Females":5.0,"Males":45.0,"Female_Pct":0.1,"Male_Pct":0.9,"Color":"#3D5C7A"},{"Code":"LUDI","Party_Name":"Liste de l'Union des Démocrates et des Indépendants","Total":23,"Females":3.0,"Males":20.0,"Female_Pct":0.1304347826,"Male_Pct":0.8695652174,"Color":"#6B99A1"},{"Code":"LUC","Party_Name":"Liste d'union au centre","Total":57,"Females":9.0,"Males":48.0,"Female_Pct":0.1578947368,"Male_Pct":0.8421052632,"Color":"#6B99A1"},{"Code":"LUXD","Party_Name":"Liste d'union à l'extrême-droite","Total":85,"Females":14.0,"Males":71.0,"Female_Pct":0.1647058824,"Male_Pct":0.8352941176,"Color":"#1A252F"},{"Code":"LEXD","Party_Name":"Liste d'extrême droite","Total":93,"Females":18.0,"Males":75.0,"Female_Pct":0.1935483871,"Male_Pct":0.8064516129,"Color":"#1A252F"},{"Code":"LMDM","Party_Name":"Liste Mouvement démocrate (MoDem)","Total":5,"Females":1.0,"Males":4.0,"Female_Pct":0.2,"Male_Pct":0.8,"Color":"#C28F5B"},{"Code":"LDVD","Party_Name":"Liste divers droite","Total":2202,"Females":479.0,"Males":1723.0,"Female_Pct":0.2175295186,"Male_Pct":0.7824704814,"Color":"#5C80A6"},{"Code":"LLR","Party_Name":"Liste des Républicains","Total":151,"Females":33.0,"Males":118.0,"Female_Pct":0.2185430464,"Male_Pct":0.7814569536,"Color":"#4D7094"},{"Code":"LRN","Party_Name":"Liste du Rassemblement National","Total":405,"Females":92.0,"Males":313.0,"Female_Pct":0.2271604938,"Male_Pct":0.7728395062,"Color":"#2B3E50"},{"Code":"LDIV","Party_Name":"Liste Divers","Total":1400,"Females":330.0,"Males":1070.0,"Female_Pct":0.2357142857,"Male_Pct":0.7642857143,"Color":"#999999"},{"Code":"LDVC","Party_Name":"Liste divers centre","Total":1162,"Females":284.0,"Males":878.0,"Female_Pct":0.2444061962,"Male_Pct":0.7555938038,"Color":"#6B99A1"},{"Code":"LCOM","Party_Name":"Liste du Parti communiste français","Total":49,"Females":12.0,"Males":37.0,"Female_Pct":0.2448979592,"Male_Pct":0.7551020408,"Color":"#A05252"},{"Code":"LREC","Party_Name":"Liste Reconquête !","Total":18,"Females":5.0,"Males":13.0,"Female_Pct":0.2777777778,"Male_Pct":0.7222222222,"Color":"#4B2C5E"},{"Code":"LDVG","Party_Name":"Liste divers gauche","Total":1884,"Females":531.0,"Males":1353.0,"Female_Pct":0.2818471338,"Male_Pct":0.7181528662,"Color":"#DF9B9B"},{"Code":"LUG","Party_Name":"Liste d'union à gauche","Total":463,"Females":136.0,"Males":327.0,"Female_Pct":0.2937365011,"Male_Pct":0.7062634989,"Color":"#C97A7A"},{"Code":"LUDR","Party_Name":"Liste d'union des droites pour la République","Total":17,"Females":5.0,"Males":12.0,"Female_Pct":0.2941176471,"Male_Pct":0.7058823529,"Color":"#1F2D3A"},{"Code":"LECO","Party_Name":"Liste écologiste","Total":43,"Females":14.0,"Males":29.0,"Female_Pct":0.3255813953,"Male_Pct":0.6744186047,"Color":"#70A37F"},{"Code":"LSOC","Party_Name":"Liste du Parti socialiste","Total":94,"Females":32.0,"Males":62.0,"Female_Pct":0.3404255319,"Male_Pct":0.6595744681,"Color":"#C97A7A"},{"Code":"LHOR","Party_Name":"Liste Horizons","Total":8,"Females":3.0,"Males":5.0,"Female_Pct":0.375,"Male_Pct":0.625,"Color":"#5FA8D3"},{"Code":"LFI","Party_Name":"Liste de La France insoumise","Total":243,"Females":92.0,"Males":151.0,"Female_Pct":0.378600823,"Male_Pct":0.621399177,"Color":"#B56565"},{"Code":"LREG","Party_Name":"Liste régionaliste","Total":50,"Females":19.0,"Males":31.0,"Female_Pct":0.38,"Male_Pct":0.62,"Color":"#6B8E8E"},{"Code":"LVEC","Party_Name":"Liste Les Ecologistes","Total":33,"Females":13.0,"Males":20.0,"Female_Pct":0.3939393939,"Male_Pct":0.6060606061,"Color":"#5C8A6B"},{"Code":"LEXG","Party_Name":"Liste d'extrême-gauche","Total":377,"Females":151.0,"Males":226.0,"Female_Pct":0.400530504,"Male_Pct":0.599469496,"Color":"#8B3E3E"},{"Code":"LREN","Party_Name":"Liste Renaissance","Total":7,"Females":4.0,"Males":3.0,"Female_Pct":0.5714285714,"Male_Pct":0.4285714286,"Color":"#C2A85B"}];
+
+            const margin = {top: 40, right: 15, bottom: 10, left: 15}; 
+            const containerWidth = document.getElementById("d3-academic-chart").clientWidth || 450;
+            const width = containerWidth - margin.left - margin.right;
+
+            const tooltip = d3.select("body").append("div").attr("class", "d3-tooltip");
+
+            const svg = d3.select("#d3-academic-chart").append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const x = d3.scaleLinear().domain([0, 1]).range([0, width]);
+            const y = d3.scaleBand().padding(0.3); 
+
+            svg.append("g")
+                .attr("class", "x-axis")
+                .call(d3.axisTop(x).ticks(5).tickFormat(d => (d * 100) + " %"));
+
+            svg.append("text")
+                .attr("x", width / 2).attr("y", -25).attr("text-anchor", "middle")
+                .style("font-size", "11px").style("font-style", "italic").style("fill", "#555")
+                .text("% de femmes tête de listes par nuance politique");
+
+            const avgLine = svg.append("line")
+                .attr("x1", x(0.254454)).attr("x2", x(0.254454))
+                .attr("stroke", "#991B1B").attr("stroke-dasharray", "4,3")
+                .attr("stroke-width", 1.5).style("pointer-events", "none"); 
+
+            let filterActive = true;
+
+            function updateChart(chartData) {
+                chartData.sort((a, b) => b.Female_Pct - a.Female_Pct);
+                const height = chartData.length * 40; 
+                d3.select("#d3-academic-chart svg").attr("height", height + margin.top + margin.bottom);
+                y.domain(chartData.map(d => d.Code)).range([0, height]).padding(0.45);
+                avgLine.attr("y1", 0).attr("y2", height);
+
+                const row = svg.selectAll(".row").data(chartData, d => d.Code);
+                row.exit().remove();
+                const rowEnter = row.enter().append("g").attr("class", "row");
+
+                rowEnter.append("text").attr("class", "party-label");
+                rowEnter.append("rect").attr("class", "female-bar");
+                rowEnter.append("rect").attr("class", "male-bar");
+                rowEnter.append("line").attr("class", "divider-line");
+                rowEnter.append("rect").attr("class", "hover-rect");
+
+                const rowUpdate = rowEnter.merge(row);
+                rowUpdate.attr("transform", d => `translate(0, ${y(d.Code)})`);
+
+                rowUpdate.select(".party-label")
+                    .attr("x", width).attr("y", -4).attr("text-anchor", "end")
+                    .text(d => d.Party_Name)
+                    .style("font-size", "11px").style("font-weight", "bold").style("fill", "#333");
+
+                rowUpdate.select(".female-bar")
+                    .attr("x", 0).attr("y", 0).attr("height", y.bandwidth())
+                    .attr("width", d => x(d.Female_Pct)).attr("fill", d => d.Color);
+
+                rowUpdate.select(".male-bar")
+                    .attr("x", d => x(d.Female_Pct)).attr("y", 0).attr("height", y.bandwidth())
+                    .attr("width", d => x(d.Male_Pct)).attr("fill", d => d.Color).attr("opacity", 0.3);
+
+                rowUpdate.select(".divider-line")
+                    .attr("x1", d => x(d.Female_Pct)).attr("x2", d => x(d.Female_Pct))
+                    .attr("y1", 0).attr("y2", y.bandwidth())
+                    .attr("stroke", "#fff").attr("stroke-width", 2);
+
+                rowUpdate.select(".hover-rect")
+                    .attr("x", 0).attr("y", -15).attr("width", width).attr("height", y.bandwidth() + 15)
+                    .attr("fill", "transparent").style("cursor", "pointer")
+                    .on("mouseover", function() { d3.select(this.parentNode).style("opacity", 0.6); tooltip.style("opacity", 1); })
+                    .on("mousemove", function(event, d) {
+                        tooltip.html(`
+                            <div class="tooltip-title" style="color: ${d.Color};">${d.Code} - ${d.Party_Name}</div>
+                            <div class="tooltip-data"><b>Femmes :</b> ${d.Females} (${(d.Female_Pct * 100).toFixed(1)} %)</div>
+                            <div class="tooltip-data"><b>Hommes :</b> ${d.Males} (${(d.Male_Pct * 100).toFixed(1)} %)</div>
+                            <div style="margin-top:6px; font-size:11px; color:#666; border-top: 1px solid #eee; padding-top:4px;">
+                                Total candidats : ${d.Total}
+                            </div>
+                        `).style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 40) + "px");
+                    })
+                    .on("mouseout", function() { d3.select(this.parentNode).style("opacity", 1); tooltip.style("opacity", 0); });
+            }
+
+            updateChart(data1.filter(d => d.Total >= 20));
+
+            d3.select("#filter-button").on("click", function() {
+                filterActive = !filterActive;
+                if (filterActive) {
+                    updateChart(data1.filter(d => d.Total >= 20));
+                    d3.select(this).text("Afficher toutes les nuances").style("background-color", "#e9e9e9");
+                } else {
+                    updateChart(data1);
+                    d3.select(this).text("Afficher uniquement les nuances avec > 20 listes").style("background-color", "#fff");
+                }
+            });
+        })();
+
+        /* =========================================
+           SCRIPT 2 : GRAPHIQUE EN HALTÈRES (DUMBBELL)
+           ========================================= */
+        (function() {
+            const margin = {top: 20, right: 20, bottom: 40, left: 160};
+            const containerWidth = document.getElementById("wp-dumbbell-container").clientWidth || 600;
+            const width = containerWidth - margin.left - margin.right;
+            
+            let globalData = []; 
+            const tooltip = d3.select("body").append("div").attr("class", "dumbbell-tooltip");
+
+
+
+            d3.json("https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/municpales/list_evolution.json").then(data => {
+                globalData = data;
+                drawChart(true); 
+
+                d3.select("#filter-small-parties").on("change", function() {
+                    drawChart(this.checked);
+                });
+            }).catch(err => {
+                console.warn("Fichier list_evolution.json manquant :", err);
+                d3.select("#dumbbell-chart").html("<p style='color:red; font-size:12px; text-align:center;'><em>Données list_evolution.json introuvables.</em></p>");
+            });
+
+            function drawChart(hideSmallParties) {
+                d3.select("#dumbbell-chart").html("");
+                let filteredData = globalData.filter(d => d.year_2020 > 0 || d.year_2026 > 0);
+                if (hideSmallParties) filteredData = filteredData.filter(d => d.year_2020 >= 20 || d.year_2026 >= 20);
+                
+                const height = filteredData.length * 30; 
+                
+                const svg = d3.select("#dumbbell-chart").append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+                const x = d3.scaleLinear()
+                    .domain([0, d3.max(filteredData, d => Math.max(d.year_2020, d.year_2026)) + 10])
+                    .range([0, width]);
+
+                const y = d3.scaleBand().domain(filteredData.map(d => d.Party)).range([0, height]).padding(1);
+
+                svg.append("g").attr("transform", `translate(0,${height})`).attr("class", "x-axis").call(d3.axisBottom(x).ticks(6));
+                svg.append("g").attr("class", "y-axis").call(d3.axisLeft(y)).selectAll(".tick text").call(wrapText, margin.left - 10); 
+
+                const rows = svg.selectAll(".row").data(filteredData).enter().append("g").attr("class", "row")
+                    .style("cursor", "pointer")
+                    .on("mouseover", function(event, d) {
+                        d3.select(this).selectAll("line").style("stroke-width", "3px").style("stroke", "#777");
+                        d3.select(this).selectAll(".dot-2026").attr("r", 7);
+                        
+                        const diff = d.year_2026 - d.year_2020;
+                        const trend = diff > 0 ? `<span style="color:#15803d">Hausse de ${diff} liste(s)</span>` : 
+                                      diff < 0 ? `<span style="color:#b91c1c">Baisse de ${Math.abs(diff)} liste(s)</span>` : 
+                                      `<span style="color:#555">Aucun changement</span>`;
+
+                        tooltip.style("opacity", 1).html(`
+                            <div class="tooltip-title" style="color: ${globalColorMapping[d.Party] || fallbackColor};">${d.Party}</div>
+                            <div class="tooltip-data">2020 : <b>${d.year_2020}</b> listes</div>
+                            <div class="tooltip-data">2026 : <b>${d.year_2026}</b> listes</div>
+                            <div style="margin-top:6px; font-size:11px; border-top: 1px solid #eee; padding-top:4px;"><i>${trend}</i></div>
+                        `);
+                    })
+                    .on("mousemove", function(event) { tooltip.style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 30) + "px"); })
+                    .on("mouseout", function() {
+                        d3.select(this).selectAll("line").style("stroke-width", "1.5px").style("stroke", "#ccc");
+                        d3.select(this).selectAll(".dot-2026").attr("r", 5);
+                        tooltip.style("opacity", 0);
+                    });
+
+                rows.append("line")
+                    .attr("x1", d => x(d.year_2020)).attr("x2", d => x(d.year_2026))
+                    .attr("y1", d => y(d.Party)).attr("y2", d => y(d.Party))
+                    .style("stroke", "#ccc").style("stroke-width", "1.5px");
+
+                rows.append("circle").attr("cx", d => x(d.year_2020)).attr("cy", d => y(d.Party)).attr("r", 4).style("fill", "#d3d3d3");
+
+                rows.append("circle").attr("class", "dot-2026")
+                    .attr("cx", d => x(d.year_2026)).attr("cy", d => y(d.Party)).attr("r", 5)
+                    .style("fill", d => globalColorMapping[d.Party] || fallbackColor).style("stroke", "#fff").style("stroke-width", "1px");
+                    
+                rows.append("text")
+                    .attr("x", d => d.year_2026 >= d.year_2020 ? x(d.year_2026) + 8 : x(d.year_2026) - 8)
+                    .attr("y", d => y(d.Party) + 3)
+                    .attr("text-anchor", d => d.year_2026 >= d.year_2020 ? "start" : "end")
+                    .style("font-size", "10px").style("fill", d => globalColorMapping[d.Party] || fallbackColor)
+                    .style("font-weight", "bold").text(d => d.year_2026);
+            }
+
+            function wrapText(text, width) {
+                text.each(function() {
+                    let text = d3.select(this), words = text.text().split(/\s+/).reverse(), word, line = [], lineNumber = 0, lineHeight = 1.1, 
+                        y = text.attr("y"), dy = parseFloat(text.attr("dy")), tspan = text.text(null).append("tspan").attr("x", -10).attr("y", y).attr("dy", dy + "em");
+                    while (word = words.pop()) {
+                        line.push(word); tspan.text(line.join(" "));
+                        if (tspan.node().getComputedTextLength() > width && line.length > 1) {
+                            line.pop(); tspan.text(line.join(" ")); line = [word];
+                            tspan = text.append("tspan").attr("x", -10).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                        }
+                    }
+                });
+            }
+        })();
+
+        /* =========================================
+           SCRIPT 3 : GRAPHIQUE À CORDES (CHORD DIAGRAM)
+           ========================================= */
+        (function() {
+            const width = 600;
+            const height = 600;
+            const innerRadius = Math.min(width, height) * 0.5 - 120;
+            const outerRadius = innerRadius + 20;
+
+            const tooltip = d3.select("body").append("div").attr("class", "chord-tooltip");
+
+            const svg = d3.select("#chart-all").append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .attr("style", "max-width: 100%; height: auto;")
+                .append("g")
+                .attr("transform", `translate(${width/2},${height/2})`);
+
+                            d3.json("https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/municpales/chord_data_all.json").then(data => {
+
+                const names = data.names;
+                const matrix = data.matrix;
+
+                const chord = d3.chord().padAngle(0.04).sortSubgroups(d3.descending)(matrix);
+                const arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
+                const ribbon = d3.ribbon().radius(innerRadius);
+
+                const group = svg.datum(chord).append("g")
+                    .selectAll("g")
+                    .data(d => d.groups)
+                    .join("g");
+
+                group.append("path")
+                    .style("fill", d => globalColorMapping[names[d.index]] || fallbackColor)
+                    .style("stroke", d => d3.rgb(globalColorMapping[names[d.index]] || fallbackColor).darker())
+                    .attr("d", arc)
+                    .on("mouseover", function(event, d) {
+                        svg.selectAll(".ribbon").style("opacity", 0.1);
+                        svg.selectAll(".ribbon").filter(r => r.source.index === d.index || r.target.index === d.index)
+                           .style("opacity", 1);
+                    })
+                    .on("mouseout", function() {
+                        svg.selectAll(".ribbon").style("opacity", 0.7);
+                    });
+
+                group.append("text")
+                    .each(d => { d.angle = (d.startAngle + d.endAngle) / 2; })
+                    .attr("dy", ".35em")
+                    .attr("transform", d => `
+                        rotate(${(d.angle * 180 / Math.PI - 90)})
+                        translate(${outerRadius + 10})
+                        ${d.angle > Math.PI ? "rotate(180)" : ""}
+                    `)
+                    .attr("text-anchor", d => d.angle > Math.PI ? "end" : null)
+                    .text(d => names[d.index]);
+
+                svg.append("g")
+                    .attr("fill-opacity", 0.7)
+                    .selectAll("path")
+                    .data(chords => chords)
+                    .join("path")
+                    .attr("class", "ribbon")
+                    .attr("d", ribbon)
+                    .style("fill", d => globalColorMapping[names[d.target.index]] || fallbackColor)
+                    .style("stroke", d => d3.rgb(globalColorMapping[names[d.target.index]] || fallbackColor).darker())
+                    .on("mouseover", function(event, d) {
+                        d3.select(this).style("fill-opacity", 1);
+                        
+                        const partyA = names[d.source.index];
+                        const partyB = names[d.target.index];
+                        const aToB = d.source.value;
+                        const bToA = d.target.value;
+
+                        let tooltipHTML = "";
+
+                        if (d.source.index === d.target.index) {
+                            tooltipHTML = `<div class="tooltip-data"><b>${aToB}</b> candidats sont restés chez<br><b style="color:${globalColorMapping[partyA] || fallbackColor};">${partyA}</b></div>`;
+                        } else {
+                            tooltipHTML = `
+                                <div style="text-align: left;">
+                                    <div class="tooltip-data"><b>${aToB}</b> transferts : <b>${partyA}</b> → <b>${partyB}</b></div>
+                                    <div class="tooltip-data"><b>${bToA}</b> transferts : <b>${partyB}</b> → <b>${partyA}</b></div>
+                                </div>
+                            `;
+                        }
+
+                        tooltip.style("opacity", 1).html(tooltipHTML);
+                    })
+                    .on("mousemove", function(event) {
+                        tooltip.style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 25) + "px");
+                    })
+                    .on("mouseout", function() {
+                        d3.select(this).style("fill-opacity", 0.7);
+                        tooltip.style("opacity", 0);
+                    });
+            }).catch(err => {
+                console.warn("Fichier chord_data_all.json manquant :", err);
+                d3.select("#chart-all").html("<p style='color:red; font-size:12px; text-align:center;'><em>Données chord_data_all.json introuvables.</em></p>");
+            });
+        })();
+
+        /* =========================================
+           SCRIPT 4 : GRAPHIQUE SANKEY (LREM / LR)
+           ========================================= */
+        (function() {
+            const data = {
+              nodes: [
+                { name: "Renaissance / LREM (Origine)", color: "#C2A85B" }, // 0
+                { name: "Les Républicains (Origine)", color: "#4D7094" },   // 1
+                { name: "Union de la gauche", color: "#C97A7A" },          // 2
+                { name: "Divers gauche", color: "#DF9B9B" },               // 3
+                { name: "Divers", color: "#999999" },                      // 4
+                { name: "Divers centre", color: "#6B99A1" },               // 5
+                { name: "Union du centre", color: "#6B99A1" },             // 6
+                { name: "Renaissance / LREM (Restés)", color: "#C2A85B" }, // 7
+                { name: "Les Républicains (Restés)", color: "#4D7094" },   // 8
+                { name: "Les Républicains (Rejoints)", color: "#4D7094" }, // 9
+                { name: "Union de la droite", color: "#3D5C7A" },          // 10
+                { name: "Divers droite", color: "#5C80A6" },               // 11
+                { name: "Rassemblement National", color: "#2B3E50" },      // 12
+                { name: "Union de l'extrême droite", color: "#1A252F" }    // 13
+              ],
+              links: [
+                // Transitions DEPUIS Renaissance / LREM
+                { source: 0, target: 2, value: 35 },
+                { source: 0, target: 3, value: 122 },
+                { source: 0, target: 4, value: 92 },
+                { source: 0, target: 5, value: 409 },
+                { source: 0, target: 6, value: 66 },
+                { source: 0, target: 7, value: 42 },
+                { source: 0, target: 9, value: 37 },
+                { source: 0, target: 10, value: 22 },
+                { source: 0, target: 11, value: 284 },
+                
+                // Transitions DEPUIS Les Républicains
+                { source: 1, target: 4, value: 38 },
+                { source: 1, target: 5, value: 87 },
+                { source: 1, target: 6, value: 32 },
+                { source: 1, target: 8, value: 1116 },
+                { source: 1, target: 10, value: 219 },
+                { source: 1, target: 11, value: 1964 },
+                { source: 1, target: 12, value: 35 },
+                { source: 1, target: 13, value: 39 }
+              ]
+            };
+
+            const widthTotal = 900;
+            const heightTotal = 600;
+            // Marges généreuses pour laisser la place aux longs noms
+            const margin = { top: 20, right: 220, bottom: 20, left: 220 };
+            const width = widthTotal - margin.left - margin.right;
+            const height = heightTotal - margin.top - margin.bottom;
+
+            const svg = d3.select("#multi_sankey")
+              .append("svg")
+              .attr("width", "100%")
+              .attr("height", "100%")
+              // ViewBox fixe, ce qui assure le côté responsive tout en évitant les coupures
+              .attr("viewBox", `0 0 ${widthTotal} ${heightTotal}`)
+              .append("g")
+              .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const sankey = d3.sankey()
+              .nodeWidth(25)
+              .nodePadding(18)
+              .extent([[0, 0], [width, height]]);
+
+            const { nodes, links } = sankey(data);
+
+            svg.append("g")
+              .selectAll("path")
+              .data(links)
+              .join("path")
+              .attr("d", d3.sankeyLinkHorizontal())
+              .attr("fill", "none")
+              .attr("stroke", d => d.target.color)
+              .attr("stroke-opacity", 0.35)
+              .attr("stroke-width", d => Math.max(1, d.width))
+              .style("transition", "stroke-opacity 0.2s")
+              .on("mouseover", function() { d3.select(this).attr("stroke-opacity", 0.7); })
+              .on("mouseout", function() { d3.select(this).attr("stroke-opacity", 0.35); })
+              .append("title")
+              .text(d => `${d.source.name} → ${d.target.name}\n${d.value} candidats`);
+
+            const node = svg.append("g")
+              .selectAll("g")
+              .data(nodes)
+              .join("g");
+
+            node.append("rect")
+              .attr("x", d => d.x0)
+              .attr("y", d => d.y0)
+              .attr("height", d => Math.max(1, d.y1 - d.y0))
+              .attr("width", d => d.x1 - d.x0)
+              .attr("fill", d => d.color)
+              .attr("stroke", "#000")
+              .attr("stroke-width", 0.5)
+              .append("title")
+              .text(d => `${d.name}\n${d.value} candidats`);
+
+            node.append("text")
+              .attr("x", d => d.x0 < width / 2 ? d.x0 - 8 : d.x1 + 8)
+              .attr("y", d => (d.y1 + d.y0) / 2)
+              .attr("dy", "0.35em")
+              .attr("text-anchor", d => d.x0 < width / 2 ? "end" : "start")
+              .text(d => `${d.name} (${d.value})`)
+              .style("font-size", "12px")
+              .style("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
+              .style("fill", "#444")
+              .style("font-weight", d => d.x0 < width / 2 ? "bold" : "normal");
+        })();
+    </script>
+</body>
+</html>
