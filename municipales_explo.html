@@ -110,7 +110,7 @@
         }
 
         /* Tooltip Styles */
-        .d3-tooltip, .dumbbell-tooltip, .chord-tooltip, .heatmap-tooltip {
+        .d3-tooltip, .dumbbell-tooltip, .heatmap-tooltip {
             position: absolute;
             text-align: left;
             padding: 10px 12px;
@@ -167,14 +167,6 @@
             padding-bottom: 10px;
         }
 
-        /* Chord Specifics */
-        #chart-all text { 
-            font-size: 10px; 
-            pointer-events: none; 
-            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-            fill: #333;
-        }
-        
         /* Heatmap Specifics */
         .heatmap-cell-text {
             font-size: 11px;
@@ -235,10 +227,6 @@
                             <div class="legend-item"><svg width="24" height="14"><line x1="0" y1="7" x2="24" y2="7" stroke="#991B1B" stroke-dasharray="4,3" stroke-width="2"></line></svg><span>Moy. nationale (24,4 %)</span></div>
                         </div>
 
-                        <div style="text-align: center; margin-bottom: 10px;">
-                            <button id="filter-grouped-button" style="padding: 6px 10px; font-size: 11px; cursor: pointer; border: 1px solid #ccc; background-color: #e9e9e9; border-radius: 4px; font-family: inherit;">Afficher tous les partis/blocs politiques</button>
-                        </div>
-
                         <div id="d3-academic-chart-grouped"></div>
                     </div>
 
@@ -261,10 +249,6 @@
                         <div class="figure-header">
                             <h2 class="figure-title">Figure 2 Bis. Parité par strate et blocs politiques</h2>
                             <p class="figure-caption">Proportion de femmes têtes de liste par taille de commune pour les grands blocs politiques. Plus la case est rouge, moins la parité est respectée.</p>
-                        </div>
-
-                        <div style="text-align: center; margin-bottom: 10px;">
-                            <button id="toggle-small-parties-grouped" style="padding: 6px 10px; font-size: 11px; cursor: pointer; border: 1px solid #ccc; background-color: #e9e9e9; border-radius: 4px; font-family: inherit;">Afficher les petits partis/blocs (< 50 listes)</button>
                         </div>
 
                         <div id="heatmap-container-grouped"></div>
@@ -334,28 +318,6 @@
                         </div>
                     </div>
 
-                    <p>Afin de comprendre ces évolutions dans le nombre de listes présentées, on peut aussi regarder les mouvements des candidats aux élections entre les différentes nuances politiques. Le diagramme circulaire ci-dessous illustre les trajectoires politiques individuelles entre 2020 et 2026.</p>
-
-                    <div class="wp-scientific-figure wp-scientific-figure-large">
-                        <div class="figure-header">
-                            <h2 class="figure-title">Figure 5. Mobilité politique des candidats (2020 - 2026)</h2>
-                            <p class="figure-caption">Ce diagramme illustre les flux de candidats entre les nuances politiques d'une élection à l'autre. Survolez un arc externe pour isoler un parti, ou une corde interne pour voir le détail des transferts.</p>
-                        </div>
-
-                        <div id="chart-all" style="text-align: center;"></div>
-                    </div>
-
-                    <p>Pour aller plus loin dans l'analyse de cette recomposition politique, le diagramme ci-dessous détaille spécifiquement les mouvements des candidats issus de Renaissance / LREM et des Républicains vers les autres nuances politiques.</p>
-                    
-                    <div class="wp-scientific-figure wp-scientific-figure-xl">
-                        <div class="figure-header">
-                            <h2 class="figure-title">Figure 6. Transitions spécifiques : Renaissance / LREM & Les Républicains</h2>
-                            <p class="figure-caption">Ce graphique illustre la répartition détaillée des candidats au départ de Renaissance / LREM et de LR vers leurs nouvelles nuances en 2026. L'épaisseur des liens est proportionnelle au volume de candidats.</p>
-                        </div>
-
-                        <div id="multi_sankey" style="width: 100%; height: 600px;"></div>
-                    </div>
-                    
                     <strong>Sources :</strong>
                     <ul style="list-style-type: none; padding-left: 0; margin-top: 10px; font-size: 0.95em;">
                         <li><a href="https://www.data.gouv.fr/datasets/elections-municipales-2026-listes-candidates-au-premier-tour" target="_blank" style="color: #0073aa; text-decoration: none;">Data.gouv.fr - Élections municipales 2026 : Listes candidates</a></li>
@@ -369,7 +331,6 @@
     </div>
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
     
     <script>
         /* =========================================
@@ -523,12 +484,36 @@
            SCRIPT 1 BIS : GRAPHIQUE DES PARITÉS (REGROUPÉ)
            ========================================= */
         (function() {
-            const rawData = [{"Code":"LDSV","Party_Name":"Liste de droite souverainiste","Total":6,"Females":0.0,"Males":6.0},{"Code":"LUD","Party_Name":"Liste d'union à droite","Total":50,"Females":5.0,"Males":45.0},{"Code":"LUDI","Party_Name":"Liste de l'Union des Démocrates et des Indépendants","Total":23,"Females":3.0,"Males":20.0},{"Code":"LUC","Party_Name":"Liste d'union au centre","Total":57,"Females":9.0,"Males":48.0},{"Code":"LUXD","Party_Name":"Liste d'union à l'extrême-droite","Total":85,"Females":14.0,"Males":71.0},{"Code":"LEXD","Party_Name":"Liste d'extrême droite","Total":93,"Females":18.0,"Males":75.0},{"Code":"LMDM","Party_Name":"Liste Mouvement démocrate (MoDem)","Total":5,"Females":1.0,"Males":4.0},{"Code":"LDVD","Party_Name":"Liste divers droite","Total":2202,"Females":479.0,"Males":1723.0},{"Code":"LLR","Party_Name":"Liste des Républicains","Total":151,"Females":33.0,"Males":118.0},{"Code":"LRN","Party_Name":"Liste du Rassemblement National","Total":405,"Females":92.0,"Males":313.0},{"Code":"LDIV","Party_Name":"Liste Divers","Total":1400,"Females":330.0,"Males":1070.0},{"Code":"LDVC","Party_Name":"Liste divers centre","Total":1162,"Females":284.0,"Males":878.0},{"Code":"LCOM","Party_Name":"Liste du Parti communiste français","Total":49,"Females":12.0,"Males":37.0},{"Code":"LREC","Party_Name":"Liste Reconquête !","Total":18,"Females":5.0,"Males":13.0},{"Code":"LDVG","Party_Name":"Liste divers gauche","Total":1884,"Females":531.0,"Males":1353.0},{"Code":"LUG","Party_Name":"Liste d'union à gauche","Total":463,"Females":136.0,"Males":327.0},{"Code":"LUDR","Party_Name":"Liste d'union des droites pour la République","Total":17,"Females":5.0,"Males":12.0},{"Code":"LECO","Party_Name":"Liste écologiste","Total":43,"Females":14.0,"Males":29.0},{"Code":"LSOC","Party_Name":"Liste du Parti socialiste","Total":94,"Females":32.0,"Males":62.0},{"Code":"LHOR","Party_Name":"Liste Horizons","Total":8,"Females":3.0,"Males":5.0},{"Code":"LFI","Party_Name":"Liste de La France insoumise","Total":243,"Females":92.0,"Males":151.0},{"Code":"LREG","Party_Name":"Liste régionaliste","Total":50,"Females":19.0,"Males":31.0},{"Code":"LVEC","Party_Name":"Liste Les Ecologistes","Total":33,"Females":13.0,"Males":20.0},{"Code":"LEXG","Party_Name":"Liste d'extrême-gauche","Total":377,"Females":151.0,"Males":226.0},{"Code":"LREN","Party_Name":"Liste Renaissance","Total":7,"Females":4.0,"Males":3.0}];
+            const rawData = [{"Code":"LDSV","Party_Name":"Liste de droite souverainiste","Total":6,"Females":0.0,"Males":6.0},
+            {"Code":"LUD","Party_Name":"Liste d'union à droite","Total":50,"Females":5.0,"Males":45.0},
+            {"Code":"LUDI","Party_Name":"Liste de l'Union des Démocrates et des Indépendants","Total":23,"Females":3.0,"Males":20.0},
+            {"Code":"LUC","Party_Name":"Liste d'union au centre","Total":57,"Females":9.0,"Males":48.0},
+            {"Code":"LUXD","Party_Name":"Liste d'union à l'extrême-droite","Total":85,"Females":14.0,"Males":71.0},
+            {"Code":"LEXD","Party_Name":"Liste d'extrême droite","Total":93,"Females":18.0,"Males":75.0},
+            {"Code":"LMDM","Party_Name":"Liste Mouvement démocrate (MoDem)","Total":5,"Females":1.0,"Males":4.0},
+            {"Code":"LDVD","Party_Name":"Liste divers droite","Total":2202,"Females":479.0,"Males":1723.0},
+            {"Code":"LLR","Party_Name":"Liste des Républicains","Total":151,"Females":33.0,"Males":118.0},
+            {"Code":"LRN","Party_Name":"Liste du Rassemblement National","Total":405,"Females":92.0,"Males":313.0},
+            {"Code":"LDIV","Party_Name":"Liste Divers","Total":1400,"Females":330.0,"Males":1070.0},
+            {"Code":"LDVC","Party_Name":"Liste divers centre","Total":1162,"Females":284.0,"Males":878.0},
+            {"Code":"LCOM","Party_Name":"Liste du Parti communiste français","Total":49,"Females":12.0,"Males":37.0},
+            {"Code":"LREC","Party_Name":"Liste Reconquête !","Total":18,"Females":5.0,"Males":13.0},
+            {"Code":"LDVG","Party_Name":"Liste divers gauche","Total":1884,"Females":531.0,"Males":1353.0},
+            {"Code":"LUG","Party_Name":"Liste d'union à gauche","Total":463,"Females":136.0,"Males":327.0},
+            {"Code":"LUDR","Party_Name":"Liste d'union des droites pour la République","Total":17,"Females":5.0,"Males":12.0},
+            {"Code":"LECO","Party_Name":"Liste écologiste","Total":43,"Females":14.0,"Males":29.0},
+            {"Code":"LSOC","Party_Name":"Liste du Parti socialiste","Total":94,"Females":32.0,"Males":62.0},
+            {"Code":"LHOR","Party_Name":"Liste Horizons","Total":8,"Females":3.0,"Males":5.0},
+            {"Code":"LFI","Party_Name":"Liste de La France insoumise","Total":243,"Females":92.0,"Males":151.0},
+            {"Code":"LREG","Party_Name":"Liste régionaliste","Total":50,"Females":19.0,"Males":31.0},
+            {"Code":"LVEC","Party_Name":"Liste Les Ecologistes","Total":33,"Females":13.0,"Males":20.0},
+            {"Code":"LEXG","Party_Name":"Liste d'extrême-gauche","Total":377,"Females":151.0,"Males":226.0},
+            {"Code":"LREN","Party_Name":"Liste Renaissance","Total":7,"Females":4.0,"Males":3.0}];
 
             const groupMapping = {
                 "LVEC": "Bloc de gauche", "LREG": "Bloc de gauche", "LFI": "Bloc de gauche", "LSOC": "Bloc de gauche", "LECO": "Bloc de gauche", "LUG": "Bloc de gauche", "LCOM": "Bloc de gauche","LDVG": "Bloc de gauche",
-                "LDVC": "Bloc central", "LLR": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central",
-                "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite"
+                "LDVC": "Bloc central","LMDM": "Bloc central", "LREN": "Bloc central","LHOR": "Bloc central", "LLR": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central","LUDR": "Bloc central",
+                "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite", "LDSV": "Extrême-droite",  "LREC": "Extrême-droite"
             };
 
             const groupedColors = {
@@ -576,6 +561,12 @@
 
             const x = d3.scaleLinear().domain([0, 1]).range([0, width]);
             const y = d3.scaleBand().padding(0.3); 
+
+            svg.append("text")
+                .attr("x", width / 2).attr("y", -25).attr("text-anchor", "middle")
+                .style("font-size", "11px").style("font-style", "italic").style("fill", "#555")
+                .text("% de femmes tête de listes par nuance politique");
+
 
             svg.append("g")
                 .attr("class", "x-axis")
@@ -652,16 +643,6 @@
             
             updateGroupedChart(dataGrouped.filter(d => d.Total >= listThreshold));
 
-            d3.select("#filter-grouped-button").on("click", function() {
-                filterActive = !filterActive;
-                if (filterActive) {
-                    updateGroupedChart(dataGrouped.filter(d => d.Total >= listThreshold));
-                    d3.select(this).text("Afficher tous les partis/blocs politiques").style("background-color", "#e9e9e9");
-                } else {
-                    updateGroupedChart(dataGrouped);
-                    d3.select(this).text(`Afficher uniquement les partis/blocs avec > ${listThreshold} listes`).style("background-color", "#fff");
-                }
-            });
         })();
                         const heatmapDataRaw = [{"Code":"LREN","Party_Name":"Liste Renaissance","City_Size":"1 000 \u00e0 10 000 hbts.","Total":2,"Females":1.0,"Female_Pct":0.5,"Color":"#C2A85B","Total_Party_Lists":7,"Overall_Pct":0.5714285714},{"Code":"LREN","Party_Name":"Liste Renaissance","City_Size":"10 000 \u00e0 50 000 hbts.","Total":3,"Females":1.0,"Female_Pct":0.3333333333,"Color":"#C2A85B","Total_Party_Lists":7,"Overall_Pct":0.5714285714},{"Code":"LREN","Party_Name":"Liste Renaissance","City_Size":"50 000 \u00e0 100 000 hbts.","Total":2,"Females":2.0,"Female_Pct":1.0,"Color":"#C2A85B","Total_Party_Lists":7,"Overall_Pct":0.5714285714},{"Code":"LEXG","Party_Name":"Liste d'extr\u00eame-gauche","City_Size":"1 000 \u00e0 10 000 hbts.","Total":33,"Females":15.0,"Female_Pct":0.4545454545,"Color":"#8B3E3E","Total_Party_Lists":377,"Overall_Pct":0.400530504},{"Code":"LEXG","Party_Name":"Liste d'extr\u00eame-gauche","City_Size":"10 000 \u00e0 50 000 hbts.","Total":204,"Females":66.0,"Female_Pct":0.3235294118,"Color":"#8B3E3E","Total_Party_Lists":377,"Overall_Pct":0.400530504},{"Code":"LEXG","Party_Name":"Liste d'extr\u00eame-gauche","City_Size":"50 000 \u00e0 100 000 hbts.","Total":65,"Females":34.0,"Female_Pct":0.5230769231,"Color":"#8B3E3E","Total_Party_Lists":377,"Overall_Pct":0.400530504},{"Code":"LEXG","Party_Name":"Liste d'extr\u00eame-gauche","City_Size":"Plus de 100 000 hbts.","Total":75,"Females":36.0,"Female_Pct":0.48,"Color":"#8B3E3E","Total_Party_Lists":377,"Overall_Pct":0.400530504},{"Code":"LVEC","Party_Name":"Liste Les Ecologistes","City_Size":"1 000 \u00e0 10 000 hbts.","Total":3,"Females":2.0,"Female_Pct":0.6666666667,"Color":"#5C8A6B","Total_Party_Lists":33,"Overall_Pct":0.3939393939},{"Code":"LVEC","Party_Name":"Liste Les Ecologistes","City_Size":"10 000 \u00e0 50 000 hbts.","Total":21,"Females":8.0,"Female_Pct":0.380952381,"Color":"#5C8A6B","Total_Party_Lists":33,"Overall_Pct":0.3939393939},{"Code":"LVEC","Party_Name":"Liste Les Ecologistes","City_Size":"50 000 \u00e0 100 000 hbts.","Total":7,"Females":3.0,"Female_Pct":0.4285714286,"Color":"#5C8A6B","Total_Party_Lists":33,"Overall_Pct":0.3939393939},{"Code":"LVEC","Party_Name":"Liste Les Ecologistes","City_Size":"Plus de 100 000 hbts.","Total":2,"Females":0.0,"Female_Pct":0.0,"Color":"#5C8A6B","Total_Party_Lists":33,"Overall_Pct":0.3939393939},{"Code":"LREG","Party_Name":"Liste r\u00e9gionaliste","City_Size":"1 000 \u00e0 10 000 hbts.","Total":25,"Females":7.0,"Female_Pct":0.28,"Color":"#6B8E8E","Total_Party_Lists":50,"Overall_Pct":0.38},{"Code":"LREG","Party_Name":"Liste r\u00e9gionaliste","City_Size":"10 000 \u00e0 50 000 hbts.","Total":20,"Females":11.0,"Female_Pct":0.55,"Color":"#6B8E8E","Total_Party_Lists":50,"Overall_Pct":0.38},{"Code":"LREG","Party_Name":"Liste r\u00e9gionaliste","City_Size":"50 000 \u00e0 100 000 hbts.","Total":5,"Females":1.0,"Female_Pct":0.2,"Color":"#6B8E8E","Total_Party_Lists":50,"Overall_Pct":0.38},{"Code":"LFI","Party_Name":"Liste de La France insoumise","City_Size":"1 000 \u00e0 10 000 hbts.","Total":13,"Females":5.0,"Female_Pct":0.3846153846,"Color":"#B56565","Total_Party_Lists":243,"Overall_Pct":0.378600823},{"Code":"LFI","Party_Name":"Liste de La France insoumise","City_Size":"10 000 \u00e0 50 000 hbts.","Total":145,"Females":51.0,"Female_Pct":0.3517241379,"Color":"#B56565","Total_Party_Lists":243,"Overall_Pct":0.378600823},{"Code":"LFI","Party_Name":"Liste de La France insoumise","City_Size":"50 000 \u00e0 100 000 hbts.","Total":48,"Females":18.0,"Female_Pct":0.375,"Color":"#B56565","Total_Party_Lists":243,"Overall_Pct":0.378600823},{"Code":"LFI","Party_Name":"Liste de La France insoumise","City_Size":"Plus de 100 000 hbts.","Total":37,"Females":18.0,"Female_Pct":0.4864864865,"Color":"#B56565","Total_Party_Lists":243,"Overall_Pct":0.378600823},{"Code":"LHOR","Party_Name":"Liste Horizons","City_Size":"1 000 \u00e0 10 000 hbts.","Total":2,"Females":0.0,"Female_Pct":0.0,"Color":"#5FA8D3","Total_Party_Lists":8,"Overall_Pct":0.375},{"Code":"LHOR","Party_Name":"Liste Horizons","City_Size":"10 000 \u00e0 50 000 hbts.","Total":3,"Females":2.0,"Female_Pct":0.6666666667,"Color":"#5FA8D3","Total_Party_Lists":8,"Overall_Pct":0.375},{"Code":"LHOR","Party_Name":"Liste Horizons","City_Size":"50 000 \u00e0 100 000 hbts.","Total":1,"Females":1.0,"Female_Pct":1.0,"Color":"#5FA8D3","Total_Party_Lists":8,"Overall_Pct":0.375},{"Code":"LHOR","Party_Name":"Liste Horizons","City_Size":"Plus de 100 000 hbts.","Total":2,"Females":0.0,"Female_Pct":0.0,"Color":"#5FA8D3","Total_Party_Lists":8,"Overall_Pct":0.375},{"Code":"LSOC","Party_Name":"Liste du Parti socialiste","City_Size":"1 000 \u00e0 10 000 hbts.","Total":38,"Females":14.0,"Female_Pct":0.3684210526,"Color":"#C97A7A","Total_Party_Lists":94,"Overall_Pct":0.3404255319},{"Code":"LSOC","Party_Name":"Liste du Parti socialiste","City_Size":"10 000 \u00e0 50 000 hbts.","Total":41,"Females":14.0,"Female_Pct":0.3414634146,"Color":"#C97A7A","Total_Party_Lists":94,"Overall_Pct":0.3404255319},{"Code":"LSOC","Party_Name":"Liste du Parti socialiste","City_Size":"50 000 \u00e0 100 000 hbts.","Total":8,"Females":1.0,"Female_Pct":0.125,"Color":"#C97A7A","Total_Party_Lists":94,"Overall_Pct":0.3404255319},{"Code":"LSOC","Party_Name":"Liste du Parti socialiste","City_Size":"Plus de 100 000 hbts.","Total":7,"Females":3.0,"Female_Pct":0.4285714286,"Color":"#C97A7A","Total_Party_Lists":94,"Overall_Pct":0.3404255319},{"Code":"LECO","Party_Name":"Liste \u00e9cologiste","City_Size":"1 000 \u00e0 10 000 hbts.","Total":20,"Females":4.0,"Female_Pct":0.2,"Color":"#70A37F","Total_Party_Lists":43,"Overall_Pct":0.3255813953},{"Code":"LECO","Party_Name":"Liste \u00e9cologiste","City_Size":"10 000 \u00e0 50 000 hbts.","Total":18,"Females":8.0,"Female_Pct":0.4444444444,"Color":"#70A37F","Total_Party_Lists":43,"Overall_Pct":0.3255813953},{"Code":"LECO","Party_Name":"Liste \u00e9cologiste","City_Size":"50 000 \u00e0 100 000 hbts.","Total":1,"Females":1.0,"Female_Pct":1.0,"Color":"#70A37F","Total_Party_Lists":43,"Overall_Pct":0.3255813953},{"Code":"LECO","Party_Name":"Liste \u00e9cologiste","City_Size":"Plus de 100 000 hbts.","Total":4,"Females":1.0,"Female_Pct":0.25,"Color":"#70A37F","Total_Party_Lists":43,"Overall_Pct":0.3255813953},{"Code":"LUDR","Party_Name":"Liste d'union des droites pour la R\u00e9publique","City_Size":"1 000 \u00e0 10 000 hbts.","Total":6,"Females":2.0,"Female_Pct":0.3333333333,"Color":"#1F2D3A","Total_Party_Lists":17,"Overall_Pct":0.2941176471},{"Code":"LUDR","Party_Name":"Liste d'union des droites pour la R\u00e9publique","City_Size":"10 000 \u00e0 50 000 hbts.","Total":10,"Females":3.0,"Female_Pct":0.3,"Color":"#1F2D3A","Total_Party_Lists":17,"Overall_Pct":0.2941176471},{"Code":"LUDR","Party_Name":"Liste d'union des droites pour la R\u00e9publique","City_Size":"50 000 \u00e0 100 000 hbts.","Total":1,"Females":0.0,"Female_Pct":0.0,"Color":"#1F2D3A","Total_Party_Lists":17,"Overall_Pct":0.2941176471},{"Code":"LUG","Party_Name":"Liste d'union \u00e0 gauche","City_Size":"1 000 \u00e0 10 000 hbts.","Total":77,"Females":23.0,"Female_Pct":0.2987012987,"Color":"#C97A7A","Total_Party_Lists":463,"Overall_Pct":0.2937365011},{"Code":"LUG","Party_Name":"Liste d'union \u00e0 gauche","City_Size":"10 000 \u00e0 50 000 hbts.","Total":290,"Females":89.0,"Female_Pct":0.3068965517,"Color":"#C97A7A","Total_Party_Lists":463,"Overall_Pct":0.2937365011},{"Code":"LUG","Party_Name":"Liste d'union \u00e0 gauche","City_Size":"50 000 \u00e0 100 000 hbts.","Total":59,"Females":16.0,"Female_Pct":0.2711864407,"Color":"#C97A7A","Total_Party_Lists":463,"Overall_Pct":0.2937365011},{"Code":"LUG","Party_Name":"Liste d'union \u00e0 gauche","City_Size":"Plus de 100 000 hbts.","Total":37,"Females":8.0,"Female_Pct":0.2162162162,"Color":"#C97A7A","Total_Party_Lists":463,"Overall_Pct":0.2937365011},{"Code":"LDVG","Party_Name":"Liste divers gauche","City_Size":"1 000 \u00e0 10 000 hbts.","Total":1164,"Females":332.0,"Female_Pct":0.2852233677,"Color":"#DF9B9B","Total_Party_Lists":1884,"Overall_Pct":0.2818471338},{"Code":"LDVG","Party_Name":"Liste divers gauche","City_Size":"10 000 \u00e0 50 000 hbts.","Total":616,"Females":163.0,"Female_Pct":0.2646103896,"Color":"#DF9B9B","Total_Party_Lists":1884,"Overall_Pct":0.2818471338},{"Code":"LDVG","Party_Name":"Liste divers gauche","City_Size":"50 000 \u00e0 100 000 hbts.","Total":80,"Females":27.0,"Female_Pct":0.3375,"Color":"#DF9B9B","Total_Party_Lists":1884,"Overall_Pct":0.2818471338},{"Code":"LDVG","Party_Name":"Liste divers gauche","City_Size":"Plus de 100 000 hbts.","Total":24,"Females":9.0,"Female_Pct":0.375,"Color":"#DF9B9B","Total_Party_Lists":1884,"Overall_Pct":0.2818471338},{"Code":"LREC","Party_Name":"Liste Reconqu\u00eate !","City_Size":"1 000 \u00e0 10 000 hbts.","Total":1,"Females":0.0,"Female_Pct":0.0,"Color":"#4B2C5E","Total_Party_Lists":18,"Overall_Pct":0.2777777778},{"Code":"LREC","Party_Name":"Liste Reconqu\u00eate !","City_Size":"10 000 \u00e0 50 000 hbts.","Total":6,"Females":1.0,"Female_Pct":0.1666666667,"Color":"#4B2C5E","Total_Party_Lists":18,"Overall_Pct":0.2777777778},{"Code":"LREC","Party_Name":"Liste Reconqu\u00eate !","City_Size":"50 000 \u00e0 100 000 hbts.","Total":5,"Females":2.0,"Female_Pct":0.4,"Color":"#4B2C5E","Total_Party_Lists":18,"Overall_Pct":0.2777777778},{"Code":"LREC","Party_Name":"Liste Reconqu\u00eate !","City_Size":"Plus de 100 000 hbts.","Total":6,"Females":2.0,"Female_Pct":0.3333333333,"Color":"#4B2C5E","Total_Party_Lists":18,"Overall_Pct":0.2777777778},{"Code":"LCOM","Party_Name":"Liste du Parti communiste fran\u00e7ais","City_Size":"1 000 \u00e0 10 000 hbts.","Total":22,"Females":6.0,"Female_Pct":0.2727272727,"Color":"#A05252","Total_Party_Lists":49,"Overall_Pct":0.2448979592},{"Code":"LCOM","Party_Name":"Liste du Parti communiste fran\u00e7ais","City_Size":"10 000 \u00e0 50 000 hbts.","Total":24,"Females":5.0,"Female_Pct":0.2083333333,"Color":"#A05252","Total_Party_Lists":49,"Overall_Pct":0.2448979592},{"Code":"LCOM","Party_Name":"Liste du Parti communiste fran\u00e7ais","City_Size":"50 000 \u00e0 100 000 hbts.","Total":3,"Females":1.0,"Female_Pct":0.3333333333,"Color":"#A05252","Total_Party_Lists":49,"Overall_Pct":0.2448979592},{"Code":"LDVC","Party_Name":"Liste divers centre","City_Size":"1 000 \u00e0 10 000 hbts.","Total":741,"Females":180.0,"Female_Pct":0.2429149798,"Color":"#6B99A1","Total_Party_Lists":1162,"Overall_Pct":0.2444061962},{"Code":"LDVC","Party_Name":"Liste divers centre","City_Size":"10 000 \u00e0 50 000 hbts.","Total":355,"Females":89.0,"Female_Pct":0.2507042254,"Color":"#6B99A1","Total_Party_Lists":1162,"Overall_Pct":0.2444061962},{"Code":"LDVC","Party_Name":"Liste divers centre","City_Size":"50 000 \u00e0 100 000 hbts.","Total":38,"Females":12.0,"Female_Pct":0.3157894737,"Color":"#6B99A1","Total_Party_Lists":1162,"Overall_Pct":0.2444061962},{"Code":"LDVC","Party_Name":"Liste divers centre","City_Size":"Plus de 100 000 hbts.","Total":28,"Females":3.0,"Female_Pct":0.1071428571,"Color":"#6B99A1","Total_Party_Lists":1162,"Overall_Pct":0.2444061962},{"Code":"LDIV","Party_Name":"Liste Divers","City_Size":"1 000 \u00e0 10 000 hbts.","Total":1037,"Females":256.0,"Female_Pct":0.2468659595,"Color":"#999999","Total_Party_Lists":1400,"Overall_Pct":0.2357142857},{"Code":"LDIV","Party_Name":"Liste Divers","City_Size":"10 000 \u00e0 50 000 hbts.","Total":310,"Females":61.0,"Female_Pct":0.1967741935,"Color":"#999999","Total_Party_Lists":1400,"Overall_Pct":0.2357142857},{"Code":"LDIV","Party_Name":"Liste Divers","City_Size":"50 000 \u00e0 100 000 hbts.","Total":38,"Females":6.0,"Female_Pct":0.1578947368,"Color":"#999999","Total_Party_Lists":1400,"Overall_Pct":0.2357142857},{"Code":"LDIV","Party_Name":"Liste Divers","City_Size":"Plus de 100 000 hbts.","Total":15,"Females":7.0,"Female_Pct":0.4666666667,"Color":"#999999","Total_Party_Lists":1400,"Overall_Pct":0.2357142857},{"Code":"LRN","Party_Name":"Liste du Rassemblement National","City_Size":"1 000 \u00e0 10 000 hbts.","Total":147,"Females":37.0,"Female_Pct":0.2517006803,"Color":"#2B3E50","Total_Party_Lists":405,"Overall_Pct":0.2271604938},{"Code":"LRN","Party_Name":"Liste du Rassemblement National","City_Size":"10 000 \u00e0 50 000 hbts.","Total":200,"Females":40.0,"Female_Pct":0.2,"Color":"#2B3E50","Total_Party_Lists":405,"Overall_Pct":0.2271604938},{"Code":"LRN","Party_Name":"Liste du Rassemblement National","City_Size":"50 000 \u00e0 100 000 hbts.","Total":33,"Females":7.0,"Female_Pct":0.2121212121,"Color":"#2B3E50","Total_Party_Lists":405,"Overall_Pct":0.2271604938},{"Code":"LRN","Party_Name":"Liste du Rassemblement National","City_Size":"Plus de 100 000 hbts.","Total":25,"Females":8.0,"Female_Pct":0.32,"Color":"#2B3E50","Total_Party_Lists":405,"Overall_Pct":0.2271604938},{"Code":"LLR","Party_Name":"Liste des R\u00e9publicains","City_Size":"1 000 \u00e0 10 000 hbts.","Total":39,"Females":9.0,"Female_Pct":0.2307692308,"Color":"#4D7094","Total_Party_Lists":151,"Overall_Pct":0.2185430464},{"Code":"LLR","Party_Name":"Liste des R\u00e9publicains","City_Size":"10 000 \u00e0 50 000 hbts.","Total":92,"Females":20.0,"Female_Pct":0.2173913043,"Color":"#4D7094","Total_Party_Lists":151,"Overall_Pct":0.2185430464},{"Code":"LLR","Party_Name":"Liste des R\u00e9publicains","City_Size":"50 000 \u00e0 100 000 hbts.","Total":13,"Females":3.0,"Female_Pct":0.2307692308,"Color":"#4D7094","Total_Party_Lists":151,"Overall_Pct":0.2185430464},{"Code":"LLR","Party_Name":"Liste des R\u00e9publicains","City_Size":"Plus de 100 000 hbts.","Total":7,"Females":1.0,"Female_Pct":0.1428571429,"Color":"#4D7094","Total_Party_Lists":151,"Overall_Pct":0.2185430464},{"Code":"LDVD","Party_Name":"Liste divers droite","City_Size":"1 000 \u00e0 10 000 hbts.","Total":1404,"Females":302.0,"Female_Pct":0.2150997151,"Color":"#5C80A6","Total_Party_Lists":2202,"Overall_Pct":0.2175295186},{"Code":"LDVD","Party_Name":"Liste divers droite","City_Size":"10 000 \u00e0 50 000 hbts.","Total":695,"Females":156.0,"Female_Pct":0.2244604317,"Color":"#5C80A6","Total_Party_Lists":2202,"Overall_Pct":0.2175295186},{"Code":"LDVD","Party_Name":"Liste divers droite","City_Size":"50 000 \u00e0 100 000 hbts.","Total":69,"Females":14.0,"Female_Pct":0.2028985507,"Color":"#5C80A6","Total_Party_Lists":2202,"Overall_Pct":0.2175295186},{"Code":"LDVD","Party_Name":"Liste divers droite","City_Size":"Plus de 100 000 hbts.","Total":34,"Females":7.0,"Female_Pct":0.2058823529,"Color":"#5C80A6","Total_Party_Lists":2202,"Overall_Pct":0.2175295186},{"Code":"LMDM","Party_Name":"Liste Mouvement d\u00e9mocrate (MoDem)","City_Size":"1 000 \u00e0 10 000 hbts.","Total":2,"Females":0.0,"Female_Pct":0.0,"Color":"#C28F5B","Total_Party_Lists":5,"Overall_Pct":0.2},{"Code":"LMDM","Party_Name":"Liste Mouvement d\u00e9mocrate (MoDem)","City_Size":"10 000 \u00e0 50 000 hbts.","Total":3,"Females":1.0,"Female_Pct":0.3333333333,"Color":"#C28F5B","Total_Party_Lists":5,"Overall_Pct":0.2},{"Code":"LEXD","Party_Name":"Liste d'extr\u00eame droite","City_Size":"1 000 \u00e0 10 000 hbts.","Total":38,"Females":4.0,"Female_Pct":0.1052631579,"Color":"#1A252F","Total_Party_Lists":93,"Overall_Pct":0.1935483871},{"Code":"LEXD","Party_Name":"Liste d'extr\u00eame droite","City_Size":"10 000 \u00e0 50 000 hbts.","Total":46,"Females":10.0,"Female_Pct":0.2173913043,"Color":"#1A252F","Total_Party_Lists":93,"Overall_Pct":0.1935483871},{"Code":"LEXD","Party_Name":"Liste d'extr\u00eame droite","City_Size":"50 000 \u00e0 100 000 hbts.","Total":6,"Females":2.0,"Female_Pct":0.3333333333,"Color":"#1A252F","Total_Party_Lists":93,"Overall_Pct":0.1935483871},{"Code":"LEXD","Party_Name":"Liste d'extr\u00eame droite","City_Size":"Plus de 100 000 hbts.","Total":3,"Females":2.0,"Female_Pct":0.6666666667,"Color":"#1A252F","Total_Party_Lists":93,"Overall_Pct":0.1935483871},{"Code":"LUXD","Party_Name":"Liste d'union \u00e0 l'extr\u00eame-droite","City_Size":"1 000 \u00e0 10 000 hbts.","Total":22,"Females":5.0,"Female_Pct":0.2272727273,"Color":"#1A252F","Total_Party_Lists":85,"Overall_Pct":0.1647058824},{"Code":"LUXD","Party_Name":"Liste d'union \u00e0 l'extr\u00eame-droite","City_Size":"10 000 \u00e0 50 000 hbts.","Total":43,"Females":6.0,"Female_Pct":0.1395348837,"Color":"#1A252F","Total_Party_Lists":85,"Overall_Pct":0.1647058824},{"Code":"LUXD","Party_Name":"Liste d'union \u00e0 l'extr\u00eame-droite","City_Size":"50 000 \u00e0 100 000 hbts.","Total":8,"Females":1.0,"Female_Pct":0.125,"Color":"#1A252F","Total_Party_Lists":85,"Overall_Pct":0.1647058824},{"Code":"LUXD","Party_Name":"Liste d'union \u00e0 l'extr\u00eame-droite","City_Size":"Plus de 100 000 hbts.","Total":12,"Females":2.0,"Female_Pct":0.1666666667,"Color":"#1A252F","Total_Party_Lists":85,"Overall_Pct":0.1647058824},{"Code":"LUC","Party_Name":"Liste d'union au centre","City_Size":"1 000 \u00e0 10 000 hbts.","Total":12,"Females":3.0,"Female_Pct":0.25,"Color":"#6B99A1","Total_Party_Lists":57,"Overall_Pct":0.1578947368},{"Code":"LUC","Party_Name":"Liste d'union au centre","City_Size":"10 000 \u00e0 50 000 hbts.","Total":32,"Females":4.0,"Female_Pct":0.125,"Color":"#6B99A1","Total_Party_Lists":57,"Overall_Pct":0.1578947368},{"Code":"LUC","Party_Name":"Liste d'union au centre","City_Size":"50 000 \u00e0 100 000 hbts.","Total":4,"Females":1.0,"Female_Pct":0.25,"Color":"#6B99A1","Total_Party_Lists":57,"Overall_Pct":0.1578947368},{"Code":"LUC","Party_Name":"Liste d'union au centre","City_Size":"Plus de 100 000 hbts.","Total":9,"Females":1.0,"Female_Pct":0.1111111111,"Color":"#6B99A1","Total_Party_Lists":57,"Overall_Pct":0.1578947368},{"Code":"LUDI","Party_Name":"Liste de l'Union des D\u00e9mocrates et des Ind\u00e9pendants","City_Size":"1 000 \u00e0 10 000 hbts.","Total":7,"Females":3.0,"Female_Pct":0.4285714286,"Color":"#6B99A1","Total_Party_Lists":23,"Overall_Pct":0.1304347826},{"Code":"LUDI","Party_Name":"Liste de l'Union des D\u00e9mocrates et des Ind\u00e9pendants","City_Size":"10 000 \u00e0 50 000 hbts.","Total":13,"Females":0.0,"Female_Pct":0.0,"Color":"#6B99A1","Total_Party_Lists":23,"Overall_Pct":0.1304347826},{"Code":"LUDI","Party_Name":"Liste de l'Union des D\u00e9mocrates et des Ind\u00e9pendants","City_Size":"50 000 \u00e0 100 000 hbts.","Total":2,"Females":0.0,"Female_Pct":0.0,"Color":"#6B99A1","Total_Party_Lists":23,"Overall_Pct":0.1304347826},{"Code":"LUDI","Party_Name":"Liste de l'Union des D\u00e9mocrates et des Ind\u00e9pendants","City_Size":"Plus de 100 000 hbts.","Total":1,"Females":0.0,"Female_Pct":0.0,"Color":"#6B99A1","Total_Party_Lists":23,"Overall_Pct":0.1304347826},{"Code":"LUD","Party_Name":"Liste d'union \u00e0 droite","City_Size":"1 000 \u00e0 10 000 hbts.","Total":8,"Females":1.0,"Female_Pct":0.125,"Color":"#3D5C7A","Total_Party_Lists":50,"Overall_Pct":0.1},{"Code":"LUD","Party_Name":"Liste d'union \u00e0 droite","City_Size":"10 000 \u00e0 50 000 hbts.","Total":25,"Females":2.0,"Female_Pct":0.08,"Color":"#3D5C7A","Total_Party_Lists":50,"Overall_Pct":0.1},{"Code":"LUD","Party_Name":"Liste d'union \u00e0 droite","City_Size":"50 000 \u00e0 100 000 hbts.","Total":10,"Females":1.0,"Female_Pct":0.1,"Color":"#3D5C7A","Total_Party_Lists":50,"Overall_Pct":0.1},{"Code":"LUD","Party_Name":"Liste d'union \u00e0 droite","City_Size":"Plus de 100 000 hbts.","Total":7,"Females":1.0,"Female_Pct":0.1428571429,"Color":"#3D5C7A","Total_Party_Lists":50,"Overall_Pct":0.1},{"Code":"LDSV","Party_Name":"Liste de droite souverainiste","City_Size":"1 000 \u00e0 10 000 hbts.","Total":2,"Females":0.0,"Female_Pct":0.0,"Color":"#334D66","Total_Party_Lists":6,"Overall_Pct":0.0},{"Code":"LDSV","Party_Name":"Liste de droite souverainiste","City_Size":"10 000 \u00e0 50 000 hbts.","Total":3,"Females":0.0,"Female_Pct":0.0,"Color":"#334D66","Total_Party_Lists":6,"Overall_Pct":0.0},{"Code":"LDSV","Party_Name":"Liste de droite souverainiste","City_Size":"Plus de 100 000 hbts.","Total":1,"Females":0.0,"Female_Pct":0.0,"Color":"#334D66","Total_Party_Lists":6,"Overall_Pct":0.0}]
 
@@ -837,8 +818,8 @@
 
             const groupMapping = {
                 "LVEC": "Bloc de gauche", "LREG": "Bloc de gauche", "LFI": "Bloc de gauche", "LSOC": "Bloc de gauche", "LECO": "Bloc de gauche", "LUG": "Bloc de gauche", "LCOM": "Bloc de gauche","LDVG": "Bloc de gauche",
-                "LDVC": "Bloc central", "LLR": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central",
-                "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite"
+                "LDVC": "Bloc central","LMDM": "Bloc central", "LREN": "Bloc central","LHOR": "Bloc central", "LLR": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central","LUDR": "Bloc central",
+                "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite", "LDSV": "Extrême-droite",  "LREC": "Extrême-droite"
             };
 
             const groupedColors = {
@@ -1031,13 +1012,6 @@
             }
 
             updateHeatmapGrouped();
-            
-            d3.select("#toggle-small-parties-grouped").on("click", function() {
-                showingSmallParties = !showingSmallParties;
-                this.textContent = showingSmallParties ? "Masquer les petits partis/blocs (< 50 listes)" : "Afficher les petits partis/blocs (< 50 listes)";
-                this.style.backgroundColor = showingSmallParties ? "#fff" : "#e9e9e9";
-                updateHeatmapGrouped();
-            });
         })();
 
 
@@ -1156,9 +1130,9 @@
             // Mapping de regroupement
             // Mapping de regroupement mis à jour pour 2020
             const groupMapping = {
-                "LVEC": "Bloc de gauche", "LREG": "Bloc de gauche", "LFI": "Bloc de gauche", "LSOC": "Bloc de gauche", "LECO": "Bloc de gauche", "LUG": "Bloc de gauche", "LCOM": "Bloc de gauche",
-                "LDVC": "Bloc central", "LLR": "Bloc central","LREM": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central",
-                "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite"
+                "LVEC": "Bloc de gauche", "LREG": "Bloc de gauche", "LFI": "Bloc de gauche", "LSOC": "Bloc de gauche", "LECO": "Bloc de gauche", "LUG": "Bloc de gauche", "LCOM": "Bloc de gauche","LRDG": "Bloc de gauche",
+                "LDVC": "Bloc central", "LLR": "Bloc central","LREM": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central","LMDM": "Bloc central",
+                "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite", "LDLF": "Extrême-droite"
             };
 
             // Couleurs des groupes mises à jour
@@ -1169,7 +1143,7 @@
             };
 
             // Données brutes
-            const divergingDataRaw = [{"Nuance Liste":"LCOM","Total Men":81,"Elected Men":35,"Elected Men %":43.21,"Total Women":34,"Elected Women":7,"Total candidates":115,"% elected candidates":36.52,"Elected Women %":20.59},{"Nuance Liste":"LDIV","Total Men":1091,"Elected Men":277,"Elected Men %":25.39,"Total Women":316,"Elected Women":63,"Total candidates":1407,"% elected candidates":24.16,"Elected Women %":19.94},{"Nuance Liste":"LDLF","Total Men":8,"Elected Men":1,"Elected Men %":12.5,"Total Women":2,"Elected Women":0,"Total candidates":10,"% elected candidates":10.0,"Elected Women %":0.0},{"Nuance Liste":"LDVC","Total Men":848,"Elected Men":281,"Elected Men %":33.14,"Total Women":262,"Elected Women":51,"Total candidates":1110,"% elected candidates":29.91,"Elected Women %":19.47},{"Nuance Liste":"LDVD","Total Men":1683,"Elected Men":784,"Elected Men %":46.58,"Total Women":437,"Elected Women":150,"Total candidates":2120,"% elected candidates":44.06,"Elected Women %":34.32},{"Nuance Liste":"LDVG","Total Men":1560,"Elected Men":522,"Elected Men %":33.46,"Total Women":532,"Elected Women":123,"Total candidates":2092,"% elected candidates":30.83,"Elected Women %":23.12},{"Nuance Liste":"LECO","Total Men":111,"Elected Men":10,"Elected Men %":9.01,"Total Women":55,"Elected Women":7,"Total candidates":166,"% elected candidates":10.24,"Elected Women %":12.73},{"Nuance Liste":"LEXD","Total Men":30,"Elected Men":4,"Elected Men %":13.33,"Total Women":6,"Elected Women":0,"Total candidates":36,"% elected candidates":11.11,"Elected Women %":0.0},{"Nuance Liste":"LFI","Total Men":51,"Elected Men":1,"Elected Men %":1.96,"Total Women":29,"Elected Women":0,"Total candidates":80,"% elected candidates":1.25,"Elected Women %":0.0},{"Nuance Liste":"LGJ","Total Men":8,"Elected Men":0,"Elected Men %":0.0,"Total Women":2,"Elected Women":0,"Total candidates":10,"% elected candidates":0.0,"Elected Women %":0.0},{"Nuance Liste":"LLR","Total Men":234,"Elected Men":142,"Elected Men %":60.68,"Total Women":68,"Elected Women":24,"Total candidates":302,"% elected candidates":54.97,"Elected Women %":35.29},{"Nuance Liste":"LMDM","Total Men":16,"Elected Men":3,"Elected Men %":18.75,"Total Women":1,"Elected Women":0,"Total candidates":17,"% elected candidates":17.65,"Elected Women %":0.0},{"Nuance Liste":"LRDG","Total Men":3,"Elected Men":2,"Elected Men %":66.67,"Total Women":1,"Elected Women":0,"Total candidates":4,"% elected candidates":50.0,"Elected Women %":0.0},{"Nuance Liste":"LREG","Total Men":66,"Elected Men":7,"Elected Men %":10.61,"Total Women":13,"Elected Women":0,"Total candidates":79,"% elected candidates":8.86,"Elected Women %":0.0},{"Nuance Liste":"LREM","Total Men":167,"Elected Men":14,"Elected Men %":8.38,"Total Women":70,"Elected Women":0,"Total candidates":237,"% elected candidates":5.91,"Elected Women %":0.0},{"Nuance Liste":"LRN","Total Men":294,"Elected Men":9,"Elected Men %":3.06,"Total Women":83,"Elected Women":0,"Total candidates":377,"% elected candidates":2.39,"Elected Women %":0.0},{"Nuance Liste":"LSOC","Total Men":126,"Elected Men":64,"Elected Men %":50.79,"Total Women":45,"Elected Women":17,"Total candidates":171,"% elected candidates":47.37,"Elected Women %":37.78},{"Nuance Liste":"LUC","Total Men":50,"Elected Men":12,"Elected Men %":24.0,"Total Women":26,"Elected Women":3,"Total candidates":76,"% elected candidates":19.74,"Elected Women %":11.54},{"Nuance Liste":"LUD","Total Men":56,"Elected Men":35,"Elected Men %":62.5,"Total Women":14,"Elected Women":9,"Total candidates":70,"% elected candidates":62.86,"Elected Women %":64.29},{"Nuance Liste":"LUDI","Total Men":42,"Elected Men":23,"Elected Men %":54.76,"Total Women":11,"Elected Women":7,"Total candidates":53,"% elected candidates":56.6,"Elected Women %":63.64},{"Nuance Liste":"LUG","Total Men":190,"Elected Men":82,"Elected Men %":43.16,"Total Women":85,"Elected Women":26,"Total candidates":275,"% elected candidates":39.27,"Elected Women %":30.59},{"Nuance Liste":"LVEC","Total Men":102,"Elected Men":9,"Elected Men %":8.82,"Total Women":67,"Elected Women":5,"Total candidates":169,"% elected candidates":8.28,"Elected Women %":7.46},];
+            const divergingDataRaw = [{"Nuance Liste":"LCOM","Total Men":81,"Elected Men":35,"Elected Men %":43.21,"Total Women":34,"Elected Women":7,"Total candidates":115,"% elected candidates":36.52,"Elected Women %":20.59},{"Nuance Liste":"Liste Divers","Total Men":1091,"Elected Men":277,"Elected Men %":25.39,"Total Women":316,"Elected Women":63,"Total candidates":1407,"% elected candidates":24.16,"Elected Women %":19.94},{"Nuance Liste":"LDLF","Total Men":8,"Elected Men":1,"Elected Men %":12.5,"Total Women":2,"Elected Women":0,"Total candidates":10,"% elected candidates":10.0,"Elected Women %":0.0},{"Nuance Liste":"LDVC","Total Men":848,"Elected Men":281,"Elected Men %":33.14,"Total Women":262,"Elected Women":51,"Total candidates":1110,"% elected candidates":29.91,"Elected Women %":19.47},{"Nuance Liste":"LDVD","Total Men":1683,"Elected Men":784,"Elected Men %":46.58,"Total Women":437,"Elected Women":150,"Total candidates":2120,"% elected candidates":44.06,"Elected Women %":34.32},{"Nuance Liste":"Liste Divers Gauche","Total Men":1560,"Elected Men":522,"Elected Men %":33.46,"Total Women":532,"Elected Women":123,"Total candidates":2092,"% elected candidates":30.83,"Elected Women %":23.12},{"Nuance Liste":"LECO","Total Men":111,"Elected Men":10,"Elected Men %":9.01,"Total Women":55,"Elected Women":7,"Total candidates":166,"% elected candidates":10.24,"Elected Women %":12.73},{"Nuance Liste":"LEXD","Total Men":30,"Elected Men":4,"Elected Men %":13.33,"Total Women":6,"Elected Women":0,"Total candidates":36,"% elected candidates":11.11,"Elected Women %":0.0},{"Nuance Liste":"LFI","Total Men":51,"Elected Men":1,"Elected Men %":1.96,"Total Women":29,"Elected Women":0,"Total candidates":80,"% elected candidates":1.25,"Elected Women %":0.0},{"Nuance Liste":"LGJ","Total Men":8,"Elected Men":0,"Elected Men %":0.0,"Total Women":2,"Elected Women":0,"Total candidates":10,"% elected candidates":0.0,"Elected Women %":0.0},{"Nuance Liste":"LLR","Total Men":234,"Elected Men":142,"Elected Men %":60.68,"Total Women":68,"Elected Women":24,"Total candidates":302,"% elected candidates":54.97,"Elected Women %":35.29},{"Nuance Liste":"LMDM","Total Men":16,"Elected Men":3,"Elected Men %":18.75,"Total Women":1,"Elected Women":0,"Total candidates":17,"% elected candidates":17.65,"Elected Women %":0.0},{"Nuance Liste":"LRDG","Total Men":3,"Elected Men":2,"Elected Men %":66.67,"Total Women":1,"Elected Women":0,"Total candidates":4,"% elected candidates":50.0,"Elected Women %":0.0},{"Nuance Liste":"LREG","Total Men":66,"Elected Men":7,"Elected Men %":10.61,"Total Women":13,"Elected Women":0,"Total candidates":79,"% elected candidates":8.86,"Elected Women %":0.0},{"Nuance Liste":"LREM","Total Men":167,"Elected Men":14,"Elected Men %":8.38,"Total Women":70,"Elected Women":0,"Total candidates":237,"% elected candidates":5.91,"Elected Women %":0.0},{"Nuance Liste":"LRN","Total Men":294,"Elected Men":9,"Elected Men %":3.06,"Total Women":83,"Elected Women":0,"Total candidates":377,"% elected candidates":2.39,"Elected Women %":0.0},{"Nuance Liste":"LSOC","Total Men":126,"Elected Men":64,"Elected Men %":50.79,"Total Women":45,"Elected Women":17,"Total candidates":171,"% elected candidates":47.37,"Elected Women %":37.78},{"Nuance Liste":"LUC","Total Men":50,"Elected Men":12,"Elected Men %":24.0,"Total Women":26,"Elected Women":3,"Total candidates":76,"% elected candidates":19.74,"Elected Women %":11.54},{"Nuance Liste":"LUD","Total Men":56,"Elected Men":35,"Elected Men %":62.5,"Total Women":14,"Elected Women":9,"Total candidates":70,"% elected candidates":62.86,"Elected Women %":64.29},{"Nuance Liste":"LUDI","Total Men":42,"Elected Men":23,"Elected Men %":54.76,"Total Women":11,"Elected Women":7,"Total candidates":53,"% elected candidates":56.6,"Elected Women %":63.64},{"Nuance Liste":"LUG","Total Men":190,"Elected Men":82,"Elected Men %":43.16,"Total Women":85,"Elected Women":26,"Total candidates":275,"% elected candidates":39.27,"Elected Women %":30.59},{"Nuance Liste":"LVEC","Total Men":102,"Elected Men":9,"Elected Men %":8.82,"Total Women":67,"Elected Women":5,"Total candidates":169,"% elected candidates":8.28,"Elected Women %":7.46},];
             
             // 1. Agréger les données par groupe ET conserver les sous-partis
             const aggregatedObj = {};
@@ -1531,140 +1505,6 @@
             }
         })();
 
-        /* =========================================
-           SCRIPT 5 : GRAPHIQUE À CORDES (CHORD)
-           ========================================= */
-        (function() {
-            const width = 600;
-            const height = 600;
-            const innerRadius = Math.min(width, height) * 0.5 - 120;
-            const outerRadius = innerRadius + 20;
-
-            const tooltip = d3.select("body").append("div").attr("class", "chord-tooltip");
-
-            const svg = d3.select("#chart-all").append("svg")
-                .attr("width", width).attr("height", height).attr("viewBox", `0 0 ${width} ${height}`)
-                .attr("style", "max-width: 100%; height: auto;")
-                .append("g").attr("transform", `translate(${width/2},${height/2})`);
-
-            d3.json("https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/municpales/chord_data_all.json").then(data => {
-
-                const names = data.names;
-                const matrix = data.matrix;
-
-                const chord = d3.chord().padAngle(0.04).sortSubgroups(d3.descending)(matrix);
-                const arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
-                const ribbon = d3.ribbon().radius(innerRadius);
-
-                const group = svg.datum(chord).append("g").selectAll("g").data(d => d.groups).join("g");
-
-                group.append("path")
-                    .style("fill", d => globalColorMapping[names[d.index]] || fallbackColor)
-                    .style("stroke", d => d3.rgb(globalColorMapping[names[d.index]] || fallbackColor).darker())
-                    .attr("d", arc)
-                    .on("mouseover", function(event, d) {
-                        svg.selectAll(".ribbon").style("opacity", 0.1);
-                        svg.selectAll(".ribbon").filter(r => r.source.index === d.index || r.target.index === d.index).style("opacity", 1);
-                    })
-                    .on("mouseout", function() { svg.selectAll(".ribbon").style("opacity", 0.7); });
-
-                group.append("text").each(d => { d.angle = (d.startAngle + d.endAngle) / 2; })
-                    .attr("dy", ".35em")
-                    .attr("transform", d => `rotate(${(d.angle * 180 / Math.PI - 90)}) translate(${outerRadius + 10}) ${d.angle > Math.PI ? "rotate(180)" : ""}`)
-                    .attr("text-anchor", d => d.angle > Math.PI ? "end" : null)
-                    .text(d => names[d.index]);
-
-                svg.append("g").attr("fill-opacity", 0.7).selectAll("path").data(chords => chords).join("path")
-                    .attr("class", "ribbon").attr("d", ribbon)
-                    .style("fill", d => globalColorMapping[names[d.target.index]] || fallbackColor)
-                    .style("stroke", d => d3.rgb(globalColorMapping[names[d.target.index]] || fallbackColor).darker())
-                    .on("mouseover", function(event, d) {
-                        d3.select(this).style("fill-opacity", 1);
-                        const partyA = names[d.source.index];
-                        const partyB = names[d.target.index];
-                        const aToB = d.source.value;
-                        const bToA = d.target.value;
-                        let tooltipHTML = d.source.index === d.target.index ? 
-                            `<div class="tooltip-data"><b>${aToB}</b> candidats sont restés chez<br><b style="color:${globalColorMapping[partyA] || fallbackColor};">${partyA}</b></div>` : 
-                            `<div style="text-align: left;">
-                                <div class="tooltip-data"><b>${aToB}</b> transferts : <b>${partyA}</b> → <b>${partyB}</b></div>
-                                <div class="tooltip-data"><b>${bToA}</b> transferts : <b>${partyB}</b> → <b>${partyA}</b></div>
-                            </div>`;
-                        tooltip.style("opacity", 1).html(tooltipHTML);
-                    })
-                    .on("mousemove", function(event) { tooltip.style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 25) + "px"); })
-                    .on("mouseout", function() { d3.select(this).style("fill-opacity", 0.7); tooltip.style("opacity", 0); });
-            }).catch(err => {
-                console.warn("Fichier chord_data_all.json manquant :", err);
-                d3.select("#chart-all").html("<p style='color:red; font-size:12px; text-align:center;'><em>Données chord_data_all.json introuvables.</em></p>");
-            });
-        })();
-
-        /* =========================================
-           SCRIPT 6 : GRAPHIQUE SANKEY (LREM / LR)
-           ========================================= */
-        (function() {
-            const data = {
-              nodes: [
-                { name: "Renaissance / LREM (Origine)" }, // 0
-                { name: "Les Républicains (Origine)" },   // 1
-                { name: "Union de la gauche" },          // 2
-                { name: "Divers gauche" },               // 3
-                { name: "Divers" },                      // 4
-                { name: "Divers centre" },               // 5
-                { name: "Union du centre" },             // 6
-                { name: "Renaissance / LREM (Restés)" }, // 7
-                { name: "Les Républicains (Restés)" },   // 8
-                { name: "Les Républicains (Rejoints)" }, // 9
-                { name: "Union de la droite" },          // 10
-                { name: "Divers droite" },               // 11
-                { name: "Rassemblement National" },      // 12
-                { name: "Union de l'extrême droite" }    // 13
-              ],
-              links: [
-                { source: 0, target: 2, value: 35 }, { source: 0, target: 3, value: 122 }, { source: 0, target: 4, value: 92 },
-                { source: 0, target: 5, value: 409 }, { source: 0, target: 6, value: 66 }, { source: 0, target: 7, value: 42 },
-                { source: 0, target: 9, value: 37 }, { source: 0, target: 10, value: 22 }, { source: 0, target: 11, value: 284 },
-                { source: 1, target: 4, value: 38 }, { source: 1, target: 5, value: 87 }, { source: 1, target: 6, value: 32 },
-                { source: 1, target: 8, value: 1116 }, { source: 1, target: 10, value: 219 }, { source: 1, target: 11, value: 1964 },
-                { source: 1, target: 12, value: 35 }, { source: 1, target: 13, value: 39 }
-              ]
-            };
-
-            data.nodes.forEach(d => { d.color = globalColorMapping[d.name] || fallbackColor; });
-
-            const widthTotal = 900;
-            const heightTotal = 600;
-            const margin = { top: 20, right: 220, bottom: 20, left: 220 };
-            const width = widthTotal - margin.left - margin.right;
-            const height = heightTotal - margin.top - margin.bottom;
-
-            const svg = d3.select("#multi_sankey")
-              .append("svg").attr("width", "100%").attr("height", "100%").attr("viewBox", `0 0 ${widthTotal} ${heightTotal}`)
-              .append("g").attr("transform", `translate(${margin.left},${margin.top})`);
-
-            const sankey = d3.sankey().nodeWidth(25).nodePadding(18).extent([[0, 0], [width, height]]);
-            const { nodes, links } = sankey(data);
-
-            svg.append("g").selectAll("path").data(links).join("path")
-              .attr("d", d3.sankeyLinkHorizontal()).attr("fill", "none").attr("stroke", d => d.target.color)
-              .attr("stroke-opacity", 0.35).attr("stroke-width", d => Math.max(1, d.width))
-              .style("transition", "stroke-opacity 0.2s")
-              .on("mouseover", function() { d3.select(this).attr("stroke-opacity", 0.7); })
-              .on("mouseout", function() { d3.select(this).attr("stroke-opacity", 0.35); })
-              .append("title").text(d => `${d.source.name} → ${d.target.name}\n${d.value} candidats`);
-
-            const node = svg.append("g").selectAll("g").data(nodes).join("g");
-
-            node.append("rect").attr("x", d => d.x0).attr("y", d => d.y0).attr("height", d => Math.max(1, d.y1 - d.y0))
-              .attr("width", d => d.x1 - d.x0).attr("fill", d => d.color).attr("stroke", "#000").attr("stroke-width", 0.5)
-              .append("title").text(d => `${d.name}\n${d.value} candidats`);
-
-            node.append("text").attr("x", d => d.x0 < width / 2 ? d.x0 - 8 : d.x1 + 8).attr("y", d => (d.y1 + d.y0) / 2)
-              .attr("dy", "0.35em").attr("text-anchor", d => d.x0 < width / 2 ? "end" : "start")
-              .text(d => `${d.name} (${d.value})`).style("font-size", "12px").style("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
-              .style("fill", "#444").style("font-weight", d => d.x0 < width / 2 ? "bold" : "normal");
-        })();
     </script>
 </body>
 </html>
