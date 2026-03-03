@@ -202,7 +202,7 @@
                 
                 <div class="entry-content">                    
                     <p>Cette étude se concentre sur les villes de plus de 1000 habitants.</p>
-                    <p>Le graphique ci-dessous illustre le % de femmes qui sont têtes de liste par nuance politique. La moyenne nationale se situe aux alentours de 25,4 %. Lors des précédentes élections municipales de 2020, cette moyenne était de 23,1%.</p>
+                    <p>Le graphique ci-dessous illustre le % de femmes qui sont têtes de liste par nuance politique. La moyenne nationale se situe aux alentours de 24,4 %. Lors des précédentes élections municipales de 2020, cette moyenne était de 23,1%.</p>
 
                     <div class="wp-scientific-figure">
                         <div class="figure-header">
@@ -213,7 +213,7 @@
                         <div class="legend-container">
                             <div class="legend-item"><div class="color-box" style="background-color: #555;"></div><span>Femmes</span></div>
                             <div class="legend-item"><div class="color-box" style="background-color: #555; opacity: 0.3;"></div><span>Hommes</span></div>
-                            <div class="legend-item"><svg width="24" height="14"><line x1="0" y1="7" x2="24" y2="7" stroke="#991B1B" stroke-dasharray="4,3" stroke-width="2"></line></svg><span>Moy. nationale (25,4 %)</span></div>
+                            <div class="legend-item"><svg width="24" height="14"><line x1="0" y1="7" x2="24" y2="7" stroke="#991B1B" stroke-dasharray="4,3" stroke-width="2"></line></svg><span>Moy. nationale (24,4 %)</span></div>
                         </div>
 
                         <div style="text-align: center; margin-bottom: 10px;">
@@ -232,7 +232,7 @@
                         <div class="legend-container">
                             <div class="legend-item"><div class="color-box" style="background-color: #555;"></div><span>Femmes</span></div>
                             <div class="legend-item"><div class="color-box" style="background-color: #555; opacity: 0.3;"></div><span>Hommes</span></div>
-                            <div class="legend-item"><svg width="24" height="14"><line x1="0" y1="7" x2="24" y2="7" stroke="#991B1B" stroke-dasharray="4,3" stroke-width="2"></line></svg><span>Moy. nationale (25,4 %)</span></div>
+                            <div class="legend-item"><svg width="24" height="14"><line x1="0" y1="7" x2="24" y2="7" stroke="#991B1B" stroke-dasharray="4,3" stroke-width="2"></line></svg><span>Moy. nationale (24,4 %)</span></div>
                         </div>
 
                         <div style="text-align: center; margin-bottom: 10px;">
@@ -443,7 +443,7 @@
                 .text("% de femmes tête de listes par nuance politique");
 
             const avgLine = svg.append("line")
-                .attr("x1", x(0.254454)).attr("x2", x(0.254454))
+                .attr("x1", x(0.24494)).attr("x2", x(0.24494))
                 .attr("stroke", "#991B1B").attr("stroke-dasharray", "4,3")
                 .attr("stroke-width", 1.5).style("pointer-events", "none"); 
 
@@ -582,7 +582,7 @@
                 .call(d3.axisTop(x).ticks(5).tickFormat(d => (d * 100) + " %"));
 
             const avgLine = svg.append("line")
-                .attr("x1", x(0.254454)).attr("x2", x(0.254454))
+                .attr("x1", x(0.24494)).attr("x2", x(0.24494))
                 .attr("stroke", "#991B1B").attr("stroke-dasharray", "4,3")
                 .attr("stroke-width", 1.5).style("pointer-events", "none"); 
 
