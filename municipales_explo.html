@@ -60,9 +60,9 @@
             max-width: 800px; 
         }
         .figure-header {
-            margin-bottom: 15px;
+            margin-bottom: 5px; /* Spacing reduced */
             border-bottom: 1px solid #E5E7EB;
-            padding-bottom: 12px;
+            padding-bottom: 8px; /* Spacing reduced */
         }
         .figure-title {
             font-size: 15px; 
@@ -136,15 +136,14 @@
         }
         .tooltip-data { margin-bottom: 3px; }
 
-        /* Dumbbell Specifics */
+        /* Dumbbell & Mobile Scroller Specifics */
         .dumbbell-container { 
             position: relative;
             width: 100%;
-            overflow-x: auto;
         }
         .filter-container {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 5px; /* Spacing reduced */
         }
         .filter-container label {
             cursor: pointer;
@@ -159,6 +158,13 @@
         .filter-container input[type="checkbox"] {
             margin-right: 5px;
             vertical-align: middle;
+        }
+
+        /* Ensures all charts scroll horizontally on mobile */
+        #d3-academic-chart, #d3-academic-chart-grouped, #heatmap-container, #heatmap-container-grouped, .dumbbell-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 10px;
         }
 
         /* Chord Specifics */
@@ -210,11 +216,30 @@
                             <div class="legend-item"><svg width="24" height="14"><line x1="0" y1="7" x2="24" y2="7" stroke="#991B1B" stroke-dasharray="4,3" stroke-width="2"></line></svg><span>Moy. nationale (25,4 %)</span></div>
                         </div>
 
-                        <div style="text-align: center; margin-bottom: 15px;">
+                        <div style="text-align: center; margin-bottom: 10px;">
                             <button id="filter-button" style="padding: 6px 10px; font-size: 11px; cursor: pointer; border: 1px solid #ccc; background-color: #e9e9e9; border-radius: 4px; font-family: inherit;">Afficher toutes les nuances</button>
                         </div>
 
                         <div id="d3-academic-chart"></div>
+                    </div>
+
+                    <div class="wp-scientific-figure">
+                        <div class="figure-header">
+                            <h2 class="figure-title">Figure 1 Bis. Parité par grands blocs politiques</h2>
+                            <p class="figure-caption">Proportion de femmes et d'hommes têtes de liste après regroupement des principales forces politiques. Survolez les barres pour voir les effectifs exacts.</p>
+                        </div>
+
+                        <div class="legend-container">
+                            <div class="legend-item"><div class="color-box" style="background-color: #555;"></div><span>Femmes</span></div>
+                            <div class="legend-item"><div class="color-box" style="background-color: #555; opacity: 0.3;"></div><span>Hommes</span></div>
+                            <div class="legend-item"><svg width="24" height="14"><line x1="0" y1="7" x2="24" y2="7" stroke="#991B1B" stroke-dasharray="4,3" stroke-width="2"></line></svg><span>Moy. nationale (25,4 %)</span></div>
+                        </div>
+
+                        <div style="text-align: center; margin-bottom: 10px;">
+                            <button id="filter-grouped-button" style="padding: 6px 10px; font-size: 11px; cursor: pointer; border: 1px solid #ccc; background-color: #e9e9e9; border-radius: 4px; font-family: inherit;">Afficher tous les partis/blocs</button>
+                        </div>
+
+                        <div id="d3-academic-chart-grouped"></div>
                     </div>
 
                     <p>La taille de la commune joue également un rôle déterminant dans cette parité.</p>
@@ -225,11 +250,24 @@
                             <p class="figure-caption">Proportion de femmes têtes de liste selon la taille de la commune (strates > 1 000 hbts). Les partis sont triés du plus paritaire au moins paritaire en moyenne globale.</p>
                         </div>
 
-                        <div style="text-align: center; margin-bottom: 25px;">
+                        <div style="text-align: center; margin-bottom: 10px;">
                             <button id="toggle-small-parties" style="padding: 6px 10px; font-size: 11px; cursor: pointer; border: 1px solid #ccc; background-color: #e9e9e9; border-radius: 4px; font-family: inherit;">Afficher les petits partis (< 50 listes)</button>
                         </div>
 
-                        <div id="heatmap-container" style="overflow-x: auto;"></div>
+                        <div id="heatmap-container"></div>
+                    </div>
+
+                    <div class="wp-scientific-figure wp-scientific-figure-large">
+                        <div class="figure-header">
+                            <h2 class="figure-title">Figure 2 Bis. Parité par strate et blocs politiques</h2>
+                            <p class="figure-caption">Proportion de femmes têtes de liste par taille de commune pour les grands blocs politiques. Plus la case est rouge, moins la parité est respectée.</p>
+                        </div>
+
+                        <div style="text-align: center; margin-bottom: 10px;">
+                            <button id="toggle-small-parties-grouped" style="padding: 6px 10px; font-size: 11px; cursor: pointer; border: 1px solid #ccc; background-color: #e9e9e9; border-radius: 4px; font-family: inherit;">Afficher les petits partis/blocs (< 50 listes)</button>
+                        </div>
+
+                        <div id="heatmap-container-grouped"></div>
                     </div>
 
                     <p>Une analyse comparative entre 2020 et 2026 permet de constater l'évolution de la parité au sein de chaque parti politique sur une mandature complète.</p>
@@ -304,9 +342,11 @@
                     
                     <strong>Sources :</strong>
                     <ul style="list-style-type: none; padding-left: 0; margin-top: 10px; font-size: 0.95em;">
-                        <li style="margin-bottom: 8px;"><a href="https://www.data.gouv.fr/datasets/elections-municipales-2026-listes-candidates-au-premier-tour" target="_blank" style="color: #0073aa; text-decoration: none;">Data.gouv.fr - Élections municipales 2026 : Listes candidates</a></li>
+                        <li><a href="https://www.data.gouv.fr/datasets/elections-municipales-2026-listes-candidates-au-premier-tour" target="_blank" style="color: #0073aa; text-decoration: none;">Data.gouv.fr - Élections municipales 2026 : Listes candidates</a></li>
                         <li><a href="https://www.data.gouv.fr/datasets/elections-municipales-2020-resultats-1er-tour" target="_blank" style="color: #0073aa; text-decoration: none;">Data.gouv.fr - Élections municipales 2020 : Résultats du 1er tour</a></li>
-                    </ul>                
+                        <li><a href="https://www.legifrance.gouv.fr/download/pdf/circ?id=45645" target="_blank" style="color: #0073aa; text-decoration: none;">legifrance.gouv.fr - Élections municipales 2026 : Publication des nuances politiques</a></li>
+                        <li><a href="https://www.legifrance.gouv.fr/download/pdf/circ?id=44929" target="_blank" style="color: #0073aa; text-decoration: none;">legifrance.gouv.fr - Élections municipales 2020 : Publication des nuances politiques</a></li>
+                    </ul>              
                 </div>
             </article>
         </main>
@@ -364,12 +404,13 @@
 
             const margin = {top: 40, right: 15, bottom: 10, left: 15}; 
             const containerWidth = document.getElementById("d3-academic-chart").clientWidth || 450;
-            const width = containerWidth - margin.left - margin.right;
+            const svgWidth = Math.max(containerWidth, 400); // Mobile scrolling width
+            const width = svgWidth - margin.left - margin.right;
 
             const tooltip = d3.select("body").append("div").attr("class", "d3-tooltip");
 
             const svg = d3.select("#d3-academic-chart").append("svg")
-                .attr("width", width + margin.left + margin.right)
+                .attr("width", svgWidth)
                 .append("g")
                 .attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -462,6 +503,150 @@
         })();
 
         /* =========================================
+           SCRIPT 1 BIS : GRAPHIQUE DES PARITÉS (REGROUPÉ)
+           ========================================= */
+        (function() {
+            const rawData = [{"Code":"LDSV","Party_Name":"Liste de droite souverainiste","Total":6,"Females":0.0,"Males":6.0},{"Code":"LUD","Party_Name":"Liste d'union à droite","Total":50,"Females":5.0,"Males":45.0},{"Code":"LUDI","Party_Name":"Liste de l'Union des Démocrates et des Indépendants","Total":23,"Females":3.0,"Males":20.0},{"Code":"LUC","Party_Name":"Liste d'union au centre","Total":57,"Females":9.0,"Males":48.0},{"Code":"LUXD","Party_Name":"Liste d'union à l'extrême-droite","Total":85,"Females":14.0,"Males":71.0},{"Code":"LEXD","Party_Name":"Liste d'extrême droite","Total":93,"Females":18.0,"Males":75.0},{"Code":"LMDM","Party_Name":"Liste Mouvement démocrate (MoDem)","Total":5,"Females":1.0,"Males":4.0},{"Code":"LDVD","Party_Name":"Liste divers droite","Total":2202,"Females":479.0,"Males":1723.0},{"Code":"LLR","Party_Name":"Liste des Républicains","Total":151,"Females":33.0,"Males":118.0},{"Code":"LRN","Party_Name":"Liste du Rassemblement National","Total":405,"Females":92.0,"Males":313.0},{"Code":"LDIV","Party_Name":"Liste Divers","Total":1400,"Females":330.0,"Males":1070.0},{"Code":"LDVC","Party_Name":"Liste divers centre","Total":1162,"Females":284.0,"Males":878.0},{"Code":"LCOM","Party_Name":"Liste du Parti communiste français","Total":49,"Females":12.0,"Males":37.0},{"Code":"LREC","Party_Name":"Liste Reconquête !","Total":18,"Females":5.0,"Males":13.0},{"Code":"LDVG","Party_Name":"Liste divers gauche","Total":1884,"Females":531.0,"Males":1353.0},{"Code":"LUG","Party_Name":"Liste d'union à gauche","Total":463,"Females":136.0,"Males":327.0},{"Code":"LUDR","Party_Name":"Liste d'union des droites pour la République","Total":17,"Females":5.0,"Males":12.0},{"Code":"LECO","Party_Name":"Liste écologiste","Total":43,"Females":14.0,"Males":29.0},{"Code":"LSOC","Party_Name":"Liste du Parti socialiste","Total":94,"Females":32.0,"Males":62.0},{"Code":"LHOR","Party_Name":"Liste Horizons","Total":8,"Females":3.0,"Males":5.0},{"Code":"LFI","Party_Name":"Liste de La France insoumise","Total":243,"Females":92.0,"Males":151.0},{"Code":"LREG","Party_Name":"Liste régionaliste","Total":50,"Females":19.0,"Males":31.0},{"Code":"LVEC","Party_Name":"Liste Les Ecologistes","Total":33,"Females":13.0,"Males":20.0},{"Code":"LEXG","Party_Name":"Liste d'extrême-gauche","Total":377,"Females":151.0,"Males":226.0},{"Code":"LREN","Party_Name":"Liste Renaissance","Total":7,"Females":4.0,"Males":3.0}];
+
+            const groupMapping = {
+                "LVEC": "Nouveau Front Populaire", "LREG": "Nouveau Front Populaire", "LFI": "Nouveau Front Populaire", "LSOC": "Nouveau Front Populaire", "LECO": "Nouveau Front Populaire", "LUG": "Nouveau Front Populaire", "LCOM": "Nouveau Front Populaire",
+                "LDVC": "Bloc central", "LLR": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central",
+                "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite"
+            };
+
+            const groupedColors = {
+                "Nouveau Front Populaire": "#C97A7A", 
+                "Bloc central": "#6B99A1",            
+                "Extrême-droite": "#2B3E50"           
+            };
+
+            const aggregated = {};
+            rawData.forEach(d => {
+                let groupName = groupMapping[d.Code] || d.Party_Name; 
+                
+                if (!aggregated[groupName]) {
+                    aggregated[groupName] = {
+                        Party_Name: groupName, Code: groupName, Total: 0, Females: 0, Males: 0, OriginalCode: d.Code, SubParties: []
+                    };
+                }
+                aggregated[groupName].Total += d.Total;
+                aggregated[groupName].Females += d.Females;
+                aggregated[groupName].Males += d.Males;
+                
+                if (groupMapping[d.Code]) {
+                    aggregated[groupName].SubParties.push(d.Party_Name);
+                }
+            });
+
+            const dataGrouped = Object.values(aggregated).map(d => {
+                d.Female_Pct = d.Total > 0 ? d.Females / d.Total : 0;
+                d.Male_Pct = d.Total > 0 ? d.Males / d.Total : 0;
+                d.Color = groupedColors[d.Party_Name] || globalColorMapping[d.OriginalCode] || fallbackColor;
+                return d;
+            });
+
+            const margin = {top: 40, right: 15, bottom: 10, left: 15}; 
+            const containerWidth = document.getElementById("d3-academic-chart-grouped").clientWidth || 450;
+            const svgWidth = Math.max(containerWidth, 400); // Mobile scrolling width
+            const width = svgWidth - margin.left - margin.right;
+
+            const tooltip = d3.select("body").append("div").attr("class", "d3-tooltip");
+
+            const svg = d3.select("#d3-academic-chart-grouped").append("svg")
+                .attr("width", svgWidth)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const x = d3.scaleLinear().domain([0, 1]).range([0, width]);
+            const y = d3.scaleBand().padding(0.3); 
+
+            svg.append("g")
+                .attr("class", "x-axis")
+                .call(d3.axisTop(x).ticks(5).tickFormat(d => (d * 100) + " %"));
+
+            const avgLine = svg.append("line")
+                .attr("x1", x(0.254454)).attr("x2", x(0.254454))
+                .attr("stroke", "#991B1B").attr("stroke-dasharray", "4,3")
+                .attr("stroke-width", 1.5).style("pointer-events", "none"); 
+
+            let filterActive = true;
+
+            function updateGroupedChart(chartData) {
+                chartData.sort((a, b) => b.Female_Pct - a.Female_Pct);
+                const height = chartData.length * 40; 
+                d3.select("#d3-academic-chart-grouped svg").transition().duration(400).attr("height", height + margin.top + margin.bottom);
+                y.domain(chartData.map(d => d.Code)).range([0, height]).padding(0.45);
+                avgLine.transition().duration(400).attr("y1", 0).attr("y2", height);
+
+                const row = svg.selectAll(".row").data(chartData, d => d.Code);
+                row.exit().transition().duration(300).style("opacity", 0).remove();
+                
+                const rowEnter = row.enter().append("g").attr("class", "row").style("opacity", 0);
+
+                rowEnter.append("text").attr("class", "party-label");
+                rowEnter.append("rect").attr("class", "female-bar");
+                rowEnter.append("rect").attr("class", "male-bar");
+                rowEnter.append("line").attr("class", "divider-line");
+                rowEnter.append("rect").attr("class", "hover-rect");
+
+                const rowUpdate = rowEnter.merge(row);
+                rowUpdate.transition().duration(400).attr("transform", d => `translate(0, ${y(d.Code)})`).style("opacity", 1);
+
+                rowUpdate.select(".party-label")
+                    .attr("x", width).attr("y", -4).attr("text-anchor", "end")
+                    .text(d => d.Party_Name)
+                    .style("font-size", "11px").style("font-weight", "bold").style("fill", "#333");
+
+                rowUpdate.select(".female-bar").transition().duration(400)
+                    .attr("x", 0).attr("y", 0).attr("height", y.bandwidth())
+                    .attr("width", d => x(d.Female_Pct)).attr("fill", d => d.Color);
+
+                rowUpdate.select(".male-bar").transition().duration(400)
+                    .attr("x", d => x(d.Female_Pct)).attr("y", 0).attr("height", y.bandwidth())
+                    .attr("width", d => x(d.Male_Pct)).attr("fill", d => d.Color).attr("opacity", 0.3);
+
+                rowUpdate.select(".divider-line").transition().duration(400)
+                    .attr("x1", d => x(d.Female_Pct)).attr("x2", d => x(d.Female_Pct))
+                    .attr("y1", 0).attr("y2", y.bandwidth())
+                    .attr("stroke", "#fff").attr("stroke-width", 2);
+
+                rowUpdate.select(".hover-rect")
+                    .attr("x", 0).attr("y", -15).attr("width", width).attr("height", y.bandwidth() + 15)
+                    .attr("fill", "transparent").style("cursor", "pointer")
+                    .on("mouseover", function() { d3.select(this.parentNode).style("opacity", 0.6); tooltip.style("opacity", 1); })
+                    .on("mousemove", function(event, d) {
+                        const subPartiesHTML = d.SubParties.length > 0 
+                            ? `<div style="margin-top:6px; padding-top:4px; font-size:10px; color:#777; font-style: italic; line-height: 1.3;"><b>Inclut :</b><br>• ${d.SubParties.join('<br>• ')}</div>` 
+                            : '';
+
+                        tooltip.html(`
+                            <div class="tooltip-title" style="color: ${d.Color};">${d.Party_Name}</div>
+                            <div class="tooltip-data"><b>Femmes :</b> ${d.Females} (${(d.Female_Pct * 100).toFixed(1)} %)</div>
+                            <div class="tooltip-data"><b>Hommes :</b> ${d.Males} (${(d.Male_Pct * 100).toFixed(1)} %)</div>
+                            <div style="margin-top:6px; font-size:11px; color:#666; border-top: 1px solid #eee; padding-top:4px;">
+                                Total listes consolidées : ${d.Total}
+                            </div>
+                            ${subPartiesHTML}
+                        `).style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 40) + "px");
+                    })
+                    .on("mouseout", function() { d3.select(this.parentNode).style("opacity", 1); tooltip.style("opacity", 0); });
+            }
+
+            updateGroupedChart(dataGrouped.filter(d => d.Total >= 20));
+
+            d3.select("#filter-grouped-button").on("click", function() {
+                filterActive = !filterActive;
+                if (filterActive) {
+                    updateGroupedChart(dataGrouped.filter(d => d.Total >= 20));
+                    d3.select(this).text("Afficher tous les partis/blocs").style("background-color", "#e9e9e9");
+                } else {
+                    updateGroupedChart(dataGrouped);
+                    d3.select(this).text("Masquer les nuances avec < 20 listes").style("background-color", "#fff");
+                }
+            });
+        })();
+
+        /* =========================================
            SCRIPT 2 : GRAPHIQUE HEATMAP
            ========================================= */
         (function() {
@@ -476,32 +661,42 @@
             const citySizeOrder = ["1 000 à 10 000 hbts.", "10 000 à 50 000 hbts.", "50 000 à 100 000 hbts.", "> 100 000", "Moyenne globale"];
 
             let showingSmallParties = false;
-            const margin = {top: 110, right: 60, bottom: 20, left: 220};
+            // Spacing fix: reduced top, increased bottom to fit legend
+            const margin = {top: 25, right: 40, bottom: 65, left: 220};
             const containerWidth = document.getElementById("heatmap-container").clientWidth || 600;
-            const width = containerWidth - margin.left - margin.right;
+            const svgWidth = Math.max(containerWidth, 550); // Mobile scrolling width
+            const width = svgWidth - margin.left - margin.right;
             
-            const svg = d3.select("#heatmap-container").append("svg").attr("width", width + margin.left + margin.right);
+            const svg = d3.select("#heatmap-container").append("svg").attr("width", svgWidth);
 
             const defs = svg.append("defs");
             const linearGradient = defs.append("linearGradient").attr("id", "linear-gradient").attr("x1", "0%").attr("y1", "0%").attr("x2", "100%").attr("y2", "0%");
-            linearGradient.append("stop").attr("offset", "0%").attr("stop-color", "#fff5eb");
-            linearGradient.append("stop").attr("offset", "50%").attr("stop-color", "#fdae6b");
-            linearGradient.append("stop").attr("offset", "100%").attr("stop-color", "#238b45");
+            linearGradient.append("stop").attr("offset", "0%").attr("stop-color", "#d73027");
+            linearGradient.append("stop").attr("offset", "50%").attr("stop-color", "#fee08b");
+            linearGradient.append("stop").attr("offset", "100%").attr("stop-color", "#1a9850");
 
-            const legendGroup = svg.append("g").attr("transform", `translate(${margin.left}, 10)`);
-            legendGroup.append("rect").attr("width", 250).attr("height", 12).style("fill", "url(#linear-gradient)");
-            const legendScale = d3.scaleLinear().domain([0, 0.5]).range([0, 250]);
+            const legendGroup = svg.append("g"); 
+            const legendWidth = 250;
+            legendGroup.append("rect").attr("width", legendWidth).attr("height", 12).style("fill", "url(#linear-gradient)");
+            
+            const legendScale = d3.scaleLinear().domain([0.1, 0.5]).range([0, legendWidth]);
             legendGroup.append("g").attr("transform", "translate(0, 12)").call(d3.axisBottom(legendScale).ticks(5).tickFormat(d3.format(".0%")));
-            legendGroup.append("text").attr("x", 260).attr("y", 10).text("≥ 50% (Parité)").style("font-size", "11px").style("fill", "#555");
+            
+            legendGroup.append("text").attr("x", -5).attr("y", 10).attr("text-anchor", "end").text("≤ 10%").style("font-size", "11px").style("fill", "#555");
+            legendGroup.append("text").attr("x", legendWidth + 10).attr("y", 10).text("≥ 50% (Parité)").style("font-size", "11px").style("fill", "#555");
 
             const chartGroup = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
-            const myColor = d3.scaleLinear().domain([0, 0.25, 0.5]).range(["#fff5eb", "#fdae6b", "#238b45"]).clamp(true);
+            
+            const myColor = d3.scaleLinear().domain([0.1, 0.3, 0.5]).range(["#d73027", "#fee08b", "#1a9850"]).clamp(true);
             const x = d3.scaleBand().domain(citySizeOrder).range([0, width]).padding(0.05);
             const y = d3.scaleBand().padding(0.05);
             const tooltip = d3.select("body").append("div").attr("class", "heatmap-tooltip");
 
             const xAxisGroup = chartGroup.append("g").attr("class", "heatmap-x-axis");
             const yAxisGroup = chartGroup.append("g").attr("class", "y-axis");
+
+            // Perfect center for legend
+            const legendX = margin.left + (width / 2) - (legendWidth / 2);
 
             function updateHeatmap() {
                 const threshold = showingSmallParties ? 0 : 50;
@@ -531,6 +726,9 @@
                 const dynamicHeight = rankedPartyNames.length * 35; 
                 svg.transition().duration(500).attr("height", dynamicHeight + margin.top + margin.bottom);
                 
+                // Position legend at bottom dynamically
+                legendGroup.transition().duration(500).attr("transform", `translate(${legendX}, ${dynamicHeight + margin.top + 25})`);
+                
                 y.domain(rankedPartyNames).range([0, dynamicHeight]);
 
                 xAxisGroup.transition().duration(500).call(d3.axisTop(x).tickSize(0));
@@ -538,19 +736,21 @@
                 xAxisGroup.select(".domain").remove();
 
                 chartGroup.selectAll(".col-divider").remove();
-                if (x("Moyenne globale")) {
-                    chartGroup.append("line").attr("class", "col-divider")
-                        .attr("x1", x("Moyenne globale") - 5).attr("x2", x("Moyenne globale") - 5).attr("y1", -5).attr("y2", dynamicHeight)
-                        .attr("stroke", "#ccc").attr("stroke-dasharray", "4,4").style("opacity", 0)
-                        .transition().duration(500).style("opacity", 1);
-                }
 
-                yAxisGroup.transition().duration(500).call(d3.axisLeft(y).tickSize(0)).selectAll("text").attr("dx", "-15px");
+                yAxisGroup.transition().duration(500).call(d3.axisLeft(y).tickSize(0))
+                    .selectAll("text")
+                    .attr("dx", "-28px")
+                    .style("font-size", "12px")
+                    .style("font-weight", "bold");
+                    
                 yAxisGroup.select(".domain").remove();
 
                 const partyColors = new Map(partyStats.map(d => [d[0], d[1].color]));
-                yAxisGroup.selectAll(".party-swatch").data(rankedPartyNames).join("rect").attr("class", "party-swatch")
-                    .attr("x", -10).attr("y", d => y(d) + y.bandwidth()/2 - 5).attr("width", 10).attr("height", 10).attr("fill", d => partyColors.get(d));
+                
+                yAxisGroup.selectAll(".party-swatch").data(rankedPartyNames).join("circle").attr("class", "party-swatch")
+                    .attr("cx", -14).attr("cy", d => y(d) + y.bandwidth()/2)
+                    .attr("r", 9).attr("fill", d => partyColors.get(d))
+                    .attr("stroke", "#fff").attr("stroke-width", 1);
 
                 const cells = chartGroup.selectAll(".cell").data(plotData, d => d.Party_Name + ':' + d.City_Size);
 
@@ -575,7 +775,7 @@
                         g.append("text").attr("class", "heatmap-cell-text")
                             .attr("x", d => x(d.City_Size) + x.bandwidth() / 2).attr("y", d => y(d.Party_Name) + y.bandwidth() / 2)
                             .attr("text-anchor", "middle").attr("dominant-baseline", "middle")
-                            .style("fill", d => d.Female_Pct > 0.4 ? "#fff" : "#333")
+                            .style("fill", d => (d.Female_Pct > 0.4 || d.Female_Pct < 0.15) ? "#fff" : "#333")
                             .style("font-weight", d => d.City_Size === "Moyenne globale" ? "bold" : "500")
                             .text(d => d3.format(".0%")(d.Female_Pct)).style("opacity", 0)
                             .call(enter => enter.transition().duration(500).style("opacity", 1));
@@ -599,8 +799,211 @@
             });
         })();
 
+
+
         /* =========================================
-           SCRIPT 3 : GRAPHIQUE ÉVOLUTION PARITÉ (NOUVEAU)
+           SCRIPT 2 BIS : GRAPHIQUE HEATMAP (REGROUPÉ)
+           ========================================= */
+        (function() {
+            const heatmapDataRaw = [{"Code":"LREN","Party_Name":"Liste Renaissance","City_Size":"1 000 à 10 000 hbts.","Total":2,"Females":1.0},{"Code":"LREN","Party_Name":"Liste Renaissance","City_Size":"10 000 à 50 000 hbts.","Total":3,"Females":1.0},{"Code":"LREN","Party_Name":"Liste Renaissance","City_Size":"50 000 à 100 000 hbts.","Total":2,"Females":2.0},{"Code":"LREN","Party_Name":"Liste Renaissance","City_Size":"Plus de 100 000 hbts.","Total":0,"Females":0.0},{"Code":"LEXG","Party_Name":"Liste d'extrême-gauche","City_Size":"1 000 à 10 000 hbts.","Total":33,"Females":15.0},{"Code":"LEXG","Party_Name":"Liste d'extrême-gauche","City_Size":"10 000 à 50 000 hbts.","Total":204,"Females":66.0},{"Code":"LEXG","Party_Name":"Liste d'extrême-gauche","City_Size":"50 000 à 100 000 hbts.","Total":65,"Females":34.0},{"Code":"LEXG","Party_Name":"Liste d'extrême-gauche","City_Size":"Plus de 100 000 hbts.","Total":75,"Females":36.0},{"Code":"LREG","Party_Name":"Liste régionaliste","City_Size":"1 000 à 10 000 hbts.","Total":25,"Females":7.0},{"Code":"LREG","Party_Name":"Liste régionaliste","City_Size":"10 000 à 50 000 hbts.","Total":20,"Females":11.0},{"Code":"LREG","Party_Name":"Liste régionaliste","City_Size":"50 000 à 100 000 hbts.","Total":5,"Females":1.0},{"Code":"LREG","Party_Name":"Liste régionaliste","City_Size":"Plus de 100 000 hbts.","Total":0,"Females":0.0},{"Code":"LFI","Party_Name":"Liste de La France insoumise","City_Size":"1 000 à 10 000 hbts.","Total":13,"Females":5.0},{"Code":"LFI","Party_Name":"Liste de La France insoumise","City_Size":"10 000 à 50 000 hbts.","Total":145,"Females":51.0},{"Code":"LFI","Party_Name":"Liste de La France insoumise","City_Size":"50 000 à 100 000 hbts.","Total":48,"Females":18.0},{"Code":"LFI","Party_Name":"Liste de La France insoumise","City_Size":"Plus de 100 000 hbts.","Total":37,"Females":18.0},{"Code":"LHOR","Party_Name":"Liste Horizons","City_Size":"1 000 à 10 000 hbts.","Total":2,"Females":0.0},{"Code":"LHOR","Party_Name":"Liste Horizons","City_Size":"10 000 à 50 000 hbts.","Total":3,"Females":2.0},{"Code":"LHOR","Party_Name":"Liste Horizons","City_Size":"50 000 à 100 000 hbts.","Total":1,"Females":1.0},{"Code":"LHOR","Party_Name":"Liste Horizons","City_Size":"Plus de 100 000 hbts.","Total":2,"Females":0.0},{"Code":"LSOC","Party_Name":"Liste du Parti socialiste","City_Size":"1 000 à 10 000 hbts.","Total":38,"Females":14.0},{"Code":"LSOC","Party_Name":"Liste du Parti socialiste","City_Size":"10 000 à 50 000 hbts.","Total":41,"Females":14.0},{"Code":"LSOC","Party_Name":"Liste du Parti socialiste","City_Size":"50 000 à 100 000 hbts.","Total":8,"Females":1.0},{"Code":"LSOC","Party_Name":"Liste du Parti socialiste","City_Size":"Plus de 100 000 hbts.","Total":7,"Females":3.0},{"Code":"LECO","Party_Name":"Liste écologiste","City_Size":"1 000 à 10 000 hbts.","Total":20,"Females":4.0},{"Code":"LECO","Party_Name":"Liste écologiste","City_Size":"10 000 à 50 000 hbts.","Total":18,"Females":8.0},{"Code":"LECO","Party_Name":"Liste écologiste","City_Size":"50 000 à 100 000 hbts.","Total":1,"Females":1.0},{"Code":"LECO","Party_Name":"Liste écologiste","City_Size":"Plus de 100 000 hbts.","Total":4,"Females":1.0},{"Code":"LUDR","Party_Name":"Liste d'union des droites pour la République","City_Size":"1 000 à 10 000 hbts.","Total":6,"Females":2.0},{"Code":"LUDR","Party_Name":"Liste d'union des droites pour la République","City_Size":"10 000 à 50 000 hbts.","Total":10,"Females":3.0},{"Code":"LUDR","Party_Name":"Liste d'union des droites pour la République","City_Size":"50 000 à 100 000 hbts.","Total":1,"Females":0.0},{"Code":"LUDR","Party_Name":"Liste d'union des droites pour la République","City_Size":"Plus de 100 000 hbts.","Total":0,"Females":0.0},{"Code":"LUG","Party_Name":"Liste d'union à gauche","City_Size":"1 000 à 10 000 hbts.","Total":77,"Females":23.0},{"Code":"LUG","Party_Name":"Liste d'union à gauche","City_Size":"10 000 à 50 000 hbts.","Total":290,"Females":89.0},{"Code":"LUG","Party_Name":"Liste d'union à gauche","City_Size":"50 000 à 100 000 hbts.","Total":59,"Females":16.0},{"Code":"LUG","Party_Name":"Liste d'union à gauche","City_Size":"Plus de 100 000 hbts.","Total":37,"Females":8.0},{"Code":"LDVG","Party_Name":"Liste divers gauche","City_Size":"1 000 à 10 000 hbts.","Total":1164,"Females":332.0},{"Code":"LDVG","Party_Name":"Liste divers gauche","City_Size":"10 000 à 50 000 hbts.","Total":616,"Females":163.0},{"Code":"LDVG","Party_Name":"Liste divers gauche","City_Size":"50 000 à 100 000 hbts.","Total":80,"Females":27.0},{"Code":"LDVG","Party_Name":"Liste divers gauche","City_Size":"Plus de 100 000 hbts.","Total":24,"Females":9.0},{"Code":"LREC","Party_Name":"Liste Reconquête !","City_Size":"1 000 à 10 000 hbts.","Total":1,"Females":0.0},{"Code":"LREC","Party_Name":"Liste Reconquête !","City_Size":"10 000 à 50 000 hbts.","Total":6,"Females":1.0},{"Code":"LREC","Party_Name":"Liste Reconquête !","City_Size":"50 000 à 100 000 hbts.","Total":5,"Females":2.0},{"Code":"LREC","Party_Name":"Liste Reconquête !","City_Size":"Plus de 100 000 hbts.","Total":6,"Females":2.0},{"Code":"LVEC","Party_Name":"Liste Les Ecologistes","City_Size":"1 000 à 10 000 hbts.","Total":10500,"Females":2659.0},{"Code":"LVEC","Party_Name":"Liste Les Ecologistes","City_Size":"10 000 à 50 000 hbts.","Total":21,"Females":8.0},{"Code":"LVEC","Party_Name":"Liste Les Ecologistes","City_Size":"50 000 à 100 000 hbts.","Total":7,"Females":3.0},{"Code":"LVEC","Party_Name":"Liste Les Ecologistes","City_Size":"Plus de 100 000 hbts.","Total":2,"Females":0.0},{"Code":"LCOM","Party_Name":"Liste du Parti communiste français","City_Size":"1 000 à 10 000 hbts.","Total":22,"Females":6.0},{"Code":"LCOM","Party_Name":"Liste du Parti communiste français","City_Size":"10 000 à 50 000 hbts.","Total":24,"Females":5.0},{"Code":"LCOM","Party_Name":"Liste du Parti communiste français","City_Size":"50 000 à 100 000 hbts.","Total":3,"Females":1.0},{"Code":"LCOM","Party_Name":"Liste du Parti communiste français","City_Size":"Plus de 100 000 hbts.","Total":0,"Females":0.0},{"Code":"LDVC","Party_Name":"Liste divers centre","City_Size":"1 000 à 10 000 hbts.","Total":741,"Females":180.0},{"Code":"LDVC","Party_Name":"Liste divers centre","City_Size":"10 000 à 50 000 hbts.","Total":355,"Females":89.0},{"Code":"LDVC","Party_Name":"Liste divers centre","City_Size":"50 000 à 100 000 hbts.","Total":38,"Females":12.0},{"Code":"LDVC","Party_Name":"Liste divers centre","City_Size":"Plus de 100 000 hbts.","Total":28,"Females":3.0},{"Code":"LDIV","Party_Name":"Liste Divers","City_Size":"1 000 à 10 000 hbts.","Total":1037,"Females":256.0},{"Code":"LDIV","Party_Name":"Liste Divers","City_Size":"10 000 à 50 000 hbts.","Total":310,"Females":61.0},{"Code":"LDIV","Party_Name":"Liste Divers","City_Size":"50 000 à 100 000 hbts.","Total":38,"Females":6.0},{"Code":"LDIV","Party_Name":"Liste Divers","City_Size":"Plus de 100 000 hbts.","Total":15,"Females":7.0},{"Code":"LRN","Party_Name":"Liste du Rassemblement National","City_Size":"1 000 à 10 000 hbts.","Total":147,"Females":37.0},{"Code":"LRN","Party_Name":"Liste du Rassemblement National","City_Size":"10 000 à 50 000 hbts.","Total":200,"Females":40.0},{"Code":"LRN","Party_Name":"Liste du Rassemblement National","City_Size":"50 000 à 100 000 hbts.","Total":33,"Females":7.0},{"Code":"LRN","Party_Name":"Liste du Rassemblement National","City_Size":"Plus de 100 000 hbts.","Total":25,"Females":8.0},{"Code":"LLR","Party_Name":"Liste des Républicains","City_Size":"1 000 à 10 000 hbts.","Total":39,"Females":9.0},{"Code":"LLR","Party_Name":"Liste des Républicains","City_Size":"10 000 à 50 000 hbts.","Total":92,"Females":20.0},{"Code":"LLR","Party_Name":"Liste des Républicains","City_Size":"50 000 à 100 000 hbts.","Total":13,"Females":3.0},{"Code":"LLR","Party_Name":"Liste des Républicains","City_Size":"Plus de 100 000 hbts.","Total":7,"Females":1.0},{"Code":"LDVD","Party_Name":"Liste divers droite","City_Size":"1 000 à 10 000 hbts.","Total":1404,"Females":302.0},{"Code":"LDVD","Party_Name":"Liste divers droite","City_Size":"10 000 à 50 000 hbts.","Total":695,"Females":156.0},{"Code":"LDVD","Party_Name":"Liste divers droite","City_Size":"50 000 à 100 000 hbts.","Total":69,"Females":14.0},{"Code":"LDVD","Party_Name":"Liste divers droite","City_Size":"Plus de 100 000 hbts.","Total":34,"Females":7.0},{"Code":"LMDM","Party_Name":"Liste Mouvement démocrate (MoDem)","City_Size":"1 000 à 10 000 hbts.","Total":2,"Females":0.0},{"Code":"LMDM","Party_Name":"Liste Mouvement démocrate (MoDem)","City_Size":"10 000 à 50 000 hbts.","Total":3,"Females":1.0},{"Code":"LMDM","Party_Name":"Liste Mouvement démocrate (MoDem)","City_Size":"50 000 à 100 000 hbts.","Total":0,"Females":0.0},{"Code":"LMDM","Party_Name":"Liste Mouvement démocrate (MoDem)","City_Size":"Plus de 100 000 hbts.","Total":0,"Females":0.0},{"Code":"LEXD","Party_Name":"Liste d'extrême droite","City_Size":"1 000 à 10 000 hbts.","Total":38,"Females":4.0},{"Code":"LEXD","Party_Name":"Liste d'extrême droite","City_Size":"10 000 à 50 000 hbts.","Total":46,"Females":10.0},{"Code":"LEXD","Party_Name":"Liste d'extrême droite","City_Size":"50 000 à 100 000 hbts.","Total":6,"Females":2.0},{"Code":"LEXD","Party_Name":"Liste d'extrême droite","City_Size":"Plus de 100 000 hbts.","Total":3,"Females":2.0},{"Code":"LUXD","Party_Name":"Liste d'union à l'extrême-droite","City_Size":"1 000 à 10 000 hbts.","Total":22,"Females":5.0},{"Code":"LUXD","Party_Name":"Liste d'union à l'extrême-droite","City_Size":"10 000 à 50 000 hbts.","Total":43,"Females":6.0},{"Code":"LUXD","Party_Name":"Liste d'union à l'extrême-droite","City_Size":"50 000 à 100 000 hbts.","Total":8,"Females":1.0},{"Code":"LUXD","Party_Name":"Liste d'union à l'extrême-droite","City_Size":"Plus de 100 000 hbts.","Total":12,"Females":2.0},{"Code":"LUC","Party_Name":"Liste d'union au centre","City_Size":"1 000 à 10 000 hbts.","Total":12,"Females":3.0},{"Code":"LUC","Party_Name":"Liste d'union au centre","City_Size":"10 000 à 50 000 hbts.","Total":32,"Females":4.0},{"Code":"LUC","Party_Name":"Liste d'union au centre","City_Size":"50 000 à 100 000 hbts.","Total":4,"Females":1.0},{"Code":"LUC","Party_Name":"Liste d'union au centre","City_Size":"Plus de 100 000 hbts.","Total":9,"Females":1.0},{"Code":"LUDI","Party_Name":"Liste de l'Union des Démocrates et des Indépendants","City_Size":"1 000 à 10 000 hbts.","Total":7,"Females":3.0},{"Code":"LUDI","Party_Name":"Liste de l'Union des Démocrates et des Indépendants","City_Size":"10 000 à 50 000 hbts.","Total":13,"Females":0.0},{"Code":"LUDI","Party_Name":"Liste de l'Union des Démocrates et des Indépendants","City_Size":"50 000 à 100 000 hbts.","Total":2,"Females":0.0},{"Code":"LUDI","Party_Name":"Liste de l'Union des Démocrates et des Indépendants","City_Size":"Plus de 100 000 hbts.","Total":1,"Females":0.0},{"Code":"LUD","Party_Name":"Liste d'union à droite","City_Size":"1 000 à 10 000 hbts.","Total":8,"Females":1.0},{"Code":"LUD","Party_Name":"Liste d'union à droite","City_Size":"10 000 à 50 000 hbts.","Total":25,"Females":2.0},{"Code":"LUD","Party_Name":"Liste d'union à droite","City_Size":"50 000 à 100 000 hbts.","Total":10,"Females":1.0},{"Code":"LUD","Party_Name":"Liste d'union à droite","City_Size":"Plus de 100 000 hbts.","Total":7,"Females":1.0},{"Code":"LDSV","Party_Name":"Liste de droite souverainiste","City_Size":"1 000 à 10 000 hbts.","Total":2,"Females":0.0},{"Code":"LDSV","Party_Name":"Liste de droite souverainiste","City_Size":"10 000 à 50 000 hbts.","Total":3,"Females":0.0},{"Code":"LDSV","Party_Name":"Liste de droite souverainiste","City_Size":"50 000 à 100 000 hbts.","Total":0,"Females":0.0},{"Code":"LDSV","Party_Name":"Liste de droite souverainiste","City_Size":"Plus de 100 000 hbts.","Total":1,"Females":0.0}];
+
+            const groupMapping = {
+                "LVEC": "Nouveau Front Populaire", "LREG": "Nouveau Front Populaire", "LFI": "Nouveau Front Populaire", "LSOC": "Nouveau Front Populaire", "LECO": "Nouveau Front Populaire", "LUG": "Nouveau Front Populaire", "LCOM": "Nouveau Front Populaire",
+                "LDVC": "Bloc central", "LLR": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central",
+                "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite"
+            };
+
+            const groupedColors = {
+                "Nouveau Front Populaire": "#C97A7A", 
+                "Bloc central": "#6B99A1",            
+                "Extrême-droite": "#2B3E50"           
+            };
+
+            const aggregated = {};
+            const totalListsPerParty = {}; 
+
+            heatmapDataRaw.forEach(d => {
+                let groupName = groupMapping[d.Code] || d.Party_Name;
+                let citySize = d.City_Size === "Plus de 100 000 hbts." ? "> 100 000" : d.City_Size;
+                let key = groupName + "|" + citySize;
+
+                if (!totalListsPerParty[groupName]) totalListsPerParty[groupName] = 0;
+                totalListsPerParty[groupName] += d.Total;
+
+                if (!aggregated[key]) {
+                    aggregated[key] = {
+                        Party_Name: groupName, Code: groupName, City_Size: citySize, Total: 0, Females: 0, OriginalCode: d.Code, SubParties: new Set()
+                    };
+                }
+                aggregated[key].Total += d.Total;
+                aggregated[key].Females += d.Females;
+                
+                if (groupMapping[d.Code]) {
+                    aggregated[key].SubParties.add(d.Party_Name);
+                }
+            });
+
+            const heatmapDataGrouped = Object.values(aggregated).map(d => {
+                d.Female_Pct = d.Total > 0 ? d.Females / d.Total : 0;
+                d.Color = groupedColors[d.Party_Name] || globalColorMapping[d.OriginalCode] || fallbackColor;
+                d.Total_Party_Lists = totalListsPerParty[d.Party_Name]; 
+                d.SubParties = Array.from(d.SubParties); 
+                return d;
+            });
+
+            const citySizeOrder = ["1 000 à 10 000 hbts.", "10 000 à 50 000 hbts.", "50 000 à 100 000 hbts.", "> 100 000", "Moyenne globale"];
+
+            let showingSmallParties = false;
+            const margin = {top: 25, right: 40, bottom: 65, left: 220};
+            const containerWidth = document.getElementById("heatmap-container-grouped").clientWidth || 600;
+            const svgWidth = Math.max(containerWidth, 550); // Mobile scrolling width
+            const width = svgWidth - margin.left - margin.right;
+            
+            const svg = d3.select("#heatmap-container-grouped").append("svg").attr("width", svgWidth);
+
+            const defs = svg.append("defs");
+            const linearGradient = defs.append("linearGradient").attr("id", "linear-gradient-grouped").attr("x1", "0%").attr("y1", "0%").attr("x2", "100%").attr("y2", "0%");
+            linearGradient.append("stop").attr("offset", "0%").attr("stop-color", "#d73027"); 
+            linearGradient.append("stop").attr("offset", "50%").attr("stop-color", "#fee08b"); 
+            linearGradient.append("stop").attr("offset", "100%").attr("stop-color", "#1a9850"); 
+
+            const legendGroup = svg.append("g"); 
+            const legendWidth = 250;
+            legendGroup.append("rect").attr("width", legendWidth).attr("height", 12).style("fill", "url(#linear-gradient-grouped)");
+            
+            const legendScale = d3.scaleLinear().domain([0.1, 0.5]).range([0, legendWidth]);
+            legendGroup.append("g").attr("transform", "translate(0, 12)").call(d3.axisBottom(legendScale).ticks(5).tickFormat(d3.format(".0%")));
+            
+            legendGroup.append("text").attr("x", -5).attr("y", 10).attr("text-anchor", "end").text("≤ 10%").style("font-size", "11px").style("fill", "#555");
+            legendGroup.append("text").attr("x", legendWidth + 10).attr("y", 10).text("≥ 50% (Parité)").style("font-size", "11px").style("fill", "#555");
+
+            const chartGroup = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+            
+            const myColor = d3.scaleLinear().domain([0.1, 0.3, 0.5]).range(["#d73027", "#fee08b", "#1a9850"]).clamp(true);
+            const x = d3.scaleBand().domain(citySizeOrder).range([0, width]).padding(0.05);
+            const y = d3.scaleBand().padding(0.05);
+            const tooltip = d3.select("body").append("div").attr("class", "heatmap-tooltip");
+
+            const xAxisGroup = chartGroup.append("g").attr("class", "heatmap-x-axis");
+            const yAxisGroup = chartGroup.append("g").attr("class", "y-axis");
+
+            const legendX = margin.left + (width / 2) - (legendWidth / 2);
+
+            function updateHeatmapGrouped() {
+                const threshold = showingSmallParties ? 0 : 50;
+                
+                const validParties = Array.from(d3.rollup(heatmapDataGrouped, v => v[0].Total_Party_Lists, d => d.Code))
+                    .filter(d => d[1] >= threshold).map(d => d[0]);
+
+                const filteredData = heatmapDataGrouped.filter(d => validParties.includes(d.Code) && d.Total > 0);
+
+                const partyStats = Array.from(d3.rollup(filteredData, 
+                    v => {
+                        const totalFemales = d3.sum(v, d => d.Females);
+                        const totalLists = d3.sum(v, d => d.Total);
+                        return { 
+                            females: totalFemales, total: totalLists, pct: totalLists > 0 ? totalFemales / totalLists : 0, 
+                            color: v[0].Color, code: v[0].Code, subParties: v[0].SubParties 
+                        };
+                    }, 
+                    d => d.Party_Name
+                ));
+
+                partyStats.sort((a, b) => b[1].pct - a[1].pct); 
+                const rankedPartyNames = partyStats.map(d => d[0]);
+
+                const globalEntries = partyStats.map(p => ({
+                    Party_Name: p[0], City_Size: "Moyenne globale", Female_Pct: p[1].pct, Total: p[1].total, Color: p[1].color, Code: p[1].code, SubParties: p[1].subParties
+                }));
+
+                const plotData = [...filteredData, ...globalEntries];
+                const dynamicHeight = rankedPartyNames.length * 35; 
+                svg.transition().duration(500).attr("height", dynamicHeight + margin.top + margin.bottom);
+                
+                legendGroup.transition().duration(500).attr("transform", `translate(${legendX}, ${dynamicHeight + margin.top + 25})`);
+                
+                y.domain(rankedPartyNames).range([0, dynamicHeight]);
+
+                xAxisGroup.transition().duration(500).call(d3.axisTop(x).tickSize(0));
+                xAxisGroup.selectAll("text").attr("transform", "rotate(-35)").style("text-anchor", "start").attr("dx", "0.5em").attr("dy", "0.1em");
+                xAxisGroup.select(".domain").remove();
+
+                chartGroup.selectAll(".col-divider").remove();
+
+                yAxisGroup.transition().duration(500).call(d3.axisLeft(y).tickSize(0))
+                    .selectAll("text")
+                    .attr("dx", "-28px")
+                    .style("font-size", "12px")
+                    .style("font-weight", "bold");
+                    
+                yAxisGroup.select(".domain").remove();
+
+                const partyColors = new Map(partyStats.map(d => [d[0], d[1].color]));
+                
+                yAxisGroup.selectAll(".party-swatch").data(rankedPartyNames).join("circle").attr("class", "party-swatch")
+                    .attr("cx", -14)
+                    .attr("cy", d => y(d) + y.bandwidth()/2)
+                    .attr("r", 9) 
+                    .attr("fill", d => partyColors.get(d))
+                    .attr("stroke", "#fff")
+                    .attr("stroke-width", 1);
+
+                const cells = chartGroup.selectAll(".cell").data(plotData, d => d.Party_Name + ':' + d.City_Size);
+
+                cells.join(
+                    enter => {
+                        const g = enter.append("g").attr("class", "cell");
+                        g.append("rect").attr("x", d => x(d.City_Size)).attr("y", d => y(d.Party_Name)).attr("width", x.bandwidth()).attr("height", y.bandwidth())
+                            .attr("rx", 4).style("fill", d => myColor(d.Female_Pct)).style("opacity", 0)
+                            .on("mouseover", function(event, d) {
+                                d3.select(this).style("stroke", "#000").style("stroke-width", 2);
+                                
+                                const subPartiesHTML = d.SubParties && d.SubParties.length > 0 
+                                    ? `<div style="margin-top:6px; padding-top:4px; font-size:10px; color:#777; font-style: italic; line-height: 1.3;"><b>Inclut :</b><br>• ${d.SubParties.join('<br>• ')}</div>` 
+                                    : '';
+
+                                tooltip.transition().duration(200).style("opacity", 1);
+                                tooltip.html(`
+                                    <div class="tooltip-title" style="color: ${d.Color};">${d.Party_Name}</div>
+                                    <div class="tooltip-data">Strate: <b>${d.City_Size}</b></div>
+                                    <div class="tooltip-data">Femmes têtes de liste: <b>${d3.format(".1%")(d.Female_Pct)}</b></div>
+                                    <div style="margin-top:6px; font-size:11px; border-top: 1px solid #eee; padding-top:4px;">Total listes dans cette strate: ${d.Total}</div>
+                                    ${subPartiesHTML}
+                                `).style("left", (event.pageX + 10) + "px").style("top", (event.pageY - 28) + "px");
+                            })
+                            .on("mouseout", function() { d3.select(this).style("stroke", "none"); tooltip.transition().duration(500).style("opacity", 0); })
+                            .call(enter => enter.transition().duration(500).style("opacity", 1));
+
+                        g.append("text").attr("class", "heatmap-cell-text")
+                            .attr("x", d => x(d.City_Size) + x.bandwidth() / 2).attr("y", d => y(d.Party_Name) + y.bandwidth() / 2)
+                            .attr("text-anchor", "middle").attr("dominant-baseline", "middle")
+                            .style("fill", d => (d.Female_Pct > 0.4 || d.Female_Pct < 0.15) ? "#fff" : "#333")
+                            .style("font-weight", d => d.City_Size === "Moyenne globale" ? "bold" : "500")
+                            .text(d => d3.format(".0%")(d.Female_Pct)).style("opacity", 0)
+                            .call(enter => enter.transition().duration(500).style("opacity", 1));
+                        return g;
+                    },
+                    update => {
+                        update.select("rect").transition().duration(500).attr("x", d => x(d.City_Size)).attr("y", d => y(d.Party_Name)).attr("width", x.bandwidth()).attr("height", y.bandwidth());
+                        update.select("text").transition().duration(500).attr("x", d => x(d.City_Size) + x.bandwidth() / 2).attr("y", d => y(d.Party_Name) + y.bandwidth() / 2);
+                        return update;
+                    },
+                    exit => exit.transition().duration(300).style("opacity", 0).remove()
+                );
+            }
+
+            updateHeatmapGrouped();
+            
+            d3.select("#toggle-small-parties-grouped").on("click", function() {
+                showingSmallParties = !showingSmallParties;
+                this.textContent = showingSmallParties ? "Masquer les petits partis/blocs (< 50 listes)" : "Afficher les petits partis/blocs (< 50 listes)";
+                this.style.backgroundColor = showingSmallParties ? "#fff" : "#e9e9e9";
+                updateHeatmapGrouped();
+            });
+        })();
+
+        /* =========================================
+           SCRIPT 3 : GRAPHIQUE ÉVOLUTION PARITÉ
            ========================================= */
         (function() {
             const data = [
@@ -627,12 +1030,12 @@
               { Party_Name: "Union du centre", Female_Pct_2020: 0.349, Female_Pct_2026: 0.158, Total: 57 }
             ];
 
-            // Apply global colors
             data.forEach(d => { d.Color = globalColorMapping[d.Party_Name] || fallbackColor; });
 
             const containerWidth = document.getElementById("d3-parity-dumbbell").clientWidth || 700;
+            const svgWidth = Math.max(containerWidth, 550); // Mobile scrolling width
             const margin = {top: 10, right: 30, bottom: 40, left: 220}; 
-            const width = containerWidth - margin.left - margin.right;
+            const width = svgWidth - margin.left - margin.right;
             const tooltip = d3.select("body").append("div").attr("class", "d3-tooltip");
 
             function drawParityDumbbell(hideSmallParties) {
@@ -645,7 +1048,7 @@
                 
                 const height = chartData.length * 35; 
                 const svg = d3.select("#d3-parity-dumbbell").append("svg")
-                    .attr("width", width + margin.left + margin.right)
+                    .attr("width", svgWidth)
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -715,7 +1118,8 @@
         (function() {
             const margin = {top: 20, right: 20, bottom: 40, left: 180};
             const containerWidth = document.getElementById("dumbbell-chart-volume").parentNode.clientWidth || 600;
-            const width = containerWidth - margin.left - margin.right;
+            const svgWidth = Math.max(containerWidth, 500); // Mobile scrolling width
+            const width = svgWidth - margin.left - margin.right;
             
             let globalData = []; 
             const tooltip = d3.select("body").append("div").attr("class", "dumbbell-tooltip");
@@ -740,7 +1144,7 @@
                 const height = filteredData.length * 30; 
                 
                 const svg = d3.select("#dumbbell-chart-volume").append("svg")
-                    .attr("width", width + margin.left + margin.right)
+                    .attr("width", svgWidth)
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
@@ -951,7 +1355,3 @@
     </script>
 </body>
 </html>
-
-https://www.archives-resultats-elections.interieur.gouv.fr/resultats/municipales-2020/nuances.php
-https://www.legifrance.gouv.fr/download/pdf/circ?id=45645
-https://www.legifrance.gouv.fr/download/pdf/circ?id=45645
