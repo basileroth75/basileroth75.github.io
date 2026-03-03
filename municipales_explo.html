@@ -270,6 +270,22 @@
                         <div id="heatmap-container-grouped"></div>
                     </div>
 
+                    <div class="wp-scientific-figure wp-scientific-figure-large">
+                        <div class="figure-header">
+                            <h2 class="figure-title">Figure 2 Ter. Écart de chance d'élection : Femmes vs Moyenne globale du parti</h2>
+                            <p class="figure-caption">Ce graphique présente la différence entre la probabilité pour une femme d'être élue et la probabilité moyenne d'être élu au sein de la même nuance politique. Une barre vers la gauche indique que les femmes ont moins de chances d'être élues que la moyenne du parti.</p>
+                        </div>
+
+                        <div style="text-align: center; margin-bottom: 10px;">
+                            <button id="toggle-small-parties-diverging" style="padding: 6px 10px; font-size: 11px; cursor: pointer; border: 1px solid #ccc; background-color: #fff; border-radius: 4px; font-family: inherit;">Afficher tous les partis</button>
+                        </div>
+
+                        <div id="diverging-chart-container" style="overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px;">
+                            <div id="diverging-chart"></div>
+                        </div>
+                    </div>
+
+
                     <p>Une analyse comparative entre 2020 et 2026 permet de constater l'évolution de la parité au sein de chaque parti politique sur une mandature complète.</p>
 
                     <div class="wp-scientific-figure wp-scientific-figure-large">
@@ -371,7 +387,7 @@
             "LVEC": "#5C8A6B", "Liste Les Ecologistes": "#5C8A6B", "Les Écologistes (ex-EELV)": "#5C8A6B", "Les Ecologistes": "#5C8A6B",
             "LECO": "#70A37F", "Liste écologiste": "#70A37F", "Ecologiste": "#70A37F",
             // Centre & Macronistes
-            "LREN": "#C2A85B", "Liste Renaissance": "#C2A85B", "Renaissance / LREM": "#C2A85B", "Renaissance / LREM (Origine)": "#C2A85B", "Renaissance / LREM (Restés)": "#C2A85B",
+            "LREN": "#C2A85B", "Liste Renaissance": "#C2A85B", "Renaissance / LREM": "#C2A85B", "LREM": "#C2A85B", "Renaissance / LREM (Origine)": "#C2A85B", "Renaissance / LREM (Restés)": "#C2A85B",
             "LMDM": "#C28F5B", "Liste Mouvement démocrate (MoDem)": "#C28F5B", "Modem": "#C28F5B",
             "LHOR": "#5FA8D3", "Liste Horizons": "#5FA8D3", "Horizons": "#5FA8D3",
             "LUDI": "#6B99A1", "Liste de l'Union des Démocrates et des Indépendants": "#6B99A1", "Union des Démocrates et Indépendants": "#6B99A1",
@@ -821,7 +837,7 @@
 
             const groupMapping = {
                 "LVEC": "Nouveau Front Populaire", "LREG": "Nouveau Front Populaire", "LFI": "Nouveau Front Populaire", "LSOC": "Nouveau Front Populaire", "LECO": "Nouveau Front Populaire", "LUG": "Nouveau Front Populaire", "LCOM": "Nouveau Front Populaire",
-                "LDVC": "Bloc central", "LLR": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central",
+                "LDVC": "Bloc central", "LLR": "Bloc central","LREM": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central",
                 "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite"
             };
 
@@ -1021,6 +1037,285 @@
                 this.textContent = showingSmallParties ? "Masquer les petits partis/blocs (< 50 listes)" : "Afficher les petits partis/blocs (< 50 listes)";
                 this.style.backgroundColor = showingSmallParties ? "#fff" : "#e9e9e9";
                 updateHeatmapGrouped();
+            });
+        })();
+
+
+        /* =========================================
+        SCRIPT 2 TER : GRAPHIQUE DIVERGENT (CHANCES D'ÉLECTION)
+        ========================================= 
+        (function() {
+            // Données générées à partir de elected_ratio_by_party_final.csv
+            const divergingDataRaw = [{"Nuance Liste":"LCOM","Total Men":81,"Elected Men":35,"Elected Men %":43.21,"Total Women":34,"Elected Women":7,"Total candidates":115,"% elected candidates":36.52,"Elected Women %":20.59},{"Nuance Liste":"LDIV","Total Men":1091,"Elected Men":277,"Elected Men %":25.39,"Total Women":316,"Elected Women":63,"Total candidates":1407,"% elected candidates":24.16,"Elected Women %":19.94},{"Nuance Liste":"LDLF","Total Men":8,"Elected Men":1,"Elected Men %":12.5,"Total Women":2,"Elected Women":0,"Total candidates":10,"% elected candidates":10.0,"Elected Women %":0.0},{"Nuance Liste":"LDVC","Total Men":848,"Elected Men":281,"Elected Men %":33.14,"Total Women":262,"Elected Women":51,"Total candidates":1110,"% elected candidates":29.91,"Elected Women %":19.47},{"Nuance Liste":"LDVD","Total Men":1683,"Elected Men":784,"Elected Men %":46.58,"Total Women":437,"Elected Women":150,"Total candidates":2120,"% elected candidates":44.06,"Elected Women %":34.32},{"Nuance Liste":"LDVG","Total Men":1560,"Elected Men":522,"Elected Men %":33.46,"Total Women":532,"Elected Women":123,"Total candidates":2092,"% elected candidates":30.83,"Elected Women %":23.12},{"Nuance Liste":"LECO","Total Men":111,"Elected Men":10,"Elected Men %":9.01,"Total Women":55,"Elected Women":7,"Total candidates":166,"% elected candidates":10.24,"Elected Women %":12.73},{"Nuance Liste":"LEXD","Total Men":30,"Elected Men":4,"Elected Men %":13.33,"Total Women":6,"Elected Women":0,"Total candidates":36,"% elected candidates":11.11,"Elected Women %":0.0},{"Nuance Liste":"LEXG","Total Men":206,"Elected Men":0,"Elected Men %":0.0,"Total Women":116,"Elected Women":0,"Total candidates":322,"% elected candidates":0.0,"Elected Women %":0.0},{"Nuance Liste":"LFI","Total Men":51,"Elected Men":1,"Elected Men %":1.96,"Total Women":29,"Elected Women":0,"Total candidates":80,"% elected candidates":1.25,"Elected Women %":0.0},{"Nuance Liste":"LGJ","Total Men":8,"Elected Men":0,"Elected Men %":0.0,"Total Women":2,"Elected Women":0,"Total candidates":10,"% elected candidates":0.0,"Elected Women %":0.0},{"Nuance Liste":"LLR","Total Men":234,"Elected Men":142,"Elected Men %":60.68,"Total Women":68,"Elected Women":24,"Total candidates":302,"% elected candidates":54.97,"Elected Women %":35.29},{"Nuance Liste":"LMDM","Total Men":16,"Elected Men":3,"Elected Men %":18.75,"Total Women":1,"Elected Women":0,"Total candidates":17,"% elected candidates":17.65,"Elected Women %":0.0},{"Nuance Liste":"LRDG","Total Men":3,"Elected Men":2,"Elected Men %":66.67,"Total Women":1,"Elected Women":0,"Total candidates":4,"% elected candidates":50.0,"Elected Women %":0.0},{"Nuance Liste":"LREG","Total Men":66,"Elected Men":7,"Elected Men %":10.61,"Total Women":13,"Elected Women":0,"Total candidates":79,"% elected candidates":8.86,"Elected Women %":0.0},{"Nuance Liste":"LREM","Total Men":167,"Elected Men":14,"Elected Men %":8.38,"Total Women":70,"Elected Women":0,"Total candidates":237,"% elected candidates":5.91,"Elected Women %":0.0},{"Nuance Liste":"LRN","Total Men":294,"Elected Men":9,"Elected Men %":3.06,"Total Women":83,"Elected Women":0,"Total candidates":377,"% elected candidates":2.39,"Elected Women %":0.0},{"Nuance Liste":"LSOC","Total Men":126,"Elected Men":64,"Elected Men %":50.79,"Total Women":45,"Elected Women":17,"Total candidates":171,"% elected candidates":47.37,"Elected Women %":37.78},{"Nuance Liste":"LUC","Total Men":50,"Elected Men":12,"Elected Men %":24.0,"Total Women":26,"Elected Women":3,"Total candidates":76,"% elected candidates":19.74,"Elected Women %":11.54},{"Nuance Liste":"LUD","Total Men":56,"Elected Men":35,"Elected Men %":62.5,"Total Women":14,"Elected Women":9,"Total candidates":70,"% elected candidates":62.86,"Elected Women %":64.29},{"Nuance Liste":"LUDI","Total Men":42,"Elected Men":23,"Elected Men %":54.76,"Total Women":11,"Elected Women":7,"Total candidates":53,"% elected candidates":56.6,"Elected Women %":63.64},{"Nuance Liste":"LUG","Total Men":190,"Elected Men":82,"Elected Men %":43.16,"Total Women":85,"Elected Women":26,"Total candidates":275,"% elected candidates":39.27,"Elected Women %":30.59},{"Nuance Liste":"LVEC","Total Men":102,"Elected Men":9,"Elected Men %":8.82,"Total Women":67,"Elected Women":5,"Total candidates":169,"% elected candidates":8.28,"Elected Women %":7.46},{"Nuance Liste":"UNKNOWN","Total Men":7976,"Elected Men":4938,"Elected Men %":61.91,"Total Women":2237,"Elected Women":1223,"Total candidates":10213,"% elected candidates":60.33,"Elected Women %":54.67}]
+            const data = divergingDataRaw.map(d => {
+                d.overall = d["% elected candidates"];
+                d.women = d["Elected Women %"];
+                d.diff = d.women - d.overall;
+                d.party = d["Nuance Liste"];
+                return d;
+            }).sort((a, b) => a.diff - b.diff);
+
+            const margin = {top: 40, right: 30, bottom: 40, left: 50};
+            const containerWidth = document.getElementById("diverging-chart").parentNode.clientWidth || 600;
+            const svgWidth = Math.max(containerWidth, 550); // Pour mobile
+            const width = svgWidth - margin.left - margin.right;
+            
+            const svg = d3.select("#diverging-chart").append("svg")
+                .attr("width", svgWidth)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const tooltip = d3.select("body").append("div").attr("class", "d3-tooltip");
+
+            const x = d3.scaleLinear().range([0, width]);
+            const y = d3.scaleBand().padding(0.2);
+
+            const xAxisGroup = svg.append("g").attr("transform", `translate(0,0)`).attr("class", "x-axis");
+            const yAxisGroup = svg.append("g").attr("class", "y-axis");
+
+            // Titres de l'axe X haut
+            svg.append("text").attr("x", width / 4).attr("y", -25).attr("text-anchor", "middle").style("font-size", "10px").style("fill", "#666").text("← Déficit pour les femmes");
+            svg.append("text").attr("x", (width / 4) * 3).attr("y", -25).attr("text-anchor", "middle").style("font-size", "10px").style("fill", "#666").text("Avantage pour les femmes →");
+
+            const zeroLine = svg.append("line").attr("y1", 0).attr("stroke", "#991B1B").attr("stroke-width", 1.5).attr("stroke-dasharray", "4,4");
+
+            let showSmall = false;
+
+            function updateDiverging(chartData) {
+                const height = chartData.length * 30; 
+                d3.select("#diverging-chart svg").transition().duration(400).attr("height", height + margin.top + margin.bottom);
+                
+                const xMax = d3.max(chartData, d => Math.abs(d.diff)) || 10; 
+                x.domain([-xMax - 2, xMax + 2]);
+                y.domain(chartData.map(d => d.party)).range([0, height]);
+
+                xAxisGroup.transition().duration(400).call(d3.axisTop(x).tickFormat(d => (d > 0 ? "+" : "") + d.toFixed(0) + "%"));
+                yAxisGroup.transition().duration(400).call(d3.axisLeft(y).tickSize(0));
+                zeroLine.transition().duration(400).attr("x1", x(0)).attr("x2", x(0)).attr("y2", height);
+
+                svg.selectAll(".bar").data(chartData, d => d.party)
+                    .join(
+                        enter => enter.append("rect").attr("class", "bar").attr("x", x(0)).attr("y", d => y(d.party))
+                            .attr("width", 0).attr("height", y.bandwidth())
+                            .attr("fill", d => globalColorMapping[d.party] || fallbackColor)
+                            .style("cursor", "pointer").style("opacity", 1),
+                        update => update,
+                        exit => exit.transition().duration(400).attr("width", 0).attr("x", x(0)).remove()
+                    )
+                    .on("mouseover", function(event, d) {
+                        d3.select(this).style("opacity", 0.7);
+                        const gapColor = d.diff >= 0 ? '#1a9850' : '#d73027';
+                        const sign = d.diff >= 0 ? '+' : '';
+                        
+                        tooltip.transition().duration(200).style("opacity", 1);
+                        tooltip.html(`
+                            <div class="tooltip-title" style="color: ${globalColorMapping[d.party] || fallbackColor};">${d.party}</div>
+                            <div class="tooltip-data">Candidats totaux : <b>${d["Total candidates"]}</b></div>
+                            <div class="tooltip-data" style="color:#555">↳ Hommes : ${d["Total Men"]} | Femmes : ${d["Total Women"]}</div>
+                            <hr style="border: 0; border-top: 1px solid #eee; margin: 6px 0;">
+                            <div class="tooltip-data">Taux d'élection global : <b>${d.overall.toFixed(1)}%</b></div>
+                            <div class="tooltip-data">Taux d'élection Femmes : <b>${d.women.toFixed(1)}%</b></div>
+                            <div class="tooltip-data" style="margin-top: 4px;">Écart : <b style="color:${gapColor}">${sign}${d.diff.toFixed(2)}%</b></div>
+                        `)
+                        .style("left", (event.pageX + 15) + "px")
+                        .style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mousemove", function(event) {
+                        tooltip.style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", function() {
+                        d3.select(this).style("opacity", 1);
+                        tooltip.transition().duration(200).style("opacity", 0);
+                    })
+                    .transition().duration(500)
+                    .attr("y", d => y(d.party))
+                    .attr("height", y.bandwidth())
+                    .attr("x", d => Math.min(x(0), x(d.diff)))
+                    .attr("width", d => Math.abs(x(d.diff) - x(0)));
+            }
+
+            // Filtre initial : On cache les partis avec moins de 100 candidats
+            updateDiverging(data.filter(d => d["Total candidates"] >= 100));
+
+            d3.select("#toggle-small-parties-diverging").on("click", function() {
+                showSmall = !showSmall;
+                if (showSmall) {
+                    d3.select(this).text("Masquer les petits partis (< 100 candidats)").style("background-color", "#e9e9e9");
+                    updateDiverging(data);
+                } else {
+                    d3.select(this).text("Afficher tous les partis").style("background-color", "#fff");
+                    updateDiverging(data.filter(d => d["Total candidates"] >= 100));
+                }
+            });
+        })();*/
+
+
+        /* =========================================
+        SCRIPT 2 TER : GRAPHIQUE DIVERGENT (CHANCES D'ÉLECTION)
+        ========================================= */
+      /* =========================================
+        SCRIPT 2 TER : GRAPHIQUE DIVERGENT (CHANCES D'ÉLECTION)
+        ========================================= */
+        (function() {
+            // Mapping de regroupement
+            // Mapping de regroupement mis à jour pour 2020
+            const groupMapping = {
+                "LVEC": "Bloc de gauche", "LREG": "Bloc de gauche", "LFI": "Bloc de gauche", "LSOC": "Bloc de gauche", "LECO": "Bloc de gauche", "LUG": "Bloc de gauche", "LCOM": "Bloc de gauche",
+                "LDVC": "Bloc central", "LLR": "Bloc central","LREM": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central",
+                "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite"
+            };
+
+            // Couleurs des groupes mises à jour
+            const groupedColors = {
+                "Bloc de gauche": "#C97A7A", // Anciennement NFP
+                "Bloc central": "#6B99A1",            
+                "Extrême-droite": "#2B3E50"           
+            };
+
+            // Données brutes
+            const divergingDataRaw = [{"Nuance Liste":"LCOM","Total Men":81,"Elected Men":35,"Elected Men %":43.21,"Total Women":34,"Elected Women":7,"Total candidates":115,"% elected candidates":36.52,"Elected Women %":20.59},{"Nuance Liste":"LDIV","Total Men":1091,"Elected Men":277,"Elected Men %":25.39,"Total Women":316,"Elected Women":63,"Total candidates":1407,"% elected candidates":24.16,"Elected Women %":19.94},{"Nuance Liste":"LDLF","Total Men":8,"Elected Men":1,"Elected Men %":12.5,"Total Women":2,"Elected Women":0,"Total candidates":10,"% elected candidates":10.0,"Elected Women %":0.0},{"Nuance Liste":"LDVC","Total Men":848,"Elected Men":281,"Elected Men %":33.14,"Total Women":262,"Elected Women":51,"Total candidates":1110,"% elected candidates":29.91,"Elected Women %":19.47},{"Nuance Liste":"LDVD","Total Men":1683,"Elected Men":784,"Elected Men %":46.58,"Total Women":437,"Elected Women":150,"Total candidates":2120,"% elected candidates":44.06,"Elected Women %":34.32},{"Nuance Liste":"LDVG","Total Men":1560,"Elected Men":522,"Elected Men %":33.46,"Total Women":532,"Elected Women":123,"Total candidates":2092,"% elected candidates":30.83,"Elected Women %":23.12},{"Nuance Liste":"LECO","Total Men":111,"Elected Men":10,"Elected Men %":9.01,"Total Women":55,"Elected Women":7,"Total candidates":166,"% elected candidates":10.24,"Elected Women %":12.73},{"Nuance Liste":"LEXD","Total Men":30,"Elected Men":4,"Elected Men %":13.33,"Total Women":6,"Elected Women":0,"Total candidates":36,"% elected candidates":11.11,"Elected Women %":0.0},{"Nuance Liste":"LEXG","Total Men":206,"Elected Men":0,"Elected Men %":0.0,"Total Women":116,"Elected Women":0,"Total candidates":322,"% elected candidates":0.0,"Elected Women %":0.0},{"Nuance Liste":"LFI","Total Men":51,"Elected Men":1,"Elected Men %":1.96,"Total Women":29,"Elected Women":0,"Total candidates":80,"% elected candidates":1.25,"Elected Women %":0.0},{"Nuance Liste":"LGJ","Total Men":8,"Elected Men":0,"Elected Men %":0.0,"Total Women":2,"Elected Women":0,"Total candidates":10,"% elected candidates":0.0,"Elected Women %":0.0},{"Nuance Liste":"LLR","Total Men":234,"Elected Men":142,"Elected Men %":60.68,"Total Women":68,"Elected Women":24,"Total candidates":302,"% elected candidates":54.97,"Elected Women %":35.29},{"Nuance Liste":"LMDM","Total Men":16,"Elected Men":3,"Elected Men %":18.75,"Total Women":1,"Elected Women":0,"Total candidates":17,"% elected candidates":17.65,"Elected Women %":0.0},{"Nuance Liste":"LRDG","Total Men":3,"Elected Men":2,"Elected Men %":66.67,"Total Women":1,"Elected Women":0,"Total candidates":4,"% elected candidates":50.0,"Elected Women %":0.0},{"Nuance Liste":"LREG","Total Men":66,"Elected Men":7,"Elected Men %":10.61,"Total Women":13,"Elected Women":0,"Total candidates":79,"% elected candidates":8.86,"Elected Women %":0.0},{"Nuance Liste":"LREM","Total Men":167,"Elected Men":14,"Elected Men %":8.38,"Total Women":70,"Elected Women":0,"Total candidates":237,"% elected candidates":5.91,"Elected Women %":0.0},{"Nuance Liste":"LRN","Total Men":294,"Elected Men":9,"Elected Men %":3.06,"Total Women":83,"Elected Women":0,"Total candidates":377,"% elected candidates":2.39,"Elected Women %":0.0},{"Nuance Liste":"LSOC","Total Men":126,"Elected Men":64,"Elected Men %":50.79,"Total Women":45,"Elected Women":17,"Total candidates":171,"% elected candidates":47.37,"Elected Women %":37.78},{"Nuance Liste":"LUC","Total Men":50,"Elected Men":12,"Elected Men %":24.0,"Total Women":26,"Elected Women":3,"Total candidates":76,"% elected candidates":19.74,"Elected Women %":11.54},{"Nuance Liste":"LUD","Total Men":56,"Elected Men":35,"Elected Men %":62.5,"Total Women":14,"Elected Women":9,"Total candidates":70,"% elected candidates":62.86,"Elected Women %":64.29},{"Nuance Liste":"LUDI","Total Men":42,"Elected Men":23,"Elected Men %":54.76,"Total Women":11,"Elected Women":7,"Total candidates":53,"% elected candidates":56.6,"Elected Women %":63.64},{"Nuance Liste":"LUG","Total Men":190,"Elected Men":82,"Elected Men %":43.16,"Total Women":85,"Elected Women":26,"Total candidates":275,"% elected candidates":39.27,"Elected Women %":30.59},{"Nuance Liste":"LVEC","Total Men":102,"Elected Men":9,"Elected Men %":8.82,"Total Women":67,"Elected Women":5,"Total candidates":169,"% elected candidates":8.28,"Elected Women %":7.46},{"Nuance Liste":"UNKNOWN","Total Men":7976,"Elected Men":4938,"Elected Men %":61.91,"Total Women":2237,"Elected Women":1223,"Total candidates":10213,"% elected candidates":60.33,"Elected Women %":54.67}];
+            
+            // 1. Agréger les données par groupe ET conserver les sous-partis
+            const aggregatedObj = {};
+
+            divergingDataRaw.forEach(d => {
+                const groupName = groupMapping[d["Nuance Liste"]] || d["Nuance Liste"];
+                
+                if (!aggregatedObj[groupName]) {
+                    aggregatedObj[groupName] = {
+                        "party": groupName,
+                        "Total Men": 0,
+                        "Elected Men": 0,
+                        "Total Women": 0,
+                        "Elected Women": 0,
+                        "Total candidates": 0,
+                        "subParties": new Set() // Utilisation d'un Set pour éviter les doublons
+                    };
+                }
+                
+                aggregatedObj[groupName]["Total Men"] += d["Total Men"];
+                aggregatedObj[groupName]["Elected Men"] += d["Elected Men"];
+                aggregatedObj[groupName]["Total Women"] += d["Total Women"];
+                aggregatedObj[groupName]["Elected Women"] += d["Elected Women"];
+                aggregatedObj[groupName]["Total candidates"] += d["Total candidates"];
+                
+                // Si le parti fait partie d'un groupe, on l'ajoute à la liste des sous-partis
+                if (groupMapping[d["Nuance Liste"]]) {
+                    aggregatedObj[groupName].subParties.add(d["Nuance Liste"]);
+                }
+            });
+
+            // 2. Recalculer les pourcentages pour la visualisation
+            const data = Object.values(aggregatedObj).map(d => {
+                const totalElected = d["Elected Men"] + d["Elected Women"];
+                
+                d["% elected candidates"] = d["Total candidates"] > 0 ? (totalElected / d["Total candidates"]) * 100 : 0;
+                d["Elected Women %"] = d["Total Women"] > 0 ? (d["Elected Women"] / d["Total Women"]) * 100 : 0;
+                
+                d.overall = d["% elected candidates"];
+                d.women = d["Elected Women %"];
+                d.diff = d.women - d.overall;
+                d.subPartiesList = Array.from(d.subParties).join(', '); // Conversion du Set en chaîne de caractères
+                return d;
+            }).sort((a, b) => a.diff - b.diff);
+
+            // CHANGEMENT ICI : margin.left augmenté à 160 pour faire de la place aux noms longs
+            const margin = {top: 40, right: 30, bottom: 40, left: 160}; 
+            const containerWidth = document.getElementById("diverging-chart").parentNode.clientWidth || 600;
+            const svgWidth = Math.max(containerWidth, 550); 
+            const width = svgWidth - margin.left - margin.right;
+            
+            const svg = d3.select("#diverging-chart").append("svg")
+                .attr("width", svgWidth)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            const tooltip = d3.select("body").append("div").attr("class", "d3-tooltip");
+
+            const x = d3.scaleLinear().range([0, width]);
+            const y = d3.scaleBand().padding(0.2);
+
+            const xAxisGroup = svg.append("g").attr("transform", `translate(0,0)`).attr("class", "x-axis");
+            const yAxisGroup = svg.append("g").attr("class", "y-axis");
+
+            // Titres de l'axe X haut
+            svg.append("text").attr("x", width / 4).attr("y", -25).attr("text-anchor", "middle").style("font-size", "10px").style("fill", "#666").text("← Déficit pour les femmes");
+            svg.append("text").attr("x", (width / 4) * 3).attr("y", -25).attr("text-anchor", "middle").style("font-size", "10px").style("fill", "#666").text("Avantage pour les femmes →");
+
+            const zeroLine = svg.append("line").attr("y1", 0).attr("stroke", "#991B1B").attr("stroke-width", 1.5).attr("stroke-dasharray", "4,4");
+
+            let showSmall = false;
+
+            function updateDiverging(chartData) {
+                const height = chartData.length * 30; 
+                d3.select("#diverging-chart svg").transition().duration(400).attr("height", height + margin.top + margin.bottom);
+                
+                const xMax = d3.max(chartData, d => Math.abs(d.diff)) || 10; 
+                x.domain([-xMax - 2, xMax + 2]);
+                y.domain(chartData.map(d => d.party)).range([0, height]);
+
+                xAxisGroup.transition().duration(400).call(d3.axisTop(x).tickFormat(d => (d > 0 ? "+" : "") + d.toFixed(0) + "%"));
+                yAxisGroup.transition().duration(400).call(d3.axisLeft(y).tickSize(0));
+                zeroLine.transition().duration(400).attr("x1", x(0)).attr("x2", x(0)).attr("y2", height);
+
+                svg.selectAll(".bar").data(chartData, d => d.party)
+                    .join(
+                        enter => enter.append("rect").attr("class", "bar").attr("x", x(0)).attr("y", d => y(d.party))
+                            .attr("width", 0).attr("height", y.bandwidth())
+                            .attr("fill", d => groupedColors[d.party] || (typeof globalColorMapping !== 'undefined' && globalColorMapping[d.party]) || "#cccccc")
+                            .style("cursor", "pointer").style("opacity", 1),
+                        update => update,
+                        exit => exit.transition().duration(400).attr("width", 0).attr("x", x(0)).remove()
+                    )
+                    .on("mouseover", function(event, d) {
+                        d3.select(this).style("opacity", 0.7);
+                        const gapColor = d.diff >= 0 ? '#1a9850' : '#d73027';
+                        const sign = d.diff >= 0 ? '+' : '';
+                        const partyColor = groupedColors[d.party] || (typeof globalColorMapping !== 'undefined' && globalColorMapping[d.party]) || "#cccccc";
+                        
+                        // CHANGEMENT ICI : Préparation de la ligne des sous-partis pour le tooltip
+                        const subPartiesHtml = d.subPartiesList ? `<div style="font-size: 0.85em; color: #777; font-style: italic; margin-bottom: 6px;">Comprend : ${d.subPartiesList}</div>` : '';
+
+                        tooltip.transition().duration(200).style("opacity", 1);
+                        tooltip.html(`
+                            <div class="tooltip-title" style="color: ${partyColor}; margin-bottom: 2px;">${d.party}</div>
+                            ${subPartiesHtml}
+                            <div class="tooltip-data">Candidats totaux : <b>${d["Total candidates"]}</b></div>
+                            <div class="tooltip-data" style="color:#555">↳ Hommes : ${d["Total Men"]} | Femmes : ${d["Total Women"]}</div>
+                            <hr style="border: 0; border-top: 1px solid #eee; margin: 6px 0;">
+                            <div class="tooltip-data">Taux d'élection global : <b>${d.overall.toFixed(1)}%</b></div>
+                            <div class="tooltip-data">Taux d'élection Femmes : <b>${d.women.toFixed(1)}%</b></div>
+                            <div class="tooltip-data" style="margin-top: 4px;">Écart : <b style="color:${gapColor}">${sign}${d.diff.toFixed(2)}%</b></div>
+                        `)
+                        .style("left", (event.pageX + 15) + "px")
+                        .style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mousemove", function(event) {
+                        tooltip.style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 28) + "px");
+                    })
+                    .on("mouseout", function() {
+                        d3.select(this).style("opacity", 1);
+                        tooltip.transition().duration(200).style("opacity", 0);
+                    })
+                    .transition().duration(500)
+                    .attr("y", d => y(d.party))
+                    .attr("height", y.bandwidth())
+                    .attr("x", d => Math.min(x(0), x(d.diff)))
+                    .attr("width", d => Math.abs(x(d.diff) - x(0)));
+            }
+
+            // Filtre initial : On cache les partis avec moins de 100 candidats
+            updateDiverging(data.filter(d => d["Total candidates"] >= 100));
+
+            d3.select("#toggle-small-parties-diverging").on("click", function() {
+                showSmall = !showSmall;
+                if (showSmall) {
+                    d3.select(this).text("Masquer les petits partis (< 100 candidats)").style("background-color", "#e9e9e9");
+                    updateDiverging(data);
+                } else {
+                    d3.select(this).text("Afficher tous les partis").style("background-color", "#fff");
+                    updateDiverging(data.filter(d => d["Total candidates"] >= 100));
+                }
             });
         })();
 

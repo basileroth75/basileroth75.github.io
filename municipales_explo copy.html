@@ -1,0 +1,202 @@
+/* =========================================
+   SCRIPT 2 QUATER : GRAPHIQUE DIVERGENT (REGROUPÉ PAR BLOCS, DONNÉES INTÉGRÉES)
+   ========================================= */
+(function() {
+    // Mapping des blocs
+    const groupMapping = {
+        "LVEC": "Nouveau Front Populaire", "LREG": "Nouveau Front Populaire", "LFI": "Nouveau Front Populaire", "LSOC": "Nouveau Front Populaire", "LECO": "Nouveau Front Populaire", "LUG": "Nouveau Front Populaire", "LCOM": "Nouveau Front Populaire",
+        "LDVC": "Bloc central", "LLR": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central",
+        "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite"
+    };
+
+    const groupedColors = {
+        "Nouveau Front Populaire": "#C97A7A", 
+        "Bloc central": "#6B99A1",            
+        "Extrême-droite": "#2B3E50"           
+    };
+
+    // Données JSON directement extraites du fichier CSV
+    const divergingDataRaw = [
+        {"Nuance Liste": "LCOM", "Total Men": 81, "Elected Men": 35, "Elected Men %": 43.21, "Total Women": 34, "Elected Women": 7, "Elected Women %": 20.59, "Total candidates": 115, "% elected candidates": 36.52}, 
+        {"Nuance Liste": "LDIV", "Total Men": 1091, "Elected Men": 277, "Elected Men %": 25.39, "Total Women": 316, "Elected Women": 63, "Elected Women %": 19.94, "Total candidates": 1407, "% elected candidates": 24.16}, 
+        {"Nuance Liste": "LDLF", "Total Men": 8, "Elected Men": 1, "Elected Men %": 12.5, "Total Women": 2, "Elected Women": 0, "Elected Women %": 0.0, "Total candidates": 10, "% elected candidates": 10.0}, 
+        {"Nuance Liste": "LDVC", "Total Men": 848, "Elected Men": 281, "Elected Men %": 33.14, "Total Women": 262, "Elected Women": 51, "Elected Women %": 19.47, "Total candidates": 1110, "% elected candidates": 29.91}, 
+        {"Nuance Liste": "LDVD", "Total Men": 1683, "Elected Men": 784, "Elected Men %": 46.58, "Total Women": 437, "Elected Women": 150, "Elected Women %": 34.32, "Total candidates": 2120, "% elected candidates": 44.06}, 
+        {"Nuance Liste": "LDVG", "Total Men": 1560, "Elected Men": 522, "Elected Men %": 33.46, "Total Women": 532, "Elected Women": 123, "Elected Women %": 23.12, "Total candidates": 2092, "% elected candidates": 30.83}, 
+        {"Nuance Liste": "LECO", "Total Men": 111, "Elected Men": 10, "Elected Men %": 9.01, "Total Women": 55, "Elected Women": 7, "Elected Women %": 12.73, "Total candidates": 166, "% elected candidates": 10.24}, 
+        {"Nuance Liste": "LEXD", "Total Men": 30, "Elected Men": 4, "Elected Men %": 13.33, "Total Women": 6, "Elected Women": 0, "Elected Women %": 0.0, "Total candidates": 36, "% elected candidates": 11.11}, 
+        {"Nuance Liste": "LEXG", "Total Men": 206, "Elected Men": 0, "Elected Men %": 0.0, "Total Women": 116, "Elected Women": 0, "Elected Women %": 0.0, "Total candidates": 322, "% elected candidates": 0.0}, 
+        {"Nuance Liste": "LFI", "Total Men": 51, "Elected Men": 1, "Elected Men %": 1.96, "Total Women": 29, "Elected Women": 0, "Elected Women %": 0.0, "Total candidates": 80, "% elected candidates": 1.25}, 
+        {"Nuance Liste": "LGJ", "Total Men": 8, "Elected Men": 0, "Elected Men %": 0.0, "Total Women": 2, "Elected Women": 0, "Elected Women %": 0.0, "Total candidates": 10, "% elected candidates": 0.0}, 
+        {"Nuance Liste": "LLR", "Total Men": 234, "Elected Men": 142, "Elected Men %": 60.68, "Total Women": 68, "Elected Women": 24, "Elected Women %": 35.29, "Total candidates": 302, "% elected candidates": 54.97}, 
+        {"Nuance Liste": "LMDM", "Total Men": 16, "Elected Men": 3, "Elected Men %": 18.75, "Total Women": 1, "Elected Women": 0, "Elected Women %": 0.0, "Total candidates": 17, "% elected candidates": 17.65}, 
+        {"Nuance Liste": "LRDG", "Total Men": 3, "Elected Men": 2, "Elected Men %": 66.67, "Total Women": 1, "Elected Women": 0, "Elected Women %": 0.0, "Total candidates": 4, "% elected candidates": 50.0}, 
+        {"Nuance Liste": "LREG", "Total Men": 66, "Elected Men": 7, "Elected Men %": 10.61, "Total Women": 13, "Elected Women": 0, "Elected Women %": 0.0, "Total candidates": 79, "% elected candidates": 8.86}, 
+        {"Nuance Liste": "LREM", "Total Men": 167, "Elected Men": 14, "Elected Men %": 8.38, "Total Women": 70, "Elected Women": 0, "Elected Women %": 0.0, "Total candidates": 237, "% elected candidates": 5.91}, 
+        {"Nuance Liste": "LRN", "Total Men": 294, "Elected Men": 9, "Elected Men %": 3.06, "Total Women": 83, "Elected Women": 0, "Elected Women %": 0.0, "Total candidates": 377, "% elected candidates": 2.39}, 
+        {"Nuance Liste": "LSOC", "Total Men": 126, "Elected Men": 64, "Elected Men %": 50.79, "Total Women": 45, "Elected Women": 17, "Elected Women %": 37.78, "Total candidates": 171, "% elected candidates": 47.37}, 
+        {"Nuance Liste": "LUC", "Total Men": 50, "Elected Men": 12, "Elected Men %": 24.0, "Total Women": 26, "Elected Women": 3, "Elected Women %": 11.54, "Total candidates": 76, "% elected candidates": 19.74}, 
+        {"Nuance Liste": "LUD", "Total Men": 56, "Elected Men": 35, "Elected Men %": 62.5, "Total Women": 14, "Elected Women": 9, "Elected Women %": 64.29, "Total candidates": 70, "% elected candidates": 62.86}, 
+        {"Nuance Liste": "LUDI", "Total Men": 42, "Elected Men": 23, "Elected Men %": 54.76, "Total Women": 11, "Elected Women": 7, "Elected Women %": 63.64, "Total candidates": 53, "% elected candidates": 56.6}, 
+        {"Nuance Liste": "LUG", "Total Men": 190, "Elected Men": 82, "Elected Men %": 43.16, "Total Women": 85, "Elected Women": 26, "Elected Women %": 30.59, "Total candidates": 275, "% elected candidates": 39.27}, 
+        {"Nuance Liste": "LVEC", "Total Men": 102, "Elected Men": 9, "Elected Men %": 8.82, "Total Women": 67, "Elected Women": 5, "Elected Women %": 7.46, "Total candidates": 169, "% elected candidates": 8.28}, 
+        {"Nuance Liste": "UNKNOWN", "Total Men": 7976, "Elected Men": 4938, "Elected Men %": 61.91, "Total Women": 2237, "Elected Women": 1223, "Elected Women %": 54.67, "Total candidates": 10213, "% elected candidates": 60.33}
+    ];
+
+    // 1. Agréger les données brutes
+    const aggregatedDiverging = {};
+
+    divergingDataRaw.forEach(d => {
+        let partyCode = d["Nuance Liste"];
+        // Ignorer les données "UNKNOWN"
+        if (partyCode === "UNKNOWN") return; 
+
+        let groupName = groupMapping[partyCode] || partyCode; // Nom du bloc ou parti par défaut
+        
+        let totalCands = d["Total candidates"];
+        let totalWomen = d["Total Women"];
+        let totalMen = d["Total Men"];
+        let electedWomen = d["Elected Women"];
+        let electedMen = d["Elected Men"];
+        let totalElected = electedWomen + electedMen;
+        
+        if (!aggregatedDiverging[groupName]) {
+            aggregatedDiverging[groupName] = {
+                party: groupName,
+                OriginalCode: partyCode,
+                "Total candidates": 0,
+                "Total Women": 0,
+                "Total Men": 0,
+                "Elected": 0,
+                "Elected Women": 0,
+                "Elected Men": 0,
+                SubParties: new Set()
+            };
+        }
+        
+        let agg = aggregatedDiverging[groupName];
+        agg["Total candidates"] += totalCands;
+        agg["Total Women"] += totalWomen;
+        agg["Total Men"] += totalMen;
+        agg["Elected"] += totalElected;
+        agg["Elected Women"] += electedWomen;
+        agg["Elected Men"] += electedMen;
+        
+        // On mémorise les nuances qui composent ce bloc
+        if (groupMapping[partyCode]) {
+            agg.SubParties.add(partyCode);
+        }
+    });
+
+    // 2. Recalculer les pourcentages de chance et l'écart pour chaque groupe
+    const groupedData = Object.values(aggregatedDiverging).map(d => {
+        d.overall = d["Total candidates"] > 0 ? (d["Elected"] / d["Total candidates"]) * 100 : 0;
+        d.women = d["Total Women"] > 0 ? (d["Elected Women"] / d["Total Women"]) * 100 : 0;
+        d.diff = d.women - d.overall;
+        d.SubParties = Array.from(d.SubParties); 
+        d.Color = groupedColors[d.party] || globalColorMapping[d.OriginalCode] || fallbackColor;
+        return d;
+    }).sort((a, b) => a.diff - b.diff);
+
+    // 3. Configuration D3
+    const margin = {top: 40, right: 30, bottom: 40, left: 160}; // Marge gauche plus large pour les noms de blocs
+    const containerWidth = document.getElementById("diverging-chart-grouped").parentNode.clientWidth || 600;
+    const svgWidth = Math.max(containerWidth, 550);
+    const width = svgWidth - margin.left - margin.right;
+    
+    const svg = d3.select("#diverging-chart-grouped").append("svg")
+        .attr("width", svgWidth)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const tooltip = d3.select("body").append("div").attr("class", "d3-tooltip");
+
+    const x = d3.scaleLinear().range([0, width]);
+    const y = d3.scaleBand().padding(0.2);
+
+    const xAxisGroup = svg.append("g").attr("transform", `translate(0,0)`).attr("class", "x-axis");
+    const yAxisGroup = svg.append("g").attr("class", "y-axis");
+
+    // Titres de l'axe X haut
+    svg.append("text").attr("x", width / 4).attr("y", -25).attr("text-anchor", "middle").style("font-size", "10px").style("fill", "#666").text("← Déficit pour les femmes");
+    svg.append("text").attr("x", (width / 4) * 3).attr("y", -25).attr("text-anchor", "middle").style("font-size", "10px").style("fill", "#666").text("Avantage pour les femmes →");
+
+    const zeroLine = svg.append("line").attr("y1", 0).attr("stroke", "#991B1B").attr("stroke-width", 1.5).attr("stroke-dasharray", "4,4");
+
+    let showSmall = false;
+
+    // 4. Fonction de mise à jour (dessin des barres)
+    function updateDivergingGrouped(chartData) {
+        const height = chartData.length * 35; 
+        d3.select("#diverging-chart-grouped svg").transition().duration(400).attr("height", height + margin.top + margin.bottom);
+        
+        const xMax = d3.max(chartData, d => Math.abs(d.diff)) || 5; 
+        x.domain([-xMax - 2, xMax + 2]);
+        y.domain(chartData.map(d => d.party)).range([0, height]);
+
+        xAxisGroup.transition().duration(400).call(d3.axisTop(x).tickFormat(d => (d > 0 ? "+" : "") + d.toFixed(0) + "%"));
+        yAxisGroup.transition().duration(400).call(d3.axisLeft(y).tickSize(0))
+            .selectAll("text").style("font-size", "11px").style("font-weight", "bold");
+            
+        zeroLine.transition().duration(400).attr("x1", x(0)).attr("x2", x(0)).attr("y2", height);
+
+        svg.selectAll(".bar").data(chartData, d => d.party)
+            .join(
+                enter => enter.append("rect").attr("class", "bar").attr("x", x(0)).attr("y", d => y(d.party))
+                    .attr("width", 0).attr("height", y.bandwidth())
+                    .attr("fill", d => d.Color)
+                    .style("cursor", "pointer").style("opacity", 1),
+                update => update,
+                exit => exit.transition().duration(400).attr("width", 0).attr("x", x(0)).remove()
+            )
+            .on("mouseover", function(event, d) {
+                d3.select(this).style("opacity", 0.7);
+                const gapColor = d.diff >= 0 ? '#1a9850' : '#d73027';
+                const sign = d.diff >= 0 ? '+' : '';
+                
+                const subPartiesHTML = d.SubParties && d.SubParties.length > 0 
+                    ? `<div style="margin-top:6px; padding-top:4px; font-size:10px; color:#777; font-style: italic; line-height: 1.3;"><b>Inclut :</b> ${d.SubParties.join(', ')}</div>` 
+                    : '';
+                
+                tooltip.transition().duration(200).style("opacity", 1);
+                tooltip.html(`
+                    <div class="tooltip-title" style="color: ${d.Color};">${d.party}</div>
+                    <div class="tooltip-data">Candidats totaux consolidés : <b>${d["Total candidates"]}</b></div>
+                    <div class="tooltip-data" style="color:#555">↳ Hommes : ${d["Total Men"]} | Femmes : ${d["Total Women"]}</div>
+                    <hr style="border: 0; border-top: 1px solid #eee; margin: 6px 0;">
+                    <div class="tooltip-data">Taux d'élection global : <b>${d.overall.toFixed(1)}%</b></div>
+                    <div class="tooltip-data">Taux d'élection Femmes : <b>${d.women.toFixed(1)}%</b></div>
+                    <div class="tooltip-data" style="margin-top: 4px;">Écart (Femmes vs Global) : <b style="color:${gapColor}">${sign}${d.diff.toFixed(2)}%</b></div>
+                    ${subPartiesHTML}
+                `)
+                .style("left", (event.pageX + 15) + "px")
+                .style("top", (event.pageY - 28) + "px");
+            })
+            .on("mousemove", function(event) {
+                tooltip.style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", function() {
+                d3.select(this).style("opacity", 1);
+                tooltip.transition().duration(200).style("opacity", 0);
+            })
+            .transition().duration(500)
+            .attr("y", d => y(d.party))
+            .attr("height", y.bandwidth())
+            .attr("x", d => Math.min(x(0), x(d.diff)))
+            .attr("width", d => Math.abs(x(d.diff) - x(0)));
+    }
+
+    // Filtre initial : on cache les blocs/partis avec moins de 100 candidats consolidés
+    updateDivergingGrouped(groupedData.filter(d => d["Total candidates"] >= 100));
+
+    d3.select("#toggle-small-parties-diverging-grouped").on("click", function() {
+        showSmall = !showSmall;
+        if (showSmall) {
+            d3.select(this).text("Masquer les petits blocs/partis (< 100 candidats)").style("background-color", "#e9e9e9");
+            updateDivergingGrouped(groupedData);
+        } else {
+            d3.select(this).text("Afficher tous les blocs/partis").style("background-color", "#fff");
+            updateDivergingGrouped(groupedData.filter(d => d["Total candidates"] >= 100));
+        }
+    });
+})();

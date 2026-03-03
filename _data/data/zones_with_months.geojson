@@ -1,0 +1,19 @@
+{
+"type": "FeatureCollection",
+"name": "zones_with_months",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "zone_id": "GPZ-EI", "protected": "All year ", "start_month": 1, "end_month": 12 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -53.44, -60.97 ], [ -53.44, -61.71 ], [ -56.11, -61.71 ], [ -56.11, -61.31 ], [ -55.5, -60.83 ], [ -55.0, -60.97 ], [ -53.44, -60.97 ] ] ] } },
+{ "type": "Feature", "properties": { "zone_id": "GPZ-GC", "protected": "All year  ", "start_month": 1, "end_month": 12 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -65.2, -64.89 ], [ -68.05, -66.29 ], [ -65.84, -66.97 ], [ -63.63, -65.67 ], [ -65.2, -64.89 ] ] ] } },
+{ "type": "Feature", "properties": { "zone_id": "GPZ-GSW", "protected": "All year ", "start_month": 1, "end_month": 12 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -63.7, -64.0 ], [ -65.2, -64.89 ], [ -63.63, -65.67 ], [ -62.2, -64.93 ], [ -63.7, -64.0 ] ] ] } },
+{ "type": "Feature", "properties": { "zone_id": "GPZ-JOIN", "protected": "All year ", "start_month": 1, "end_month": 12 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -56.08, -63.0 ], [ -53.44, -63.0 ], [ -53.5, -63.42 ], [ -53.49, -64.0 ], [ -58.71, -64.0 ], [ -58.97, -63.84 ], [ -56.56, -63.1 ], [ -56.08, -63.0 ] ] ] } },
+{ "type": "Feature", "properties": { "zone_id": "GPZ-LIC", "protected": "All year ", "start_month": 1, "end_month": 12 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -60.25, -62.0 ], [ -62.77, -62.5 ], [ -61.88, -62.93 ], [ -60.09, -62.46 ], [ -60.14, -62.29 ], [ -60.25, -62.0 ] ] ] } },
+{ "type": "Feature", "properties": { "zone_id": "GPZ-MB", "protected": "All year  ", "start_month": 1, "end_month": 12 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -68.05, -66.29 ], [ -70.0, -67.0 ], [ -70.0, -73.22 ], [ -66.2, -73.22 ], [ -65.84, -66.97 ], [ -68.05, -66.29 ] ] ] } },
+{ "type": "Feature", "properties": { "zone_id": "GPZ-SWAP Coast", "protected": "All year  ", "start_month": 1, "end_month": 12 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -70.0, -67.0 ], [ -73.93, -67.5 ], [ -81.45, -70.85 ], [ -84.0, -72.0 ], [ -84.0, -74.08 ], [ -76.32, -74.23 ], [ -70.0, -74.23 ], [ -70.0, -67.0 ] ] ] } },
+{ "type": "Feature", "properties": { "zone_id": "GPZ-SWAP Shelf", "protected": "All year ", "start_month": 1, "end_month": 12 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -70.0, -66.0 ], [ -73.0, -66.0 ], [ -81.5, -69.1 ], [ -81.45, -70.85 ], [ -73.97, -67.5 ], [ -70.0, -67.0 ], [ -70.0, -66.0 ] ] ] } },
+{ "type": "Feature", "properties": { "zone_id": "SPZ-BS", "protected": "10-02", "start_month": 10, "end_month": 2 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -58.0, -62.0 ], [ -57.25, -62.0 ], [ -57.25, -62.35 ], [ -61.1, -63.32 ], [ -61.88, -62.93 ], [ -60.09, -62.46 ], [ -58.0, -62.0 ] ] ] } },
+{ "type": "Feature", "properties": { "zone_id": "SPZ-GSE", "protected": "10-03", "start_month": 10, "end_month": 3 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -62.77, -62.5 ], [ -61.88, -62.93 ], [ -61.1, -63.32 ], [ -59.74, -64.06 ], [ -62.2, -64.93 ], [ -63.7, -64.0 ], [ -62.77, -62.5 ] ] ] } },
+{ "type": "Feature", "properties": { "zone_id": "SPZ-LIS", "protected": "04-05", "start_month": 4, "end_month": 5 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -59.0, -61.5 ], [ -60.25, -62.0 ], [ -62.77, -62.5 ], [ -62.59, -61.55 ], [ -59.0, -61.5 ] ] ] } },
+{ "type": "Feature", "properties": { "zone_id": "SPZ-SINE", "protected": "12-02", "start_month": 12, "end_month": 2 }, "geometry": { "type": "Polygon", "coordinates": [ [ [ -60.14, -62.29 ], [ -58.0, -61.71 ], [ -58.0, -62.0 ], [ -60.09, -62.46 ], [ -60.14, -62.29 ] ] ] } }
+]
+}

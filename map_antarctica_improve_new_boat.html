@@ -57,7 +57,7 @@
         .floating-btn:hover { background: #2a2e33; color: #fff; }
         .floating-btn.hidden { opacity: 0; pointer-events: none; transform: translateY(-10px); }
 
-        /* --- REDESIGNED UI PANELS --- */
+        /* --- REDESIGNED UI PANELS (Inspired by bird-tracking) --- */
         .panel-container { 
             position: absolute; top: 20px; 
             backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
@@ -131,7 +131,7 @@
         .entity-profile { display: flex; align-items: center; gap: 14px; background: #0d1117; padding: 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: background-color 0.2s ease; }
         .entity-profile:hover { background: #21262d; }
         .entity-profile.selected { background: #21262d; border-color: #38bdf8; }
-        .entity-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: #21262d; }
+        .entity-avatar { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid #00e5ff; flex-shrink: 0; background: #21262d; }
         .entity-details { display: flex; flex-direction: column; gap: 8px; width: 100%; }
         .entity-name { font-size: 13px; font-weight: 600; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;}
         .entity-legend-row { display: flex; align-items: center; gap: 10px; font-size: 11px; color: #8b949e; margin-top: 8px; }
@@ -171,7 +171,6 @@
         <div class="control-section">
             <div class="section-title">Marine Protection</div>
             <label class="toggle-item"><input type="checkbox" id="toggle-zones" checked> <span>Domain-1 Marine Protected Areas</span></label>
-            <label class="toggle-item"><input type="checkbox" id="toggle-sgssi-mpa" checked> <span>South Georgia & South Sandwich Islands MPA</span></label>
             <label class="toggle-item"><input type="checkbox" id="toggle-mpa" checked> <span>South Orkney Islands MPA</span></label>
         </div>
 
@@ -212,7 +211,7 @@
         <div class="control-section">
             <div class="section-title">Tracked Vessels</div>
             <div class="entity-profile" id="focus-vessel-1-btn" title="Click to focus on vessel">
-                <img src="https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/img/antarctic.png" alt="Boat" class="entity-avatar" style="border: 2px solid #ff3a3a;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%2321262d\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\'/></svg>'">
+                <img src="_data/data/antarctic.png" alt="Boat" class="entity-avatar" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%2321262d\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\'/></svg>'">
                 <div class="entity-details">
                     <div class="entity-name">Antarctic Endurance</div>
                     <div class="entity-info-grid">
@@ -235,14 +234,14 @@
                         </div>
                     </div>
                     <div class="entity-legend-row">
-                        <div class="legend-color" style="border-radius: 50%; width: 6px; height: 6px; background: #ff3a3a;"></div>
+                        <div class="legend-color" style="border-radius: 50%; width: 6px; height: 6px; background: #00e5ff;"></div>
                         <span>Identified Fishing Event</span>
                     </div>
         
                 </div>
             </div>            
             <div class="entity-profile" id="focus-vessel-2-btn" title="Click to focus on vessel" style="margin-top: 12px;">
-                <img src="https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/img/saga.png" alt="Boat" class="entity-avatar" style="border: 2px solid #ff9800;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%2321262d\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\'/></svg>'">
+                <img src="_data/data/saga.png" alt="Boat" class="entity-avatar" style="border-color: #39ff14;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%2321262d\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\'/></svg>'">
                 <div class="entity-details">
                     <div class="entity-name">Saga Sea</div>
                     <div class="entity-info-grid">
@@ -255,21 +254,25 @@
                                 <span>NOR</span>
                             </div>
                         </div>
-                    <div class="entity-info-item">
+                        <div class="entity-info-item">
                             <div class="entity-info-item-label">IMO</div>
-                            <div class="entity-info-item-value">7390416</div>
+                            <div class="entity-info-item-value">9118339</div>
                         </div>
                         <div class="entity-info-item">
                             <div class="entity-info-item-label">MMSI</div>
-                            <div class="entity-info-item-value">259539000</div>
+                            <div class="entity-info-item-value">259116000</div>
                         </div>
                     </div>
                     <div class="entity-legend-row">
-                        <div class="legend-color" style="border-radius: 50%; width: 6px; height: 6px; background: #ff9800;"></div>
+                        <div class="legend-color" style="border-radius: 50%; width: 6px; height: 6px; background: #39ff14;"></div>
                         <span>Identified Fishing Event</span>
                     </div>
         
                 </div>
+            </div>
+            <div class="legend-item" style="margin-top: 16px; padding-left: 4px;">
+                <div class="legend-color" style="border-radius: 50%; width: 10px; height: 10px; border: 1.5px solid #ef4444; background: transparent;"></div>
+                <span style="color: #ef4444; font-weight: 500; font-size: 11px;">Potential Restricted Zone Violation</span>
             </div>
         </div>
 
@@ -281,11 +284,7 @@
         <div class="control-section">
             <div class="section-title">Existing Marine Protected Areas</div>
             <div class="legend-item">
-                <div class="legend-color" style="background: rgba(16, 185, 129, 0.3); border: 1px solid #10b981;"></div>
-                <span style="color: #8b949e; font-size: 11px;">South Georgia & South Sandwich Islands MPA</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: rgba(14, 165, 233, 0.3); border: 1px solid #0ea5e9;"></div>
+                <div class="legend-color" style="background: rgba(44, 162, 95, 0.3); border: 1px solid #2ca25f;"></div>
                 <span style="color: #8b949e; font-size: 11px;">South Orkney Islands MPA</span>
             </div>
         </div>
@@ -340,8 +339,7 @@
     L.control.zoom({ position: 'bottomleft' }).addTo(map);
     
     // We create a specific high-performance Canvas Renderer for the thousands of moving tracks
-    const canvasRenderer = L.canvas({ pane: 'tracksPane' });
-    
+const canvasRenderer = L.canvas({ pane: 'tracksPane' });
     // Base dark map
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/dark_nolabels/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -379,7 +377,6 @@
     const krillHeatmapLayer = L.layerGroup();
     const whaleHeatmapLayer = L.layerGroup();
     const mpaLayer = L.layerGroup({ pane: 'zonesPane' }).addTo(map); // New layer for MPAs
-    const sgssiMpaLayer = L.layerGroup({ pane: 'zonesPane' }).addTo(map); // Layer for the new MPA
 
     const southOrkneyMpaCoordinates = [
         [-61.5, -41.0], [-61.5, -44.0], [-62.0, -44.0], [-62.0, -46.0], 
@@ -389,13 +386,13 @@
 
     // Draw the MPA polygon with styling that matches the legend
     const southOrkneyMpa = L.polygon(southOrkneyMpaCoordinates, {
-        pane: 'zonesPane',     
-        interactive: true,
-        color: '#0ea5e9', // Ocean Blue      
-        weight: 1,             
-        fillColor: '#0ea5e9',  
-        fillOpacity: 0.3       
-    }).addTo(mpaLayer);
+    pane: 'zonesPane',     
+    interactive: false,    // <-- Add this line
+    color: '#2ca25f',      
+    weight: 1,             
+    fillColor: '#2ca25f',  
+    fillOpacity: 0.3       
+}).addTo(mpaLayer);
 
     let allTracksData = []; 
     let allKrillData = [];
@@ -413,10 +410,10 @@
     const speedFrames = [1200, 600, 200]; 
     const speedText = ["Speed: Slow", "Speed: Normal", "Speed: Fast"];
 
+    // const tracksCsvUrl = "_data/data/filtered_boat_activity.csv"; 
     const tracks1CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/boat_activity_analyzed.csv";
     const tracks2CsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/boat_activity_analyzed_2.csv";
     const zonesGeoJsonUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/zones_with_months.geojson";
-    const sgssiMpaGeoJsonUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/sgssi_plan_no_take_zones.json";
     const krillCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/Krill_2011_2022.csv";
     const whaleCsvUrl = "https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/whale_gbif_2000-2026_fixed.csv";
 
@@ -424,18 +421,16 @@
         d3.csv(tracks1CsvUrl),
         d3.csv(tracks2CsvUrl),
         d3.json(zonesGeoJsonUrl),
-        d3.json(sgssiMpaGeoJsonUrl),
         d3.dsv(";", krillCsvUrl),
         d3.csv(whaleCsvUrl)
-    ]).then(([tracks1Data, tracks2Data, zonesGeoJson, sgssiMpaGeoJson, krillData, whaleData]) => {
+    ]).then(([tracks1Data, tracks2Data, zonesGeoJson, krillData, whaleData]) => {
 
-        // --- ZONES ---
+        // --- ZONES (Restored Pattern Logic) ---
         const uniquePeriods = Array.from(new Set(zonesGeoJson.features.map(f => 
             f.properties.protected ? f.properties.protected.trim() : 'Not Specified'
         )));
         uniquePeriods.sort((a, b) => a.localeCompare(b));
-        // Update color scheme to Greens/Blues
-        const zoneColorScale = d3.scaleOrdinal(d3.schemeGnBu[Math.max(3, Math.min(9, uniquePeriods.length))]).domain(uniquePeriods);
+        const zoneColorScale = d3.scaleOrdinal(d3.schemeYlOrRd[uniquePeriods.length]).domain(uniquePeriods);
 
         const legendContainer = document.getElementById('dynamic-zone-legend');
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -465,36 +460,22 @@
 
         zonesGeoJson.features.forEach(feature => {
             const props = feature.properties;
+            const displayPeriod = formatPeriod(props.protected);
             const period = props.protected ? props.protected.trim() : 'Not Specified';
             const borderColor = d3.rgb(zoneColorScale(period)).darker(1.2);
             const latlngs = feature.geometry.coordinates[0].map(coord => [coord[1], coord[0]]);
 
+            // Striped pattern works perfectly here because Map uses default SVG renderer!
             const stripes = new L.StripePattern({
                 angle: 45, color: borderColor, weight: 4, spaceWeight: 8, opacity: 0.2, pane: 'zonesPane'
             });
             stripes.addTo(map);
 
-            const polygon = L.polygon(latlngs, { 
-                pane: 'zonesPane',
-                interactive: false,
-                color: borderColor, weight: 1, fill: true, fillPattern: stripes, fillOpacity: 1 
-            }).addTo(zonesLayer);
+            const polygon = L.polygon(latlngs, { pane: 'zonesPane',
+    interactive: false,    // <-- Add this line
+    color: borderColor, weight: 1, fill: true, fillPattern: stripes, fillOpacity: 1 
+}).addTo(zonesLayer);
         });
-
-        // --- SGSSI MPA ---
-        const sgssiGeoJsonLayer = L.geoJSON(sgssiMpaGeoJson, {
-            pane: 'zonesPane',
-            interactive: true,
-            style: {
-                color: '#10b981', // Emerald/Seaweed Green
-                weight: 1,
-                fillColor: '#10b981',
-                fillOpacity: 0.3
-            }
-        }).bindTooltip(`
-            <div class="custom-tooltip"><div class="tooltip-title" style="border-color: #10b981">Marine Protected Area</div><b>Name:</b> South Georgia & South Sandwich Islands MPA</div>
-        `, { sticky: true });
-        sgssiGeoJsonLayer.addTo(sgssiMpaLayer);
         
         // --- TRACKS ---
         tracks1Data.forEach(d => { 
@@ -538,15 +519,7 @@
         renderKrillHeatmap(); 
         renderWhaleHeatmap();
 
-        // Fit map to bounds of all MPAs after all data is loaded
-        const allMpaBounds = L.featureGroup([zonesLayer, sgssiGeoJsonLayer, southOrkneyMpa]).getBounds();
-        if (allMpaBounds.isValid()) {
-            map.fitBounds(allMpaBounds, { padding: [20, 20] });
-        }
-
-        map.once('moveend zoomend', function() {
-            document.getElementById('play-btn').click();
-        });
+        document.getElementById('play-btn').click();
 
     }).catch(error => console.error("Error loading data:", error));
 
@@ -611,12 +584,10 @@
     function renderTracks() {
         const currentEndMs = parseInt(animCurrentTime);
         const isFinished = (currentEndMs >= animMaxTime);
-        const tailLengthDays = 80;
+        const tailLengthDays = 90;
         const maxAgeMs = tailLengthDays * 24 * 60 * 60 * 1000;
         const tailStartMs = isFinished ? 0 : (currentEndMs - maxAgeMs);
-        
-        // NEW AGGRESSIVE BOAT COLORS
-        const boatColors = { "Antarctic Endurance": "#ff3a3a", "Saga Sea": "#ff9800" };
+        const boatColors = { "Antarctic Endurance": "#00e5ff", "Saga Sea": "#39ff14" };
         
         if (currentEndMs < lastProcessedTime) {
             permanentMarkersLayer1.clearLayers();
@@ -639,17 +610,26 @@
 
             const boatNewlyVisible = newlyVisiblePoints.filter(p => p.boatSource === boatSource);
             boatNewlyVisible.forEach(d => {
+                const isViolation = String(d.is_cheating).toLowerCase() === 'true';
                 const isFishing = String(d.type).toLowerCase() === 'fishing';
 
-                if (isFishing) {
+                if (isViolation || isFishing) {
                     let tooltipContent = `
                         <div class="custom-tooltip">
                             <div class="tooltip-title" style="border-color: ${baseColor}">${d.boatSource}</div>
                             <b>Event:</b> ${d.type || 'Movement'}<br>
                             <b>Time:</b> ${d.dateObj.toLocaleString()}<br>
                     `;
-                    tooltipContent += `</div>`;
-                    L.circleMarker([+d.lat, +d.lon], { renderer: canvasRenderer, radius: 1.5, fillColor: baseColor, color: "transparent", weight: 0, fillOpacity: 0.6, opacity: 0 }).bindTooltip(tooltipContent, { sticky: true }).addTo(permanentMarkersLayer);                }
+
+                    if (isViolation) {
+                        tooltipContent += `<br><b style="color: #ef4444; font-size: 12px; margin-top:4px; display:inline-block;">⚠️ Potential Zone Violation</b></div>`;
+                        L.circleMarker([+d.lat, +d.lon], { renderer: canvasRenderer, radius: 6, fillColor: 'transparent', color: '#ef4444', weight: 1.5, opacity: 0.8, fillOpacity: 0 }).addTo(permanentMarkersLayer);
+                        L.circleMarker([+d.lat, +d.lon], { renderer: canvasRenderer, radius: 3, fillColor: baseColor, color: '#ffffff', weight: 1.5, fillOpacity: 1, opacity: 1 }).bindTooltip(tooltipContent, { sticky: true }).addTo(permanentMarkersLayer);
+                    } else if (isFishing) {
+                        tooltipContent += `</div>`;
+                        L.circleMarker([+d.lat, +d.lon], { renderer: canvasRenderer, radius: 1.5, fillColor: baseColor, color: "transparent", weight: 0, fillOpacity: 0.6, opacity: 0 }).bindTooltip(tooltipContent, { sticky: true }).addTo(permanentMarkersLayer);
+                    }
+                }
             });
 
             const trailPoints = points.filter(d => d.time >= tailStartMs && d.time <= currentEndMs);
@@ -696,8 +676,8 @@
         
         L.heatLayer(allKrillData.map(d => [d.lat, d.lon, d.quantity]), {
             pane: 'heatmapPane', radius: 9, blur: 20, maxZoom: 4, 
-            max: d3.quantile(allKrillData.map(p => p.quantity), 0.95), 
-            gradient: { 0.01: '#ffffd4', 0.4: '#fed98e', 0.6: '#fe9929', 0.8: '#d95f0e', 1.0: '#993404' }
+            max: d3.quantile(allKrillData.map(p => p.quantity), 0.95), // Use 95th percentile to avoid outliers
+            gradient: { 0.01: '#ffffd4', 0.4: '#fed98e', 0.6: '#fe9929', 0.8: '#d95f0e', 1.0: '#993404' } // Yellow-Orange-Brown
         }).addTo(krillHeatmapLayer);
     }
 
@@ -708,7 +688,7 @@
         
         L.heatLayer(allWhaleData.map(d => [d.lat, d.lon]), {
             pane: 'heatmapPane', radius: 12, blur: 20, maxZoom: 4, max: 20, 
-            gradient: { 0.2: '#f7fcf5', 0.4: '#ccece6', 0.6: '#99d8c9', 0.8: '#66c2a4', 0.9: '#2ca25f', 1.0: '#006d2c' }
+            gradient: { 0.2: '#f7fcf5', 0.4: '#ccece6', 0.6: '#99d8c9', 0.8: '#66c2a4', 0.9: '#2ca25f', 1.0: '#006d2c' } // Sequential Green
         }).addTo(whaleHeatmapLayer);
     }
 
@@ -719,7 +699,6 @@
         });
     }
     setupLayerToggle('toggle-zones', zonesLayer);
-    setupLayerToggle('toggle-sgssi-mpa', sgssiMpaLayer);
     setupLayerToggle('toggle-mpa', mpaLayer);    
     setupLayerToggle('toggle-krill', krillHeatmapLayer);
     setupLayerToggle('toggle-whale', whaleHeatmapLayer);
@@ -741,22 +720,20 @@
         const checkbox = document.getElementById(buttonId === 'focus-vessel-1-btn' ? 'toggle-track1' : 'toggle-track2');
 
         button.addEventListener('click', () => {
+            // Toggle visibility
             checkbox.checked = !checkbox.checked;
             checkbox.dispatchEvent(new Event('change'));
+
         });
     }
     setupFocusHandler('focus-vessel-1-btn', "Antarctic Endurance");
     setupFocusHandler('focus-vessel-2-btn', "Saga Sea");
 
+    // Set initial selected state based on checkbox state
     document.getElementById('focus-vessel-1-btn').classList.toggle('selected', document.getElementById('toggle-track1').checked);
     document.getElementById('focus-vessel-2-btn').classList.toggle('selected', document.getElementById('toggle-track2').checked);
-
-    // Sources:
-    // - SGSSI: https://gov.gs/mpa-enhancements/
 
 </script>
 
 </body>
-
-
 </html>
