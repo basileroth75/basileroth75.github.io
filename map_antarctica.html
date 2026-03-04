@@ -159,7 +159,7 @@
     </button>
     <button id="btn-legend" class="floating-btn hidden" style="right: 20px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-       Fishing vessels tracking and Domain-1 MPA
+       Fishing vessels tracking and MPAs
     </button>
 
     <div id="left-panel" class="panel-container hidden" style="left: 20px; right: auto;">
@@ -193,7 +193,7 @@
 
     <div id="right-panel" class="panel-container" style="right: 20px; left: auto;">
         <div class="panel-header">
-            <div class="panel-title">Fishing Vessels vs Domain-1 MPA</div>
+            <div class="panel-title">Fishing Vessels vs MPAs</div>
             <button id="close-legend" class="close-btn">×</button>
         </div>
 
@@ -281,11 +281,11 @@
         <div class="control-section">
             <div class="section-title">Existing Marine Protected Areas</div>
             <div class="legend-item">
-                <div class="legend-color" style="background: rgba(16, 185, 129, 0.3); border: 1px solid #10b981;"></div>
+                <div class="legend-color" style="background: rgba(29, 78, 216, 0.3); border: 1px solid #1d4ed8;"></div>
                 <span style="color: #8b949e; font-size: 11px;">South Georgia & South Sandwich Islands MPA</span>
             </div>
             <div class="legend-item">
-                <div class="legend-color" style="background: rgba(14, 165, 233, 0.3); border: 1px solid #0ea5e9;"></div>
+                <div class="legend-color" style="background: rgba(8, 145, 178, 0.3); border: 1px solid #0891b2;"></div>
                 <span style="color: #8b949e; font-size: 11px;">South Orkney Islands MPA</span>
             </div>
         </div>
@@ -368,8 +368,7 @@
         attribution: '&copy; CARTO', pane: 'labels'
     }).addTo(map);
 
-    const zonesLayer = L.layerGroup({ pane: 'zonesPane' }).addTo(map); 
-    const tracks1Layer = L.layerGroup({ pane: 'tracksPane' }).addTo(map);
+    const zonesLayer = L.featureGroup({ pane: 'zonesPane' }).addTo(map);    const tracks1Layer = L.layerGroup({ pane: 'tracksPane' }).addTo(map);
     const tracks2Layer = L.layerGroup({ pane: 'tracksPane' });
     const permanentMarkersLayer1 = L.layerGroup({ pane: 'tracksPane' }).addTo(tracks1Layer);
     const movingTrackLayer1 = L.layerGroup({ pane: 'tracksPane' }).addTo(tracks1Layer);
@@ -391,11 +390,13 @@
     const southOrkneyMpa = L.polygon(southOrkneyMpaCoordinates, {
         pane: 'zonesPane',     
         interactive: true,
-        color: '#0ea5e9', // Ocean Blue      
+        color: '#0891b2', // Muted Cyan/Teal
         weight: 1,             
-        fillColor: '#0ea5e9',  
+        fillColor: '#0891b2',  
         fillOpacity: 0.3       
-    }).addTo(mpaLayer);
+    }).bindTooltip(`
+        <div class="custom-tooltip"><div class="tooltip-title" style="border-color: #0891b2">Marine Protected Area</div><b>Name:</b> South Orkney Islands MPA</div>
+    `, { sticky: true }).addTo(mpaLayer);
 
     let allTracksData = []; 
     let allKrillData = [];
@@ -434,8 +435,8 @@
             f.properties.protected ? f.properties.protected.trim() : 'Not Specified'
         )));
         uniquePeriods.sort((a, b) => a.localeCompare(b));
-        // Update color scheme to Greens/Blues
-        const zoneColorScale = d3.scaleOrdinal(d3.schemeGnBu[Math.max(3, Math.min(9, uniquePeriods.length))]).domain(uniquePeriods);
+        // Update color scheme to Greens
+        const zoneColorScale = d3.scaleOrdinal(d3.schemeGreens[Math.max(3, Math.min(9, uniquePeriods.length))]).domain(uniquePeriods);
 
         const legendContainer = document.getElementById('dynamic-zone-legend');
         const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -486,13 +487,13 @@
             pane: 'zonesPane',
             interactive: true,
             style: {
-                color: '#10b981', // Emerald/Seaweed Green
+                color: '#1d4ed8', // Deep Blue
                 weight: 1,
-                fillColor: '#10b981',
+                fillColor: '#1d4ed8',
                 fillOpacity: 0.3
             }
         }).bindTooltip(`
-            <div class="custom-tooltip"><div class="tooltip-title" style="border-color: #10b981">Marine Protected Area</div><b>Name:</b> South Georgia & South Sandwich Islands MPA</div>
+            <div class="custom-tooltip"><div class="tooltip-title" style="border-color: #1d4ed8">Marine Protected Area</div><b>Name:</b> South Georgia & South Sandwich Islands MPA</div>
         `, { sticky: true });
         sgssiGeoJsonLayer.addTo(sgssiMpaLayer);
         
@@ -544,9 +545,7 @@
             map.fitBounds(allMpaBounds, { padding: [20, 20] });
         }
 
-        map.once('moveend zoomend', function() {
-            document.getElementById('play-btn').click();
-        });
+        document.getElementById('play-btn').click();
 
     }).catch(error => console.error("Error loading data:", error));
 
