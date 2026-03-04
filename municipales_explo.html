@@ -250,13 +250,21 @@
                             <h2 class="figure-title">Figure 2 Bis. Parité par strate et blocs politiques</h2>
                             <p class="figure-caption">Proportion de femmes têtes de liste par taille de commune pour les grands blocs politiques. Plus la case est rouge, moins la parité est respectée.</p>
                         </div>
-
+ 
                         <div id="heatmap-container-grouped"></div>
                     </div>
 
                     <div class="wp-scientific-figure wp-scientific-figure-large">
                         <div class="figure-header">
-                            <h2 class="figure-title">Figure 2 Ter. Écart de chance d'élection : Femmes vs Moyenne globale du parti</h2>
+                            <h2 class="figure-title">Figure 2 Ter. Évolution de la parité par strate et par bloc/parti</h2>
+                            <p class="figure-caption">Évolution de la proportion de femmes têtes de liste par taille de commune. Chaque ligne représente un bloc ou un parti politique majeur (plus de 50 listes au total).</p>
+                        </div>
+                        <div id="linechart-container-grouped"></div>
+                    </div>
+
+                    <div class="wp-scientific-figure wp-scientific-figure-large">
+                        <div class="figure-header">
+                            <h2 class="figure-title">Figure 2 Quater. Écart de chance d'élection : Femmes vs Moyenne globale du parti</h2>
                             <p class="figure-caption">Ce graphique présente la différence entre la probabilité pour une femme d'être élue et la probabilité moyenne d'être élu au sein de la même nuance politique. Une barre vers la gauche indique que les femmes ont moins de chances d'être élues que la moyenne du parti.</p>
                         </div>
 
@@ -874,7 +882,7 @@
             const margin = {top: 35, right: 40, bottom: 65, left: 220};
             const containerWidth = document.getElementById("heatmap-container-grouped").clientWidth || 600;
             const svgWidth = Math.max(containerWidth, 550); // Mobile scrolling width
-            const width = svgWidth - margin.left - margin.right;
+            const width = containerWidth - margin.left - margin.right;
             
             const svg = d3.select("#heatmap-container-grouped").append("svg").attr("width", svgWidth);
 
@@ -1013,6 +1021,165 @@
 
             updateHeatmapGrouped();
         })();
+
+        
+
+
+        /* =========================================
+           SCRIPT 2 TER (LIGNES) : GRAPHIQUE LIGNES (REGROUPÉ ET DÉTAILLÉ)
+           ========================================= */
+        (function() {
+            // --- 1. DATA PREPARATION ---
+            const groupMapping = {
+                "LVEC": "Bloc de gauche", "LREG": "Bloc de gauche", "LFI": "Bloc de gauche", "LSOC": "Bloc de gauche", "LECO": "Bloc de gauche", "LUG": "Bloc de gauche", "LCOM": "Bloc de gauche","LDVG": "Bloc de gauche",
+                "LDVC": "Bloc central","LMDM": "Bloc central", "LREN": "Bloc central","LHOR": "Bloc central", "LLR": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central","LUDR": "Bloc central",
+                "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite", "LDSV": "Extrême-droite",  "LREC": "Extrême-droite"
+            };
+ 
+            const groupedColors = {
+                "Bloc de gauche": "#C97A7A", 
+                "Bloc central": "#6B99A1",            
+                "Extrême-droite": "#2B3E50"           
+            };
+ 
+            // Calculate total lists per final group name to filter out small ones
+            const totalListsPerGroup = {};
+            heatmapDataRaw.forEach(d => {
+                const groupName = groupMapping[d.Code] || d.Party_Name;
+                if (!totalListsPerGroup[groupName]) {
+                    totalListsPerGroup[groupName] = 0;
+                }
+                totalListsPerGroup[groupName] += d.Total;
+            });
+
+            const aggregated = {};
+            const listThreshold = 50; // Parties/blocs with fewer lists will be excluded
+
+            heatmapDataRaw.forEach(d => {
+                let groupName = groupMapping[d.Code] || d.Party_Name;
+                // Filter out small parties/groups and those with no lists in this specific row
+                if (!groupName || d.Total === 0 || (totalListsPerGroup[groupName] || 0) < listThreshold) return;
+ 
+                let citySize = d.City_Size === "Plus de 100 000 hbts." ? "> 100 000" : d.City_Size;
+                let key = groupName + "|" + citySize;
+ 
+                if (!aggregated[key]) {
+                    aggregated[key] = { Party_Name: groupName, City_Size: citySize, Total: 0, Females: 0, OriginalCode: d.Code };
+                }
+                aggregated[key].Total += d.Total;
+                aggregated[key].Females += d.Females;
+            });
+ 
+            const processedData = Object.values(aggregated).map(d => {
+                d.Female_Pct = d.Total > 0 ? d.Females / d.Total : 0;
+                // Use grouped color first, then fallback to global color mapping for other parties
+                d.Color = groupedColors[d.Party_Name] || globalColorMapping[d.Party_Name] || globalColorMapping[d.OriginalCode] || fallbackColor;
+                return d;
+            });
+ 
+            const citySizeOrder = ["1 000 à 10 000 hbts.", "10 000 à 50 000 hbts.", "50 000 à 100 000 hbts.", "> 100 000"];
+            const dataByGroup = d3.group(processedData, d => d.Party_Name);
+ 
+            // --- 2. CHART SETUP ---
+            const container = d3.select("#linechart-container-grouped");
+ 
+            const margin = {top: 20, right: 120, bottom: 40, left: 50}; // Right margin for labels, bottom reduced
+            const containerWidth = container.node().clientWidth || 600;
+            const width = containerWidth - margin.left - margin.right;
+            const height = 350;
+ 
+            const svg = container.append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+ 
+            const tooltip = d3.select("body").append("div").attr("class", "heatmap-tooltip");
+ 
+            // --- 3. SCALES & AXES ---
+            const x = d3.scalePoint()
+                .domain(citySizeOrder)
+                .range([0, width])
+                .padding(0.5);
+ 
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(processedData, d => d.Female_Pct) * 1.1 || 0.5])
+                .range([height, 0])
+                .nice();
+ 
+            svg.append("g")
+                .attr("transform", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+ 
+            svg.append("g").attr("class", "y-axis")
+                .call(d3.axisLeft(y).tickFormat(d3.format(".0%")));
+ 
+            // --- 4. DRAW LINES & POINTS ---
+            const nationalAverage = 0.244;
+            svg.append("line")
+                .attr("x1", 0).attr("x2", width)
+                .attr("y1", y(nationalAverage)).attr("y2", y(nationalAverage))
+                .attr("stroke", "#d1d5db").attr("stroke-width", 1).attr("stroke-dasharray", "2,2");
+            
+            svg.append("text")
+                .attr("x", width).attr("y", y(nationalAverage) - 4)
+                .attr("text-anchor", "end").style("font-size", "9px").style("fill", "#9ca3af")
+                .text("Moy. nationale (24.4%)");
+ 
+            const line = d3.line()
+                .x(d => x(d.City_Size))
+                .y(d => y(d.Female_Pct));
+ 
+            const groups = svg.selectAll(".line-group")
+                .data(dataByGroup)
+                .join("g")
+                .attr("class", "line-group");
+ 
+            groups.append("path")
+                .attr("fill", "none")
+                .attr("stroke", d => d[1][0] ? d[1][0].Color : "#ccc")
+                .attr("stroke-width", 2.5)
+                .attr("d", d => line(d[1].sort((a, b) => citySizeOrder.indexOf(a.City_Size) - citySizeOrder.indexOf(b.City_Size))));
+ 
+            groups.selectAll("circle")
+                .data(d => d[1])
+                .join("circle")
+                .attr("cx", d => x(d.City_Size))
+                .attr("cy", d => y(d.Female_Pct))
+                .attr("r", 4)
+                .attr("fill", d => d.Color)
+                .style("cursor", "pointer")
+                .on("mouseover", (event, d) => {
+                    tooltip.style("opacity", 1).html(`
+                        <div class="tooltip-title" style="color: ${d.Color};">${d.Party_Name}</div>
+                        <div class="tooltip-data">Strate: <b>${d.City_Size}</b></div>
+                        <div class="tooltip-data">Femmes têtes de liste: <b>${d3.format(".1%")(d.Female_Pct)}</b></div>
+                        <div style="margin-top:6px; font-size:11px; border-top: 1px solid #eee; padding-top:4px;">Total listes: ${d.Total}</div>
+                    `)
+                    .style("left", (event.pageX + 15) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+                })
+                .on("mouseout", () => tooltip.style("opacity", 0));
+ 
+            // --- 5. DIRECT LABELS ---
+            groups.append("text")
+                .datum(d => {
+                    // Get the last point of the line to position the text
+                    const lastPoint = d[1].reduce((a, b) => citySizeOrder.indexOf(a.City_Size) > citySizeOrder.indexOf(b.City_Size) ? a : b);
+                    return { name: d[0], lastPoint: lastPoint };
+                })
+                .attr("transform", d => `translate(${x(d.lastPoint.City_Size)}, ${y(d.lastPoint.Female_Pct)})`)
+                .attr("x", 8)
+                .attr("dy", "0.35em")
+                .style("font-size", "11px")
+                .style("font-weight", "bold")
+                .style("fill", d => d.lastPoint.Color)
+                .text(d => d.name);
+        })();
+
+
+
+
 
 
         /* =========================================
