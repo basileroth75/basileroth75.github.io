@@ -1083,7 +1083,7 @@
             // --- 2. CHART SETUP ---
             const container = d3.select("#linechart-container-grouped");
  
-            const margin = {top: 20, right: 120, bottom: 40, left: 60}; // Increased left margin for axis title
+            const margin = {top: 20, right: 120, bottom: 80, left: 60}; // Increased bottom margin for axis title
             const containerWidth = container.node().clientWidth || 600;
             const width = containerWidth - margin.left - margin.right;
             const height = 350;
@@ -1110,6 +1110,14 @@
             svg.append("g")
                 .attr("transform", `translate(0,${height})`)
                 .call(d3.axisBottom(x));
+
+            // X-axis Label
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("x", width / 2)
+                .attr("y", height + 45)
+                .style("font-size", "11px").style("fill", "#555").style("font-style", "italic")
+                .text("Taille de la commune (nombre d'habitants)");
  
             svg.append("g").attr("class", "y-axis")
                 .call(d3.axisLeft(y).tickFormat(d3.format(".0%")));
