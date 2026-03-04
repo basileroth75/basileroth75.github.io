@@ -1083,7 +1083,7 @@
             // --- 2. CHART SETUP ---
             const container = d3.select("#linechart-container-grouped");
  
-            const margin = {top: 20, right: 120, bottom: 40, left: 50}; // Right margin for labels, bottom reduced
+            const margin = {top: 20, right: 120, bottom: 40, left: 60}; // Increased left margin for axis title
             const containerWidth = container.node().clientWidth || 600;
             const width = containerWidth - margin.left - margin.right;
             const height = 350;
@@ -1113,6 +1113,16 @@
  
             svg.append("g").attr("class", "y-axis")
                 .call(d3.axisLeft(y).tickFormat(d3.format(".0%")));
+
+            // Y-axis Label
+            svg.append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 0 - margin.left)
+                .attr("x", 0 - (height / 2))
+                .attr("dy", "1em")
+                .style("text-anchor", "middle")
+                .style("font-size", "11px").style("fill", "#555").style("font-style", "italic")
+                .text("% de femmes têtes de liste");
  
             // --- 4. DRAW LINES & POINTS ---
             const nationalAverage = 0.244;
