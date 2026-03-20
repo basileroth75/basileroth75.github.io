@@ -2,534 +2,297 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Visualisations Place Publique</title>
+    <title>Graphiques Place Publique</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    
     <style>
-        /* --- GLOBAL WRAPPER STYLE (Adapted from 6.html) --- */
-        .wp-scientific-figure {
-            background-color: #F7F7F9; 
-            border: 1px solid #D1D5DB; 
-            padding: 20px 15px;
-            max-width: 800px; 
-            margin: 40px auto; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
-            color: #333; 
-            position: relative;
-        }
-        .wp-scientific-figure .figure-header { 
-            margin-bottom: 15px; 
-            border-bottom: 1px solid #E5E7EB; 
-            padding-bottom: 10px; 
-        }
-        .wp-scientific-figure .figure-title { 
-            font-size: 16px; 
-            font-weight: bold; 
-            color: #111; 
-            margin: 0 0 5px 0; 
-            line-height: 1.3; 
-        }
-        .wp-scientific-figure .lecture-help { 
-            font-size: 13px; 
-            color: #555; 
-            font-style: italic; 
-            margin: 0; 
-            line-height: 1.4; 
-        }
-        .wp-scientific-figure .viz-content { 
-            overflow-x: auto; 
-            -webkit-overflow-scrolling: touch; 
-            width: 100%; 
-            padding-bottom: 10px; 
-            margin-top: 15px; 
-            display: flex; 
-            justify-content: center; 
-        }
+        body { background-color: #f0f0f0; padding: 20px; }
         
-        /* Ensure D3 SVG text inherits the clean system font */
-        svg text {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+        .wp-scientific-figure {
+            background-color: #F7F7F9; border: 1px solid #D1D5DB; padding: 20px 15px;
+            max-width: 860px; /* Standardized width */
+            margin: 40px auto; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #333; position: relative;
         }
-
-        /* Tooltip */
-        #pp-tooltip {
-            position: absolute; 
-            text-align: left; 
-            padding: 10px; 
-            font-size: 13px; 
-            background: rgba(26, 33, 56, 0.95); 
-            color: #fff; 
-            border-radius: 6px; 
-            pointer-events: none; 
-            opacity: 0; 
-            transition: opacity 0.2s; 
-            z-index: 9999; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        .wp-scientific-figure .figure-header { margin-bottom: 15px; border-bottom: 1px solid #E5E7EB; padding-bottom: 12px; }
+        .wp-scientific-figure .figure-title { font-size: 16px; font-weight: bold; color: #111; margin: 0 0 5px 0; line-height: 1.3; }
+        .wp-scientific-figure .lecture-help { font-size: 13px; color: #555; font-style: italic; margin: 0; line-height: 1.5; }
+        .chart-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; padding-bottom: 10px; margin-top: 25px; position: relative; display: flex; justify-content: center; }
+        
+        /* Tooltip Shared Styles */
+        .pp-tooltip {
+            position: absolute; text-align: left; padding: 10px 14px; font-size: 12px;
+            background: rgba(255, 255, 255, 0.98); border: 1px solid #D1D5DB; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            pointer-events: none; opacity: 0; border-radius: 6px; z-index: 50; font-family: inherit; line-height: 1.4;
+            transition: opacity 0.2s ease;
         }
+        .pp-tooltip strong { color: #111; font-size: 13px; display: block; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 4px;}
+        
+        /* Shared SVG Styles */
+        .axis-label { font-size: 13px; fill: #4B5563; font-weight: 600; font-style: italic; }
+        .y-axis text { font-size: 12px; fill: #111; font-weight: 500; }
+        .score-label { font-size: 11px; fill: #333; font-weight: 600; }
+        .tick text { fill: #4B5563; font-size: 11px; }
+        .grid line { stroke: #D1D5DB; stroke-opacity: 0.6; stroke-dasharray: 4,4; shape-rendering: crispEdges; }
+        .grid path { stroke-width: 0; }
+        
+        .leg-title { font-size: 13px; font-weight: bold; fill: #111827; }
+        .leg-desc { font-size: 11px; fill: #6b7280; font-weight: 500; }
+        
+        /* Make SVGs responsive */
+        .wp-scientific-figure svg { width: 100%; height: auto; display: block; }
     </style>
 </head>
 <body>
 
-    <div id="pp-tooltip"></div>
-
     <div class="wp-scientific-figure">
         <div class="figure-header">
-            <h2 class="figure-title">Taille des villes pour les listes des candidats Place Publique</h2>
-        </div>
-        <div id="pp-map" class="viz-content" style="height: 500px;"></div>
-    </div>
-
-
-    <div class="wp-scientific-figure">
-        <div class="figure-header">
-            <h2 class="figure-title">L'entonnoir électoral : le parcours des candidats</h2>
+            <h2 class="figure-title">Bilan des têtes de listes dans les villes de + 10k habitants</h2>
             <p class="lecture-help">
-                Aide à la lecture : Évolution des effectifs de Place Publique à chaque étape clé du processus électoral.
+                Aide à la lecture : La longueur de la ligne indique le score de la liste au 1er tour (en %). La taille de la bulle est proportionnelle à la population de la ville.
             </p>  
         </div>
-        <div id="pp-funnel" class="viz-content" style="height: 350px;"></div>
-    </div>
-
-
-    <div class="wp-scientific-figure">
-        <div class="figure-header">
-            <h2 class="figure-title">Distribution des candidats selon leur ordre sur la liste</h2>
-            <p class="lecture-help">
-                Aide à la lecture : Nombre de candidats affectés à chaque position sur les listes. La ligne pointillée rouge marque la limite du seuil d'éligibilité généralement estimé (Top 5).
-            </p>  
-        </div>
-        <div id="pp-hist" class="viz-content" style="height: 400px;"></div>
+        <div id="lollipop-container" class="chart-wrapper"></div>
     </div>
 
     <div class="wp-scientific-figure">
         <div class="figure-header">
-            <h2 class="figure-title">Nuances politiques des listes d'accueil</h2>
+            <h2 class="figure-title">Place Publique aux municipales : des élus rarement bien placés dans les grandes villes</h2>
             <p class="lecture-help">
-                Aide à la lecture : Répartition des étiquettes politiques attribuées par le Ministère de l'Intérieur aux listes sur lesquelles figurent les candidats Place Publique.
+                Aide à la lecture : Chaque point représente un élu Place Publique au conseil municipal. L'axe horizontal indique la taille de la ville, l'axe vertical sa position sur la liste. Les nuances jaunes indiquent si l'élu siège dans la majorité ou dans l'opposition.
             </p>  
         </div>
-        <div id="pp-donut" class="viz-content" style="height: 450px;"></div>
+        <div id="pictogram-container" class="chart-wrapper"></div>
     </div>
 
-
-    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script>
-        // --- COULEURS PLACE PUBLIQUE & ÉDITORIALES ---
-        const ppYellow = "#F9B233";   // Jaune Soleil
-        const ppDarkBlue = "#1A2B4C"; // Bleu Marine
-        const ppMagenta = "#E63946";  // Rouge/Magenta
-        const ppLightBlue = "#4A90E2";// Bleu clair
-        const ppGrey = "#F4F4F4";     // Gris (pour les absents)
-        const ppDarkGrey = "#CCCCCC";
+        // ------------------------------------------------
+        // DATA & INITIALIZATION FOR CHART 1 (Lollipop)
+        // ------------------------------------------------
+        const dataLollipop = [
+          {"City": "Grenoble", "Candidate_Name": "ROMAIN GENTIL", "population": 157477.0, "Ordre": 1, "Score": 10.0, "Status":  "Battu au 1er tour"}, 
+          {"City": "Perpignan", "Candidate_Name": "AGNES LANGEVINE", "population": 119656.0, "Ordre": 1, "Score": 15.94, "Status": "Battu au 1er tour"}, 
+          {"City": "Asni\u00e8res-sur-Seine", "Candidate_Name": "LARBI EL HADRI", "population": 89662.0, "Ordre": 1, "Score": 4.47, "Status": "Battu au 1er tour"},
+          {"City": "Antony", "Candidate_Name": "EVENNOU VIRGINIE", "population": 63232.0, "Ordre": 1, "Score": 11.27, "Status": "Qualifi\u00e9 (2nd tour)"}, 
+          {"City": "Meaux", "Candidate_Name": "VALENTINE ROUSSEAU", "population": 55616.0, "Ordre": 1, "Score": 9.73, "Status": "Battu au 1er tour"},
+          {"City": "Saint-Priest", "Candidate_Name": "GILLES GRANDVAL", "population": 48822.0, "Ordre": 1, "Score": 14.21, "Status": "Battu au 1er tour"},
+          {"City": "Saint-Brieuc", "Candidate_Name": "HERVE GUIHARD", "population": 44224.0, "Ordre": 1, "Score": 33.2, "Status": "Qualifi\u00e9 (2nd tour)"},
+          {"City": "Saint Cloud", "Candidate_Name": "ANNE MARIE CRAVERO", "population": 29727.0, "Ordre": 1, "Score": 11.27, "Status": "Battu au 1er tour"}, 
+          {"City": "Le Kremlin Bic\u00eatre", "Candidate_Name": "JEAN FRANCOIS DELAGE", "population": 24380.0, "Ordre": 1, "Score": 26.88, "Status":"Qualifi\u00e9 (2nd tour)"}, 
+          {"City": "Neuilly-Plaisance", "Candidate_Name": "OLIVIER PRIGENT", "population": 21415.0, "Ordre": 1, "Score": 18.7, "Status": "Battu au 1er tour"}, 
+          {"City": "Cugnaux", "Candidate_Name": "ALBERT SANCHEZ", "population": 20341.0, "Ordre": 1, "Score": 18.72, "Status": "Qualifi\u00e9 (2nd tour)"}, 
+          {"City": "Chamali\u00e8res", "Candidate_Name": "THOMAS MERZI", "population": 17454.0, "Ordre": 1, "Score": 30.32, "Status": "Battu au 1er tour"}, 
+          {"City": "Mayenne", "Candidate_Name": "JEAN PIERRE LE SCORNET", "population": 12900.0, "Ordre": 1, "Score": 41.18, "Status": "Battu au 1er tour"},
+          {"City": "Enghien-Les-Bains", "Candidate_Name": "RACHEL MOLERE ATTAL", "population": 11440.0, "Ordre": 1, "Score": 20.41, "Status": "Battu au 1er tour"},
+          {"City": "Le Pont-de-Claix", "Candidate_Name": "CHRISTOPHE FERRARI", "population": 10805.0, "Ordre": 1, "Score": 100.0, "Status": "Victoire (1er tour)"}
+        ];
 
-        const tooltip = d3.select("#pp-tooltip");
+        // Tri des données (Lollipop)
+        const statusOrder = {"Victoire (1er tour)": 1, "Qualifié (2nd tour)": 2, "Battu au 1er tour": 3};
+        dataLollipop.sort((a, b) => {
+            if (statusOrder[a.Status] !== statusOrder[b.Status]) return statusOrder[a.Status] - statusOrder[b.Status];
+            return b.Score - a.Score; 
+        });
 
+        drawLollipopChart(dataLollipop);
 
+        function drawLollipopChart(data) {
+            const width = 820, height = 580; 
+            const margin = { top: 30, right: 260, bottom: 60, left: 160 }; 
+            const innerWidth = width - margin.left - margin.right;
+            const innerHeight = height - margin.top - margin.bottom;
 
-        Promise.all([
-            // 1. Load the merged file (ensure you ran the Python merge script first)
-            d3.csv("https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/municpales/results_elections_pp.csv", function(d) {
-                return {
-                    city: d['City'],
-                    candidate: d['Candidate (HTML)'],
-                    status: d['Status'],
-                    ordre: +d['Ordre'], 
-                    score: d['% Voix/exprimés str'] ? +(d['% Voix/exprimés str'].replace(',', '.')) : 0,
-                    departement: d['Libellé département'],
-                    codeDept: d['Code département'],
-                    nuance: d['Code nuance de liste'],
-                    // New columns from the merge
-                    population: d['population'] ? +d['population'] : null,
-                    cityCode: d['Code commune str'],
-                    listName: d['Libellé de liste']
-                };
-            })
-        ]).then(function([data]) {
+            const colorVictoire = "#D4A017", colorQualif = "#E5C158", colorBattu = "#E5E7EB", colorBattuStroke = "#9CA3AF"; 
 
-            // Filter for found candidates and valid population data
-            const foundData = data.filter(d => d.status === 'Found' && d.population !== null);
+            const container = d3.select("#lollipop-container");
+            const svg = container.html("").append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+                
+            // Unique Tooltip for Lollipop
+            const tooltip = container.append("div").attr("class", "pp-tooltip").attr("id", "tooltip-lollipop");
 
-            // --- 1. BAR CHART: PRESENCE BY CITY SIZE ---
-            if (document.getElementById('pp-map')) {
-                const container = document.getElementById('pp-map');
-                const width = container.clientWidth, height = container.clientHeight;
-                const margin = {top: 40, right: 30, bottom: 60, left: 60};
+            const xScale = d3.scaleLinear().domain([0, 105]).range([0, innerWidth]);
+            const yScale = d3.scaleBand().domain(data.map(d => d.City)).range([0, innerHeight]).padding(1); 
+            const rScale = d3.scaleSqrt().domain([10000, 160000]).range([6, 24]); 
 
-                // Group by city code to get unique list counts and population
-                const cityStats = d3.rollups(foundData, 
-                    v => ({
-                        // Total unique lists in this city (usually 1)
-                        numLists: new Set(v.map(d => d.listName)).size,
-                        pop: v[0].population
-                    }), 
-                    d => d.cityCode
-                ).map(d => d[1]);
+            // Grid
+            const xAxisGrid = d3.axisBottom(xScale).tickSize(-innerHeight).tickFormat('').ticks(5);
+            svg.append('g').attr('class', 'grid').attr("transform", `translate(0,${innerHeight})`).call(xAxisGrid);
 
-                // Define standard French demographic bins
-                const bins = [
-                    { label: "< 1k", min: 0, max: 1000 },
-                    { label: "1k - 3.5k", min: 1000, max: 3500 },
-                    { label: "3.5k - 10k", min: 3500, max: 10000 },
-                    { label: "10k - 50k", min: 10000, max: 50000 },
-                    { label: "50k - 100k", min: 50000, max: 100000 },
-                    { label: "> 100k", min: 100000, max: Infinity }
-                ];
+            // Axes
+            const xAxis = d3.axisBottom(xScale).ticks(5).tickFormat(d => d + "%");
+            svg.append("g").attr("transform", `translate(0,${innerHeight})`).call(xAxis);
+            svg.append("text").attr("class", "axis-label").attr("x", innerWidth / 2).attr("y", innerHeight + 40).attr("text-anchor", "middle").text("Score obtenu au 1er tour (%)");
 
-                // Calculate TOTAL lists (total cities) per bracket
-                const binData = bins.map(b => {
-                    const citiesInBin = cityStats.filter(c => c.pop > b.min && c.pop <= b.max);
-                    // We sum the number of unique lists found in these cities
-                    const totalLists = d3.sum(citiesInBin, d => d.numLists);
-                    return {
-                        category: b.label,
-                        value: totalLists
-                    };
+            // Threshold Line 50%
+            svg.append("line").attr("x1", xScale(50)).attr("x2", xScale(50)).attr("y1", -15).attr("y2", innerHeight)
+                .attr("stroke", "#9CA3AF").attr("stroke-width", 1).attr("stroke-dasharray", "4,4").attr("opacity", 0.5);
+            svg.append("text").attr("x", xScale(50)).attr("y", -20).attr("text-anchor", "middle").style("font-size", "11px").style("fill", "#9CA3AF").text("Majorité absolue (50%)");
+
+            const yAxis = d3.axisLeft(yScale).tickSize(0);
+            svg.append("g").attr("class", "y-axis").call(yAxis).selectAll("text").attr("dx", "-10px") 
+                .style("font-size", "12px").style("font-weight", d => d === "Saint-Brieuc" ? "bold" : "500");
+            svg.select(".y-axis path").remove();
+
+            // Lines
+            svg.selectAll(".lollipop-line").data(data).enter().append("line").attr("class", "lollipop-line")
+                .attr("x1", 0).attr("y1", d => yScale(d.City)).attr("x2", d => xScale(d.Score)).attr("y2", d => yScale(d.City))
+                .attr("stroke", d => d.Status === "Battu au 1er tour" ? "#E5E7EB" : "#D1D5DB").attr("stroke-width", 2);
+
+            // Bubbles
+            svg.selectAll(".lollipop-circle").data(data).enter().append("circle").attr("class", "lollipop-circle")
+                .attr("cx", d => xScale(d.Score)).attr("cy", d => yScale(d.City)).attr("r", d => rScale(d.population))
+                .attr("fill", d => {
+                    if(d.Status === "Victoire (1er tour)") return colorVictoire;
+                    if(d.Status === "Qualifié (2nd tour)") return colorQualif;
+                    return colorBattu;
+                })
+                .attr("stroke", d => d.Status === "Battu au 1er tour" ? colorBattuStroke : "none").attr("stroke-width", 1.5).attr("opacity", 0.95)
+                .style("cursor", "pointer")
+                .on("mousemove", function(event, d) {
+                    d3.select(this).attr("stroke", "#111").attr("opacity", 1);
+                    let statutColor = colorBattuStroke;
+                    if(d.Status === "Victoire (1er tour)") statutColor = "#A67A0F";
+                    if(d.Status === "Qualifié (2nd tour)") statutColor = "#B38510";
+
+                    const [x, y] = d3.pointer(event, document.getElementById('lollipop-container'));
+                    tooltip.style("opacity", 1).html(`
+                        <strong>${d.Candidate_Name}</strong>
+                        Ville : ${d.City}<br>
+                        Population : <strong>${d.population.toLocaleString('fr-FR')} hab.</strong><br>
+                        Score de liste : <strong>${d.Score.toLocaleString('fr-FR')}%</strong><br>
+                        Statut : <span style="color:${statutColor}; font-weight:bold">${d.Status}</span>
+                    `).style("left", (x + 20) + "px").style("top", (y - 30) + "px");
+                })
+                .on("mouseout", function(event, d) {
+                    d3.select(this).attr("stroke", d.Status === "Battu au 1er tour" ? colorBattuStroke : "none").attr("opacity", 0.95);
+                    tooltip.style("opacity", 0);
                 });
 
-                // Clear previous content
-                d3.select("#pp-map").html("");
-                const svg = d3.select("#pp-map").append("svg")
-                    .attr("viewBox", `0 0 ${width} ${height}`);
+            // Scores
+            svg.selectAll(".score-label").data(data).enter().append("text").attr("class", "score-label")
+                .attr("y", d => yScale(d.City) + 3).attr("x", d => xScale(d.Score) + rScale(d.population) + 8) 
+                .text(d => d.Score.toLocaleString('fr-FR') + "%").attr("fill", d => d.Status === "Battu au 1er tour" ? "#6b7280" : "#111");
 
-                // Scales
-                const x = d3.scaleBand()
-                    .domain(binData.map(d => d.category))
-                    .range([margin.left, width - margin.right])
-                    .padding(0.3);
+            // Separators
+            const vicLimit = (yScale(data[0].City) + yScale(data[1].City)) / 2;
+            const qualLimit = (yScale(data[4].City) + yScale(data[5].City)) / 2;
+            svg.append("line").attr("x1", -margin.left + 20).attr("x2", innerWidth).attr("y1", vicLimit).attr("y2", vicLimit).attr("stroke", "#D1D5DB").attr("stroke-dasharray", "2,2");
+            svg.append("line").attr("x1", -margin.left + 20).attr("x2", innerWidth).attr("y1", qualLimit).attr("y2", qualLimit).attr("stroke", "#D1D5DB").attr("stroke-dasharray", "2,2");
 
-                const y = d3.scaleLinear()
-                    .domain([0, d3.max(binData, d => d.value) * 1.1])
-                    .range([height - margin.bottom, margin.top]);
+            // Legend
+            const legendGroup = svg.append("g").attr("transform", `translate(${innerWidth + 40}, 60)`);
+            legendGroup.append("text").attr("x", 0).attr("y", 0).attr("class", "leg-title").text("Issue du scrutin");
+            legendGroup.append("circle").attr("cx", 6).attr("cy", 22).attr("r", 6).attr("fill", colorVictoire);
+            legendGroup.append("text").attr("x", 20).attr("y", 26).attr("class", "leg-title").attr("fill", "#A67A0F").text("Victoire (1)");
+            legendGroup.append("circle").attr("cx", 6).attr("cy", 48).attr("r", 6).attr("fill", colorQualif);
+            legendGroup.append("text").attr("x", 20).attr("y", 52).attr("class", "leg-title").attr("fill", "#A67A0F").text("2nd Tour (4)");
+            legendGroup.append("circle").attr("cx", 6).attr("cy", 74).attr("r", 6).attr("fill", colorBattu).attr("stroke", colorBattuStroke);
+            legendGroup.append("text").attr("x", 20).attr("y", 78).attr("class", "leg-title").attr("fill", "#4B5563").text("Éliminés (10)");
+            legendGroup.append("line").attr("x1", 0).attr("x2", 120).attr("y1", 105).attr("y2", 105).attr("stroke", "#E5E7EB").attr("stroke-dasharray", "3,3");
 
-                // Draw Bars
-                svg.selectAll(".bar")
-                    .data(binData)
-                    .enter().append("rect")
-                    .attr("x", d => x(d.category))
-                    .attr("y", d => y(d.value))
-                    .attr("width", x.bandwidth())
-                    .attr("height", d => height - margin.bottom - y(d.value))
-                    .attr("fill", ppYellow)
-                    .attr("rx", 4)
-                    .on("mouseover", function(event, d) {
-                        tooltip.style("opacity", 1)
-                               .html(`<b>Strate : ${d.category} hab.</b><br/>
-                                     Nombre de listes : <b>${d.value}</b>`)
-                               .style("left", (event.pageX + 10) + "px")
-                               .style("top", (event.pageY - 20) + "px");
-                        d3.select(this).attr("fill", ppDarkBlue);
-                    })
-                    .on("mouseout", function() {
-                        tooltip.style("opacity", 0);
-                        d3.select(this).attr("fill", ppYellow);
-                    });
+            legendGroup.append("text").attr("x", 0).attr("y", 135).attr("class", "leg-title").text("Taille de la ville");
+            const sizes = [150000, 50000, 10000], maxRadius = rScale(d3.max(sizes));
+            const nestedLegendGroup = legendGroup.append("g").attr("transform", `translate(${maxRadius + 5}, 195)`);
 
-                // X Axis
-                svg.append("g")
-                    .attr("transform", `translate(0,${height - margin.bottom})`)
-                    .call(d3.axisBottom(x))
-                    .selectAll("text")
-                    .style("font-size", "11px");
-
-                // Y Axis
-                svg.append("g")
-                    .attr("transform", `translate(${margin.left},0)`)
-                    .call(d3.axisLeft(y).ticks(5));
-
-                // Legend / Label
-                svg.append("text")
-                    .attr("x", width / 2)
-                    .attr("y", height - 10)
-                    .attr("text-anchor", "middle")
-                    .style("font-size", "12px")
-                    .style("fill", "#666")
-                    .text("Taille de la commune (habitants)");
-                
-                svg.append("text")
-                    .attr("transform", "rotate(-90)")
-                    .attr("y", 20)
-                    .attr("x", -(height / 2))
-                    .attr("text-anchor", "middle")
-                    .style("font-size", "12px")
-                    .style("fill", "#666")
-                    .text("Nombre total de listes");
-            }
-
-            // --- (Keep the rest of your scripts for Funnel, Histogram, etc. here) ---
-
-        
-        // --- 3. ENTONNOIR (Texte externe et Lisibilité maximale) ---
-        if (document.getElementById('pp-funnel')) {
-            const funnelData = [
-                { stage: "Candidats annoncés", value: data.length },
-                { stage: "Présents sur les listes", value: foundData.length },
-                { stage: "Têtes de liste", value: foundData.filter(d => d.ordre === 1).length }
-            ];
-            
-            const container = document.getElementById('pp-funnel');
-            const width = container.clientWidth, height = container.clientHeight;
-            
-            // Vider le conteneur
-            d3.select("#pp-funnel").html("");
-            
-            const svg = d3.select("#pp-funnel").append("svg").attr("viewBox", `0 0 ${width} ${height}`);
-            
-            const maxVal = funnelData[0].value || 1;
-            
-            // Barres plus fines car elles ne contiennent plus le texte
-            const barHeight = 25; 
-            // Plus d'espace entre les barres pour aérer le texte au-dessus
-            const spacing = 65; 
-            
-            // On centre l'entonnoir mais on garde de la marge à droite pour la déperdition
-            const scaleX = d3.scaleLinear().domain([0, maxVal]).range([0, width - 140]); 
-            const centerX = width / 2;
-            
-            const g = svg.append("g").attr("transform", `translate(0, 30)`);
-            
-            // 1. Dessiner les jonctions (Trapèzes)
-            for (let i = 0; i < funnelData.length - 1; i++) {
-                const currentW = scaleX(funnelData[i].value);
-                const nextW = scaleX(funnelData[i+1].value);
-                
-                const currentX1 = centerX - currentW / 2;
-                const currentX2 = centerX + currentW / 2;
-                const nextX1 = centerX - nextW / 2;
-                const nextX2 = centerX + nextW / 2;
-                
-                const currentY = i * (barHeight + spacing) + barHeight;
-                const nextY = (i + 1) * (barHeight + spacing);
-                
-                // Forme de transition
-                g.append("polygon")
-                 .attr("points", `${currentX1},${currentY} ${currentX2},${currentY} ${nextX2},${nextY} ${nextX1},${nextY}`)
-                 .attr("fill", ppDarkGrey)
-                 .attr("opacity", 0.25);
-                 
-                // Texte du taux de déperdition placé sur le côté de la zone grise
-                const dropOff = Math.round((1 - funnelData[i+1].value / funnelData[i].value) * 100);
-                if (!isNaN(dropOff)) {
-                    g.append("text")
-                     .attr("x", centerX + Math.max(currentW, nextW) / 2 + 15)
-                     .attr("y", currentY + (nextY - currentY) / 2 + 5)
-                     .style("font-size", "14px")
-                     .style("fill", ppMagenta) 
-                     .style("font-weight", "bold")
-                     .text(`-${dropOff}%`);
-                }
-            }
-            
-            // 2. Dessiner les barres et le texte au-dessus
-            // Nouvelle palette à fort contraste : Bleu -> Jaune -> Magenta
-            const barColors = [ppDarkBlue, ppYellow, ppMagenta];
-
-            funnelData.forEach((d, i) => {
-                const w = scaleX(d.value);
-                const x = centerX - w / 2;
-                const y = i * (barHeight + spacing);
-                
-                // Texte principal PLACÉ AU-DESSUS de la barre
-                const percentTotal = ((d.value / maxVal) * 100).toFixed(1);
-                
-                const textGroup = g.append("text")
-                 .attr("x", centerX)
-                 .attr("y", y - 10) // 10 pixels au-dessus de la barre
-                 .attr("text-anchor", "middle")
-                 .style("font-size", "15px")
-                 .style("fill", "#333");
-                 
-                // Nom de l'étape en gras
-                textGroup.append("tspan")
-                 .style("font-weight", "bold")
-                 .text(`${d.stage} : `);
-                 
-                // Valeurs en police normale, avec la couleur de l'étape pour le rappel visuel
-                textGroup.append("tspan")
-                 .style("font-weight", "bold")
-                 .style("fill", barColors[i])
-                 .text(`${d.value} candidats `);
-                 
-                textGroup.append("tspan")
-                 .style("fill", "#666")
-                 .text(`(${percentTotal}%)`);
-
-                // La barre (purement visuelle maintenant)
-                g.append("rect")
-                 .attr("x", x)
-                 .attr("y", y)
-                 .attr("width", w)
-                 .attr("height", barHeight)
-                 .attr("fill", barColors[i])
-                 .attr("rx", 4);
+            sizes.forEach(size => {
+                let radius = rScale(size);
+                nestedLegendGroup.append("circle").attr("cx", 0).attr("cy", -radius).attr("r", radius).attr("fill", "none").attr("stroke", "#9CA3AF").attr("stroke-width", 1.2);
+                nestedLegendGroup.append("line").attr("x1", 0).attr("y1", -radius * 2).attr("x2", maxRadius + 15).attr("y2", -radius * 2).attr("stroke", "#D1D5DB").attr("stroke-dasharray", "2,2");
+                nestedLegendGroup.append("text").attr("x", maxRadius + 20).attr("y", -radius * 2 + 4).attr("class", "leg-desc").text((size / 1000) + "k hab.");
             });
         }
-        
-// --- 5. GRAPHIQUE DES POSITIONS ---
-        if (document.getElementById('pp-hist')) {
-            const container = document.getElementById('pp-hist');
-            const width = container.clientWidth, height = container.clientHeight;
-            const margin = {top: 20, right: 30, bottom: 40, left: 40};
+
+        // ------------------------------------------------
+        // DATA & INITIALIZATION FOR CHART 2 (Scatter)
+        // ------------------------------------------------
+        const dataScatter = [
+            {"City": "Perpignan", "Candidate_Name": "AGNES LANGEVINE", "population": 119656.0, "Ordre": 1, "Score": 15.94, "Status": "Opposition"}, {"City": "Dunkerque", "Candidate_Name": "PEERS LUDOVIC", "population": 86788.0, "Ordre": 41, "Score": 64.47, "Status": "Majorit\u00e9"}, {"City": "Levallois-Perret", "Candidate_Name": "DANIELE ZELIC", "population": 68009.0, "Ordre": 2, "Score": 11.68, "Status": "Opposition"}, {"City": "Valence", "Candidate_Name": "FRANCINE PROST", "population": 64483.0, "Ordre": 4, "Score": 17.82, "Status": "Opposition"}, {"City": "Meaux", "Candidate_Name": "VALENTINE ROUSSEAU", "population": 55616.0, "Ordre": 1, "Score": 9.73, "Status": "Opposition"}, {"City": "Chelles", "Candidate_Name": "ERIC POMMAGEOT", "population": 54309.0, "Ordre": 3, "Score": 23.79, "Status": "Opposition"}, {"City": "Laval", "Candidate_Name": "AGNES CAMARENA", "population": 49657.0, "Ordre": 10, "Score": 54.49, "Status": "Majorit\u00e9"}, {"City": "Saint-Herblain", "Candidate_Name": "BUREAU JOCELYN", "population": 49537.0, "Ordre": 21, "Score": 53.68, "Status": "Majorit\u00e9"}, {"City": "Saint-Priest", "Candidate_Name": "GILLES GRANDVAL", "population": 48822.0, "Ordre": 1, "Score": 14.21, "Status": "Opposition"}, {"City": "Meudon", "Candidate_Name": "BLANDINE CORNEVIN", "population": 46342.0, "Ordre": 2, "Score": 23.74, "Status": "Opposition"}, {"City": "Alfortville", "Candidate_Name": "FRANCOIS VITSE", "population": 45046.0, "Ordre": 23, "Score": 76.03, "Status": "Majorit\u00e9"}, {"City": "Puteaux", "Candidate_Name": "PIERRE BONSACK", "population": 43672.0, "Ordre": 3, "Score": 13.99, "Status": "Opposition"}, {"City": "Caluire-et-Cuire", "Candidate_Name": "JACQUES TYROL CHARY", "population": 43572.0, "Ordre": 5, "Score": 27.44, "Status": "Opposition"}, {"City": "Boulogne-sur-Mer", "Candidate_Name": "CLAUDE COUQUET", "population": 40910.0, "Ordre": 9, "Score": 53.94, "Status": "Majorit\u00e9"}, {"City": "Ch\u00e2tillon", "Candidate_Name": "EVA LINARES CRUZ", "population": 36777.0, "Ordre": 9, "Score": 61.59, "Status": "Majorit\u00e9"}, {"City": "Sainte Genevi\u00e8ve des Bois", "Candidate_Name": "AMIR BEN MERZOUG", "population": 35846.0, "Ordre": 7, "Score": 54.57, "Status": "Majorit\u00e9"}, {"City": "Cachan", "Candidate_Name": "SAFAE TERRISSE", "population": 30592.0, "Ordre": 29, "Score": 64.39, "Status": "Majorit\u00e9"}, {"City": "Saint Cloud", "Candidate_Name": "ANNE MARIE CRAVERO", "population": 29727.0, "Ordre": 1, "Score": 11.27, "Status": "Opposition"}, {"City": "Vanves", "Candidate_Name": "MATTHIEU BORRAS", "population": 28014.0, "Ordre": 8, "Score": 45.54, "Status": "Opposition"}, {"City": "Vanves", "Candidate_Name": "JEAN NAKACHE", "population": 28014.0, "Ordre": 2, "Score": 45.54, "Status": "Opposition"}, {"City": "Blagnac", "Candidate_Name": "CATHERINE ELISSALDE", "population": 26466.0, "Ordre": 18, "Score": 55.43, "Status": "Majorit\u00e9"}, {"City": "Blagnac", "Candidate_Name": "JEAN MARC FUENTES", "population": 26466.0, "Ordre": 27, "Score": 55.43, "Status": "Majorit\u00e9"}, {"City": "Vertou", "Candidate_Name": "JEAN MARC CHIROL", "population": 26002.0, "Ordre": 4, "Score": 31.37, "Status": "Opposition"}, {"City": "Aurillac", "Candidate_Name": "JEAN MARIE BOYER", "population": 25815.0, "Ordre": 2, "Score": 38.53, "Status": "Opposition"}, {"City": "Frontignan", "Candidate_Name": "KELVINE GOUVERNAYRE", "population": 23808.0, "Ordre": 2, "Score": 51.16, "Status": "Majorit\u00e9"}, {"City": "Les Lilas", "Candidate_Name": "SIGALIT LAVON", "population": 23469.0, "Ordre": 8, "Score": 74.7, "Status": "Majorit\u00e9"}, {"City": "Les Lilas", "Candidate_Name": "TIFFANY GEORGES", "population": 23469.0, "Ordre": 24, "Score": 74.7, "Status": "Majorit\u00e9"}, {"City": "Les Lilas", "Candidate_Name": "JUDITH LINDENBERG", "population": 23469.0, "Ordre": 30, "Score": 74.7, "Status": "Majorit\u00e9"}, {"City": "Gif sur Yvette", "Candidate_Name": "PIERRE PATRICK FAURE", "population": 22352.0, "Ordre": 5, "Score": 29.09, "Status": "Opposition"}, {"City": "Neuilly-Plaisance", "Candidate_Name": "OLIVIER PRIGENT", "population": 21415.0, "Ordre": 1, "Score": 18.7, "Status": "Opposition"}, {"City": "La Chapelle-sur-Erdre", "Candidate_Name": "FREDERIC BARBELIVIEN", "population": 20331.0, "Ordre": 7, "Score": 47.92, "Status": "Opposition"}, {"City": "Chamali\u00e8res", "Candidate_Name": "THOMAS MERZI", "population": 17454.0, "Ordre": 1, "Score": 30.32, "Status": "Opposition"}, {"City": "Le Pr\u00e9 Saint Gervais", "Candidate_Name": "STEPHANE COMMUN", "population": 16865.0, "Ordre": 3, "Score": 53.19, "Status": "Majorit\u00e9"}, {"City": "Les Herbiers", "Candidate_Name": "GUYLAINE MERLET", "population": 16453.0, "Ordre": 4, "Score": 30.88, "Status": "Opposition"}, {"City": "Landerneau", "Candidate_Name": "FABRICE FOURFOOZ", "population": 16206.0, "Ordre": 2, "Score": 24.39, "Status": "Opposition"}, {"City": "Mayenne", "Candidate_Name": "JEAN PIERRE LE SCORNET", "population": 12900.0, "Ordre": 1, "Score": 41.18, "Status": "Opposition"}, {"City": "Villeneuve l\u00e8s Avignon", "Candidate_Name": "FLORENT LEMONT", "population": 12617.0, "Ordre": 4, "Score": 26.71, "Status": "Opposition"}, {"City": "Seyssinet-Pariset", "Candidate_Name": "MICHEL LANGLAIS", "population": 11753.0, "Ordre": 15, "Score": 62.16, "Status": "Majorit\u00e9"}, {"City": "Enghien-Les-Bains", "Candidate_Name": "RACHEL MOLERE ATTAL", "population": 11440.0, "Ordre": 1, "Score": 20.41, "Status": "Opposition"}, {"City": "Le Pont-de-Claix", "Candidate_Name": "CHRISTOPHE FERRARI", "population": 10805.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Portet sur Garonne", "Candidate_Name": "REGIS LEBASTARD", "population": 9805.0, "Ordre": 13, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Cebazat", "Candidate_Name": "NARMIN SHANA", "population": 8946.0, "Ordre": 2, "Score": 23.5, "Status": "Opposition"}, {"City": "Talmont Saint-Hilaire", "Candidate_Name": "PATRICK GENU", "population": 8161.0, "Ordre": 2, "Score": 27.88, "Status": "Opposition"}, {"City": "La Tour du Pin", "Candidate_Name": "PASCALE PARENTHOUX", "population": 8138.0, "Ordre": 3, "Score": 29.31, "Status": "Opposition"}, {"City": "Falaise", "Candidate_Name": "CECILE LE VAGUERESE MARIE", "population": 7782.0, "Ordre": 2, "Score": 59.61, "Status": "Majorit\u00e9"}, {"City": "Mo\u00e9lan sur Mer", "Candidate_Name": "JULIEN DESTREMONT", "population": 6756.0, "Ordre": 7, "Score": 49.93, "Status": "Opposition"}, {"City": "Vic-le-Comte", "Candidate_Name": "FLEURIANE REY", "population": 5242.0, "Ordre": 18, "Score": 58.96, "Status": "Majorit\u00e9"}, {"City": "Montagnac", "Candidate_Name": "MICHEL GARCIA", "population": 4436.0, "Ordre": 1, "Score": 24.48, "Status": "Opposition"}, {"City": "La R\u00e9ole", "Candidate_Name": "BRUNO MARTY", "population": 4396.0, "Ordre": 1, "Score": 65.95, "Status": "Majorit\u00e9"}, {"City": "Angoulins", "Candidate_Name": "MANON GABRIEL", "population": 4117.0, "Ordre": 1, "Score": 40.15, "Status": "Opposition"}, {"City": "Montendre", "Candidate_Name": "MICHEL LATHIERE", "population": 3228.0, "Ordre": 5, "Score": 59.42, "Status": "Majorit\u00e9"}, {"City": "Montfrin", "Candidate_Name": "PHILIPPE MARCHESI", "population": 3129.0, "Ordre": 5, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Batz sur mer", "Candidate_Name": "CATHERINE SORIA", "population": 2823.0, "Ordre": 2, "Score": 21.61, "Status": "Opposition"}, {"City": "Saint-Paterne - Le-Chevain", "Candidate_Name": "PATRICK DAHL", "population": 2096.0, "Ordre": 3, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Chambourg-sur-Indre", "Candidate_Name": "QUENTIN AUBOIRE", "population": 1236.0, "Ordre": 5, "Score": 68.8, "Status": "Majorit\u00e9"}, {"City": "Orvilliers", "Candidate_Name": "YASMINA KASMI BAKKALI", "population": 946.0, "Ordre": 11, "Score": 51.68, "Status": "Majorit\u00e9"}, {"City": "Saint-R\u00e8gle", "Candidate_Name": "DELPHINE CHAYETTE", "population": 614.0, "Ordre": 10, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "SAINT-THOMAS-DE-CONAC", "Candidate_Name": "HUGHES SCIARD", "population": 575.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Grosmagny", "Candidate_Name": "LUC FLEURY", "population": 534.0, "Ordre": 9, "Score": 61.54, "Status": "Majorit\u00e9"}, {"City": "Vinzieux", "Candidate_Name": "HUGO BIOLLEY", "population": 503.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Chatel en Tri\u00e8ves", "Candidate_Name": "FANNY LACROIX", "population": 491.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}
+        ];
+
+        drawScatterPlot(dataScatter);
+
+        function drawScatterPlot(data) {
+            const width = 820, height = 450;
+            const margin = { top: 20, right: 180, bottom: 50, left: 50 }; 
+            const innerWidth = width - margin.left - margin.right;
+            const innerHeight = height - margin.top - margin.bottom;
+
+            const colorMaj = "#D4A017", colorOpp = "#F2E394"; 
+
+            const container = d3.select("#pictogram-container");
+            const svg = container.html("").append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("viewBox", `0 0 ${width} ${height}`)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+                
+            // Unique Tooltip for Scatter
+            const tooltip = container.append("div").attr("class", "pp-tooltip").attr("id", "tooltip-scatter");
+
+            const xScale = d3.scaleLinear().domain([0, 125000]).range([0, innerWidth]);
+            const maxOrdre = d3.max(data, d => d.Ordre);
+            const yScale = d3.scaleLinear().domain([maxOrdre + 2, 1]).range([innerHeight, 0]);
+
+            let yTicks = yScale.ticks(8).filter(d => d > 1); 
+            yTicks.unshift(1); 
             
-            const svg = d3.select("#pp-hist").html("").append("svg")
-                          .attr("viewBox", `0 0 ${width} ${height}`);
+            const yAxisGrid = d3.axisLeft(yScale).tickValues(yTicks).tickSize(-innerWidth).tickFormat('');
+            svg.append('g').attr('class', 'grid').call(yAxisGrid);
 
-            // 1. Compter le nombre exact de candidats par position (ordre)
-            const positionCounts = d3.rollups(foundData, v => v.length, d => d.ordre)
-                .filter(d => !isNaN(d[0]) && d[0] > 0) // Filtrer les valeurs invalides
-                .map(d => ({ ordre: d[0], count: d[1] }));
-                
-            const maxOrdre = d3.max(positionCounts, d => d.ordre) || 40;
+            const xAxis = d3.axisBottom(xScale).ticks(6).tickFormat(d => d.toLocaleString('fr-FR'));
+            svg.append("g").attr("transform", `translate(0,${innerHeight})`).call(xAxis).selectAll("text").style("text-anchor", "middle");
+            svg.append("text").attr("class", "axis-label").attr("x", innerWidth / 2).attr("y", innerHeight + 40).attr("text-anchor", "middle").text("Population de la commune");
 
-            // 2. Échelles
-            const x = d3.scaleLinear()
-                .domain([0.5, maxOrdre + 0.5]) 
-                .range([margin.left, width - margin.right]);
-                
-            const y = d3.scaleLinear()
-                .domain([0, d3.max(positionCounts, d => d.count)]).nice()
-                .range([height - margin.bottom, margin.top]);
+            svg.append("g").call(d3.axisLeft(yScale).tickValues(yTicks));
+            svg.append("text").attr("class", "axis-label").attr("transform", "rotate(-90)").attr("x", -innerHeight / 2).attr("y", -35).attr("text-anchor", "middle").text("Place sur la liste");
 
-            const barW = (x(1.5) - x(0.5)) * 0.8;
-
-            // 3. Dessiner les barres
-            svg.append("g").selectAll("rect")
-               .data(positionCounts)
-               .enter()
-               .append("rect")
-               .attr("x", d => x(d.ordre) - barW / 2) 
-               .attr("width", barW)
-               .attr("y", d => y(d.count))
-               .attr("height", d => y(0) - y(d.count))
-               .attr("fill", ppDarkBlue) // Couleur unie pour toutes les barres
-               .attr("rx", 2)
-               .on("mouseover", function(event, d) {
-                    tooltip.style("opacity", 1)
-                           .html(`<b>Position n°${d.ordre}</b><br/>${d.count} candidat(s)`)
-                           .style("left", (event.pageX + 10) + "px")
-                           .style("top", (event.pageY - 20) + "px");
-                    d3.select(this).attr("fill", ppYellow);
-                }).on("mouseout", function(event, d) {
-                    tooltip.style("opacity", 0);
-                    d3.select(this).attr("fill", ppDarkBlue); // Rétablit la couleur unie
-                });
-
-            // 4. Axes
-            svg.append("g")
-               .attr("transform", `translate(0,${height - margin.bottom})`)
-               .call(d3.axisBottom(x).ticks(Math.min(maxOrdre, 20)).tickFormat(d3.format("d")))
-               .selectAll("text").style("font-size", "12px").style("fill", "#333");
-               
-            svg.append("g")
-               .attr("transform", `translate(${margin.left},0)`)
-               .call(d3.axisLeft(y).tickFormat(d3.format("d")))
-               .selectAll("text").style("font-size", "12px").style("fill", "#333");
-        }
-// Le dictionnaire des couleurs officielles par nuance
-        const globalColorMapping = {
-            "LEXG": "#8B3E3E", "Liste d'extrême-gauche": "#8B3E3E", "Extrême gauche": "#8B3E3E",
-            "LCOM": "#A05252", "Liste du Parti communiste français": "#A05252", "Parti communiste français": "#A05252",
-            "LFI": "#B56565", "Liste de La France insoumise": "#B56565", "La France insoumise": "#B56565",
-            "LSOC": "#C97A7A", "Liste du Parti socialiste": "#C97A7A", "Parti socialiste": "#C97A7A",
-            "LUG": "#C97A7A", "Liste d'union à gauche": "#C97A7A", "Union de la gauche": "#C97A7A",
-            "LDVG": "#DF9B9B", "Liste divers gauche": "#DF9B9B", "Divers gauche": "#DF9B9B",
-            "LVEC": "#5C8A6B", "Liste Les Ecologistes": "#5C8A6B", "Les Écologistes (ex-EELV)": "#5C8A6B", "Les Ecologistes": "#5C8A6B",
-            "LECO": "#70A37F", "Liste écologiste": "#70A37F", "Ecologiste": "#70A37F",
-            "LREN": "#C2A85B", "Liste Renaissance": "#C2A85B", "Renaissance / LREM": "#C2A85B", "LREM": "#C2A85B", "Renaissance / LREM (Restés)": "#C2A85B",
-            "LMDM": "#C28F5B", "Liste Mouvement démocrate (MoDem)": "#C28F5B", "Modem": "#C28F5B",
-            "LHOR": "#5FA8D3", "Liste Horizons": "#5FA8D3", "Horizons": "#5FA8D3",
-            "LUDI": "#6B99A1", "Liste de l'Union des Démocrates et des Indépendants": "#6B99A1", "Union des Démocrates et Indépendants": "#6B99A1",
-            "LUC": "#6B99A1", "Liste d'union au centre": "#6B99A1", "Union du centre": "#6B99A1",
-            "LDVC": "#6B99A1", "Liste divers centre": "#6B99A1", "Divers centre": "#6B99A1",
-            "LLR": "#4D7094", "Liste des Républicains": "#4D7094", "Les Républicains": "#4D7094", "Les Républicains (Restés)": "#4D7094", "Les Républicains (Rejoints)": "#4D7094",
-            "LUD": "#3D5C7A", "Liste d'union à droite": "#3D5C7A", "Union de la droite": "#3D5C7A",
-            "LDVD": "#5C80A6", "Liste divers droite": "#5C80A6", "Divers droite": "#5C80A6",
-            "LDSV": "#334D66", "Liste de droite souverainiste": "#334D66", "Droite souverainiste (ex-DLF)": "#334D66",
-            "LREC": "#4B2C5E", "Liste Reconquête !": "#4B2C5E", "Reconquête": "#4B2C5E",
-            "LUDR": "#1F2D3A", "Liste d'union des droites pour la République": "#1F2D3A", "Union des droites pour la République": "#1F2D3A",
-            "LRN": "#2B3E50", "Liste du Rassemblement National": "#2B3E50", "Rassemblement National": "#2B3E50",
-            "LUXD": "#1A252F", "Liste d'union à l'extrême-droite": "#1A252F", "Union de l'extrême droite": "#1A252F",
-            "LEXD": "#1A252F", "Liste d'extrême droite": "#1A252F", "Extrême droite": "#1A252F",
-            "LREG": "#6B8E8E", "Liste régionaliste": "#6B8E8E", "Régionalistes": "#6B8E8E",
-            "LDIV": "#999999", "Liste Divers": "#999999", "Divers": "#999999",
-            "Ne se représente pas": "#8C8C8C"
-        };
-
-        // --- 6. GRAPHIQUE À BARRES HORIZONTALES (Toutes les nuances) ---
-        if (document.getElementById('pp-donut')) {
-            const container = document.getElementById('pp-donut');
-            const width = container.clientWidth, height = container.clientHeight;
-            // Une marge gauche plus large pour laisser la place aux étiquettes des nuances
-            const margin = {top: 20, right: 50, bottom: 20, left: 120}; 
-
-            const svg = d3.select("#pp-donut").html("").append("svg")
-                          .attr("viewBox", `0 0 ${width} ${height}`);
-
-            // 1. Grouper et trier toutes les données, sans limite
-            let nuancesData = d3.rollups(foundData, v => v.length, d => d.nuance ? d.nuance.trim() : "Non précisé")
-                .sort((a,b) => d3.descending(a[1], b[1]))
-                .map(d => ({label: d[0], value: d[1]})); // Transformation directe
-
-            // 3. Échelles
-            const x = d3.scaleLinear()
-                .domain([0, d3.max(nuancesData, d => d.value)])
-                .range([0, width - margin.left - margin.right]);
-
-            const y = d3.scaleBand()
-                .domain(nuancesData.map(d => d.label))
-                .range([margin.top, height - margin.bottom])
-                .padding(0.2); // Espace ajusté pour accueillir plus de barres
-
-            const g = svg.append("g").attr("transform", `translate(${margin.left},0)`);
-
-            // 4. Dessiner les barres
-            g.selectAll("rect")
-                .data(nuancesData)
-                .enter()
-                .append("rect")
-                .attr("y", d => y(d.label))
-                .attr("x", 0)
-                .attr("height", y.bandwidth())
-                .attr("width", d => x(d.value))
-                // Attribution de la couleur selon le dictionnaire, ou gris par défaut
-                .attr("fill", d => globalColorMapping[d.label] || ppDarkGrey) 
-                .attr("rx", 2)
+            // Points
+            svg.selectAll("circle.point").data(data).enter().append("circle").attr("class", "point")
+                .attr("cx", d => xScale(d.population)).attr("cy", d => yScale(d.Ordre)).attr("r", 5.5)
+                .attr("fill", d => d.Status === "Majorité" ? colorMaj : colorOpp)
+                .attr("stroke", d => d.Status === "Majorité" ? "#fff" : colorMaj)
+                .attr("stroke-width", d => d.Status === "Majorité" ? 0.5 : 1)
+                .attr("opacity", 0.9)
                 .on("mouseover", function(event, d) {
-                    tooltip.style("opacity", 1)
-                           .html(`<b>Nuance : ${d.label}</b><br/>${d.value} candidats`)
-                           .style("left", (event.pageX + 10) + "px")
-                           .style("top", (event.pageY - 20) + "px");
-                    d3.select(this).attr("fill", ppYellow);
-                }).on("mouseout", function(event, d) {
-                    tooltip.style("opacity", 0);
-                    // Rétablir la bonne couleur à la sortie de la souris
-                    d3.select(this).attr("fill", d => globalColorMapping[d.label] || ppDarkGrey);
+                    d3.select(this).attr("r", 8).attr("opacity", 1).attr("stroke", "#111");
+                    
+                    const [x, y] = d3.pointer(event, document.getElementById('pictogram-container'));
+                    tooltip.transition().duration(200).style("opacity", 1);
+                    tooltip.html(`
+                        <strong>${d.Candidate_Name}</strong>
+                        Ville : ${d.City} (${d.population.toLocaleString('fr-FR')} hab.)<br>
+                        Place : ${d.Ordre}<br>
+                        Score de liste : ${d.Score}%<br>
+                        Statut : <span style="color:${d.Status === 'Majorité' ? '#B38510' : '#A67A0F'}; font-weight:bold">${d.Status}</span>
+                    `).style("left", (x + 15) + "px").style("top", (y - 28) + "px");
+                })
+                .on("mouseout", function(d) {
+                    d3.select(this).attr("r", 5.5).attr("opacity", 0.9).attr("stroke", d.Status === "Majorité" ? "#fff" : colorMaj);
+                    tooltip.transition().duration(500).style("opacity", 0);
                 });
 
-            // 5. Ajouter les valeurs au bout de chaque barre
-            g.selectAll(".value-label")
-                .data(nuancesData)
-                .enter()
-                .append("text")
-                .attr("class", "value-label")
-                .attr("x", d => x(d.value) + 8)
-                .attr("y", d => y(d.label) + y.bandwidth() / 2)
-                .attr("dy", "0.35em")
-                .style("font-size", "12px") 
-                .style("font-weight", "bold")
-                .style("fill", "#333") // Couleur neutre pour les chiffres
-                .text(d => d.value);
+            // Legend
+            const legendGroup = svg.append("g").attr("transform", `translate(${innerWidth + 20}, 20)`);
+            legendGroup.append("rect").attr("x", 0).attr("y", 0).attr("width", 150).attr("height", 95).attr("fill", "#F9FAFB").attr("stroke", "#E5E7EB").attr("rx", 6);
+            legendGroup.append("text").attr("x", 15).attr("y", 25).attr("class", "leg-title").text("Statut de l'élu");
 
-            // 6. Ajouter l'axe Y (les noms des nuances)
-            g.append("g")
-                .call(d3.axisLeft(y).tickSize(0))
-                .selectAll("text")
-                .style("font-size", "12px")
-                .style("fill", "#333")
-                .style("font-weight", "500");
+            const legendItems = [
+                { status: "Majorité", color: colorMaj, stroke: "none", strokeWidth: 0 },
+                { status: "Opposition", color: colorOpp, stroke: colorMaj, strokeWidth: 1 }
+            ];
 
-            g.select(".domain").remove();
-        }}
-    
-    );
+            const legendEntry = legendGroup.selectAll(".legend-entry").data(legendItems).enter().append("g").attr("class", "legend-entry").attr("transform", (d, i) => `translate(15, ${48 + i * 25})`);
+            legendEntry.append("circle").attr("cx", 6).attr("cy", 0).attr("r", 6).attr("fill", d => d.color).attr("stroke", d => d.stroke).attr("stroke-width", d => d.strokeWidth);
+            legendEntry.append("text").attr("x", 22).attr("y", 0).attr("dy", "0.32em").attr("class", "leg-desc").text(d => {
+                const count = data.filter(item => item.Status === d.status).length;
+                return `${d.status} (${count})`;
+            });
+        }
     </script>
 </body>
 </html>
