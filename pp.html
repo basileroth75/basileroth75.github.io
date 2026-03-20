@@ -16,18 +16,16 @@
             margin: 40px auto; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #333; position: relative; border-radius: 4px;
         }
         
-        /* Headers */
+        /* Headers - Uniformized across all charts */
         .wp-scientific-figure .figure-header { margin-bottom: 15px; border-bottom: 1px solid #E5E7EB; padding-bottom: 12px; }
         .wp-scientific-figure .figure-title { font-size: 16px; font-weight: bold; color: #111; margin: 0 0 5px 0; line-height: 1.3; }
-        .wp-scientific-figure.maires-chart .figure-title { font-size: 22px; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; } /* Specific to Chart 3 */
-        .wp-scientific-figure.maires-chart .figure-header { text-align: center; } /* Specific to Chart 3 */
         .wp-scientific-figure .lecture-help { font-size: 13px; color: #6b7280; font-style: italic; margin: 0; line-height: 1.5; }
         
         /* Layout Wrappers */
         .chart-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; padding-bottom: 10px; margin-top: 25px; position: relative; display: flex; justify-content: center; }
-        .chart-wrapper-flex { display: flex; flex-wrap: wrap; gap: 40px; width: 100%; position: relative; margin-top: 25px; } /* Specific to Chart 3 */
+        .chart-wrapper-flex { display: flex; flex-wrap: wrap; gap: 40px; width: 100%; position: relative; margin-top: 25px; } 
         
-        /* Panels (Chart 3) */
+        /* Panels */
         .panel { flex: 1; min-width: 380px; }
         .panel-title { font-size: 15px; font-weight: bold; color: #111; margin: 0 0 5px 0; }
         .panel-desc { font-size: 13px; color: #6b7280; margin: 0 0 15px 0; }
@@ -52,8 +50,8 @@
         .leg-title { font-size: 13px; font-weight: bold; fill: #111827; }
         .leg-desc { font-size: 11px; fill: #6b7280; font-weight: 500; }
         
-        /* HTML Legends (Chart 3) */
-        .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; margin-top: 15px; border-top: 1px solid #E5E7EB; padding-top: 15px; justify-content: center; color: #4B5563; }
+        /* HTML Legends */
+        .legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; margin-top: 15px; border-top: 1px solid #E5E7EB; padding-top: 15px; justify-content: center; color: #4B5563; width: 100%; }
         .legend-item { display: flex; align-items: center; gap: 6px; }
         .box { width: 12px; height: 12px; border-radius: 2px; }
         
@@ -65,12 +63,30 @@
 
     <div class="wp-scientific-figure">
         <div class="figure-header">
-            <h2 class="figure-title">2 - Bilan des têtes de listes dans les villes de + 10k habitants</h2>
+            <h2 class="figure-title">Bilan des têtes de listes dans les villes de + 10k habitants</h2>
             <p class="lecture-help">
                 Aide à la lecture : La longueur de la ligne indique le score de la liste au 1er tour (en %). La taille de la bulle est proportionnelle à la population de la ville.
             </p>  
         </div>
         <div id="lollipop-container" class="chart-wrapper"></div>
+    </div>
+
+    <div class="wp-scientific-figure">
+        <div class="figure-header">
+            <h2 class="figure-title">Nombre d'élus au conseil municipal à l'issue du 1er tour</h2>
+            <p class="lecture-help">
+                Aide à la lecture : Répartition des 469 338 conseillers municipaux élus dès le 1er tour. À gauche, la répartition globale. À droite, un zoom sur la gauche.
+            </p>  
+        </div>
+        <div id="elus-container" class="chart-wrapper-flex" style="flex-direction: column; align-items: center;">
+            <div id="elus-zoom-viz"></div>
+            <div class="legend">
+                <div class="legend-item"><div class="box" style="background:#E5E7EB"></div>Sans étiquette / Reste</div>
+                <div class="legend-item"><div class="box" style="background:#9CA3AF"></div>Autres partis (52 078)</div>
+                <div class="legend-item"><div class="box" style="background:#E57373"></div>Gauche (18 828)</div>
+                <div class="legend-item"><div class="box" style="background:#D4A017"></div>PP (61)</div>
+            </div>
+        </div>
     </div>
 
     <div class="wp-scientific-figure">
@@ -83,38 +99,44 @@
         <div id="pictogram-container" class="chart-wrapper"></div>
     </div>
 
-    <div class="wp-scientific-figure maires-chart">
+    <div class="wp-scientific-figure">
         <div class="figure-header">
             <h2 class="figure-title">Les maires Place Publique élus au 1er tour</h2>
             <p class="lecture-help">
-                Aide à la lecture : Résultats à l'issue du 1er tour des élections. À gauche, un zoom sur le spectre politique des 33 305 communes. À droite, la taille de la bulle est proportionnelle à la population de la ville remportée.
+                Aide à la lecture : Résultats à l'issue du 1er tour des élections. À gauche, un zoom sur le spectre politique des 33 305 communes. À droite, la taille de la bulle est proportionnelle à la population de la ville (Saint-Denis ajoutée à titre de comparaison).
             </p>  
         </div>
 
         <div id="maires-container" class="chart-wrapper-flex">
             <div class="panel">
-                <h3 class="panel-title">Comparatif national des mairies (1er tour)</h3>
+                <h3 class="panel-title">Comparatif national des mairies</h3>
                 <p class="panel-desc">Place Publique face au paysage politique (effet loupe)</p>
                 <div id="zoom-viz"></div>
                 <div class="legend">
                     <div class="legend-item"><div class="box" style="background:#E5E7EB"></div>Sans étiquette / Reste</div>
                     <div class="legend-item"><div class="box" style="background:#9CA3AF"></div>Autres partis (1756)</div>
                     <div class="legend-item"><div class="box" style="background:#E57373"></div>Gauche (589)</div>
-                    <div class="legend-item"><div class="box" style="background:#F59E0B"></div>PP (5)</div>
+                    <div class="legend-item"><div class="box" style="background:#D4A017"></div>PP (5)</div>
                 </div>
             </div>
 
             <div class="panel">
-                <h3 class="panel-title">Profil démographique des victoires (1er tour)</h3>
-                <p class="panel-desc">Population des 5 communes remportées dès le premier tour</p>
+                <h3 class="panel-title">Profil démographique des victoires</h3>
+                <p class="panel-desc">Population des communes remportées dès le premier tour</p>
                 <div id="circle-viz"></div>
             </div>
         </div>
     </div>
 
     <script>
+        // Couleurs globales partagées
+        const colorOther = "#E5E7EB";        
+        const colorOtherParties = "#9CA3AF"; 
+        const colorLeft = "#E57373";         
+        const colorPP = "#D4A017"; 
+        
         // ------------------------------------------------
-        // 1. DATA & INITIALIZATION FOR CHART 1 (Lollipop)
+        // 1. GRAPHIQUE 1 (Lollipop)
         // ------------------------------------------------
         const dataLollipop = [
           {"City": "Grenoble", "Candidate_Name": "ROMAIN GENTIL", "population": 157477.0, "Ordre": 1, "Score": 10.0, "Status":  "Battu au 1er tour"}, 
@@ -148,7 +170,7 @@
             const innerWidth = width - margin.left - margin.right;
             const innerHeight = height - margin.top - margin.bottom;
 
-            const colorVictoire = "#D4A017", colorQualif = "#E5C158", colorBattu = "#E5E7EB", colorBattuStroke = "#9CA3AF"; 
+            const colorQualif = "#E5C158", colorBattu = "#E5E7EB", colorBattuStroke = "#9CA3AF"; 
 
             const container = d3.select("#lollipop-container");
             const svg = container.html("").append("svg")
@@ -187,7 +209,7 @@
             svg.selectAll(".lollipop-circle").data(data).enter().append("circle").attr("class", "lollipop-circle")
                 .attr("cx", d => xScale(d.Score)).attr("cy", d => yScale(d.City)).attr("r", d => rScale(d.population))
                 .attr("fill", d => {
-                    if(d.Status === "Victoire (1er tour)") return colorVictoire;
+                    if(d.Status === "Victoire (1er tour)") return colorPP;
                     if(d.Status === "Qualifié (2nd tour)") return colorQualif;
                     return colorBattu;
                 })
@@ -224,7 +246,7 @@
 
             const legendGroup = svg.append("g").attr("transform", `translate(${innerWidth + 40}, 60)`);
             legendGroup.append("text").attr("x", 0).attr("y", 0).attr("class", "leg-title").text("Issue du scrutin");
-            legendGroup.append("circle").attr("cx", 6).attr("cy", 22).attr("r", 6).attr("fill", colorVictoire);
+            legendGroup.append("circle").attr("cx", 6).attr("cy", 22).attr("r", 6).attr("fill", colorPP);
             legendGroup.append("text").attr("x", 20).attr("y", 26).attr("class", "leg-title").attr("fill", "#A67A0F").text("Victoire (1)");
             legendGroup.append("circle").attr("cx", 6).attr("cy", 48).attr("r", 6).attr("fill", colorQualif);
             legendGroup.append("text").attr("x", 20).attr("y", 52).attr("class", "leg-title").attr("fill", "#A67A0F").text("2nd Tour (4)");
@@ -244,8 +266,67 @@
             });
         }
 
+
         // ------------------------------------------------
-        // 2. DATA & INITIALIZATION FOR CHART 2 (Scatter)
+        // 2. GRAPHIQUE 2 (Élus - Zoomed Stacked Bar)
+        // ------------------------------------------------
+        drawElusChart();
+
+        function drawElusChart() {
+            const totalElus = 469338, leftElus = 18828, otherPartiesElus = 52078, ppElus = 61;
+
+            d3.select("#elus-zoom-viz").html(""); 
+            
+            const width1 = 450, height1 = 300;
+            const svg1 = d3.select("#elus-zoom-viz").append("svg")
+                .attr("width", width1).attr("height", height1)
+                .attr("viewBox", `0 0 ${width1} ${height1}`) 
+                .style("display", "block").style("margin", "0 auto");
+
+            const barWidth = 75, maxHeight = 210, topY = 40, leftX = 60, rightX = 280;
+
+            // Compute heights - with visual minimum adjustments so the small slices remain visible
+            const rawHLeftGauche = (leftElus / totalElus) * maxHeight;
+            const hLeftGauche = Math.max(8, rawHLeftGauche); // Min 8px visibility
+            const hLeftOtherParties = (otherPartiesElus / totalElus) * maxHeight;
+            const hLeftReste = maxHeight - hLeftGauche - hLeftOtherParties;
+
+            const rawHRightPP = (ppElus / leftElus) * maxHeight;
+            const hRightPP = Math.max(3, rawHRightPP); // Min 3px visibility for PP
+            const hRightOtherLeft = maxHeight - hRightPP;
+
+            // Polygon (Zoom effect connecting the red slice on left to the big red bar on right)
+            svg1.append("polygon").attr("points", `
+                ${leftX + barWidth},${topY + hLeftReste + hLeftOtherParties} 
+                ${rightX},${topY} 
+                ${rightX},${topY + maxHeight} 
+                ${leftX + barWidth},${topY + maxHeight}
+            `).attr("fill", colorLeft).attr("opacity", 0.15); 
+
+            // Left Bar
+            svg1.append("rect").attr("x", leftX).attr("y", topY).attr("width", barWidth).attr("height", hLeftReste).attr("fill", colorOther);
+            svg1.append("rect").attr("x", leftX).attr("y", topY + hLeftReste).attr("width", barWidth).attr("height", hLeftOtherParties).attr("fill", colorOtherParties);
+            svg1.append("rect").attr("x", leftX).attr("y", topY + hLeftReste + hLeftOtherParties).attr("width", barWidth).attr("height", hLeftGauche).attr("fill", colorLeft);
+
+            svg1.append("text").attr("x", leftX + barWidth/2).attr("y", topY - 20).style("font-size", "13px").style("font-weight", "bold").style("fill", "#111").style("text-anchor", "middle").text("Total");
+            svg1.append("text").attr("x", leftX + barWidth/2).attr("y", topY - 6).style("font-size", "12px").style("fill", "#666").style("text-anchor", "middle").text("469 338");
+            svg1.append("text").attr("x", leftX + barWidth/2).attr("y", topY + hLeftReste/2).style("font-size", "12px").style("fill", "#666").style("text-anchor", "middle").style("alignment-baseline", "middle").text("Autres");
+
+            // Right Bar
+            svg1.append("rect").attr("x", rightX).attr("y", topY).attr("width", barWidth).attr("height", hRightOtherLeft).attr("fill", colorLeft);
+            svg1.append("rect").attr("x", rightX).attr("y", topY + hRightOtherLeft).attr("width", barWidth).attr("height", hRightPP).attr("fill", colorPP);
+
+            svg1.append("text").attr("x", rightX + barWidth/2).attr("y", topY - 20).style("font-size", "13px").style("font-weight", "bold").style("fill", colorLeft).style("text-anchor", "middle").text("Gauche");
+            svg1.append("text").attr("x", rightX + barWidth/2).attr("y", topY - 6).style("font-size", "12px").style("fill", colorLeft).style("text-anchor", "middle").text("18 828");
+
+            const ppCenterY = topY + maxHeight - (hRightPP / 2); 
+            svg1.append("line").attr("x1", rightX + barWidth).attr("y1", ppCenterY).attr("x2", rightX + barWidth + 15).attr("y2", ppCenterY).attr("stroke", "#111").attr("stroke-width", 1);
+            svg1.append("text").attr("x", rightX + barWidth + 20).attr("y", ppCenterY).style("font-size", "13px").style("font-weight", "bold").style("fill", colorPP).style("alignment-baseline", "middle").text("PP : 61");
+        }
+
+
+        // ------------------------------------------------
+        // 3. GRAPHIQUE 3 (Scatter / Pictogram)
         // ------------------------------------------------
         const dataScatter = [
             {"City": "Perpignan", "Candidate_Name": "AGNES LANGEVINE", "population": 119656.0, "Ordre": 1, "Score": 15.94, "Status": "Opposition"}, {"City": "Dunkerque", "Candidate_Name": "PEERS LUDOVIC", "population": 86788.0, "Ordre": 41, "Score": 64.47, "Status": "Majorit\u00e9"}, {"City": "Levallois-Perret", "Candidate_Name": "DANIELE ZELIC", "population": 68009.0, "Ordre": 2, "Score": 11.68, "Status": "Opposition"}, {"City": "Valence", "Candidate_Name": "FRANCINE PROST", "population": 64483.0, "Ordre": 4, "Score": 17.82, "Status": "Opposition"}, {"City": "Meaux", "Candidate_Name": "VALENTINE ROUSSEAU", "population": 55616.0, "Ordre": 1, "Score": 9.73, "Status": "Opposition"}, {"City": "Chelles", "Candidate_Name": "ERIC POMMAGEOT", "population": 54309.0, "Ordre": 3, "Score": 23.79, "Status": "Opposition"}, {"City": "Laval", "Candidate_Name": "AGNES CAMARENA", "population": 49657.0, "Ordre": 10, "Score": 54.49, "Status": "Majorit\u00e9"}, {"City": "Saint-Herblain", "Candidate_Name": "BUREAU JOCELYN", "population": 49537.0, "Ordre": 21, "Score": 53.68, "Status": "Majorit\u00e9"}, {"City": "Saint-Priest", "Candidate_Name": "GILLES GRANDVAL", "population": 48822.0, "Ordre": 1, "Score": 14.21, "Status": "Opposition"}, {"City": "Meudon", "Candidate_Name": "BLANDINE CORNEVIN", "population": 46342.0, "Ordre": 2, "Score": 23.74, "Status": "Opposition"}, {"City": "Alfortville", "Candidate_Name": "FRANCOIS VITSE", "population": 45046.0, "Ordre": 23, "Score": 76.03, "Status": "Majorit\u00e9"}, {"City": "Puteaux", "Candidate_Name": "PIERRE BONSACK", "population": 43672.0, "Ordre": 3, "Score": 13.99, "Status": "Opposition"}, {"City": "Caluire-et-Cuire", "Candidate_Name": "JACQUES TYROL CHARY", "population": 43572.0, "Ordre": 5, "Score": 27.44, "Status": "Opposition"}, {"City": "Boulogne-sur-Mer", "Candidate_Name": "CLAUDE COUQUET", "population": 40910.0, "Ordre": 9, "Score": 53.94, "Status": "Majorit\u00e9"}, {"City": "Ch\u00e2tillon", "Candidate_Name": "EVA LINARES CRUZ", "population": 36777.0, "Ordre": 9, "Score": 61.59, "Status": "Majorit\u00e9"}, {"City": "Sainte Genevi\u00e8ve des Bois", "Candidate_Name": "AMIR BEN MERZOUG", "population": 35846.0, "Ordre": 7, "Score": 54.57, "Status": "Majorit\u00e9"}, {"City": "Cachan", "Candidate_Name": "SAFAE TERRISSE", "population": 30592.0, "Ordre": 29, "Score": 64.39, "Status": "Majorit\u00e9"}, {"City": "Saint Cloud", "Candidate_Name": "ANNE MARIE CRAVERO", "population": 29727.0, "Ordre": 1, "Score": 11.27, "Status": "Opposition"}, {"City": "Vanves", "Candidate_Name": "MATTHIEU BORRAS", "population": 28014.0, "Ordre": 8, "Score": 45.54, "Status": "Opposition"}, {"City": "Vanves", "Candidate_Name": "JEAN NAKACHE", "population": 28014.0, "Ordre": 2, "Score": 45.54, "Status": "Opposition"}, {"City": "Blagnac", "Candidate_Name": "CATHERINE ELISSALDE", "population": 26466.0, "Ordre": 18, "Score": 55.43, "Status": "Majorit\u00e9"}, {"City": "Blagnac", "Candidate_Name": "JEAN MARC FUENTES", "population": 26466.0, "Ordre": 27, "Score": 55.43, "Status": "Majorit\u00e9"}, {"City": "Vertou", "Candidate_Name": "JEAN MARC CHIROL", "population": 26002.0, "Ordre": 4, "Score": 31.37, "Status": "Opposition"}, {"City": "Aurillac", "Candidate_Name": "JEAN MARIE BOYER", "population": 25815.0, "Ordre": 2, "Score": 38.53, "Status": "Opposition"}, {"City": "Frontignan", "Candidate_Name": "KELVINE GOUVERNAYRE", "population": 23808.0, "Ordre": 2, "Score": 51.16, "Status": "Majorit\u00e9"}, {"City": "Les Lilas", "Candidate_Name": "SIGALIT LAVON", "population": 23469.0, "Ordre": 8, "Score": 74.7, "Status": "Majorit\u00e9"}, {"City": "Les Lilas", "Candidate_Name": "TIFFANY GEORGES", "population": 23469.0, "Ordre": 24, "Score": 74.7, "Status": "Majorit\u00e9"}, {"City": "Les Lilas", "Candidate_Name": "JUDITH LINDENBERG", "population": 23469.0, "Ordre": 30, "Score": 74.7, "Status": "Majorit\u00e9"}, {"City": "Gif sur Yvette", "Candidate_Name": "PIERRE PATRICK FAURE", "population": 22352.0, "Ordre": 5, "Score": 29.09, "Status": "Opposition"}, {"City": "Neuilly-Plaisance", "Candidate_Name": "OLIVIER PRIGENT", "population": 21415.0, "Ordre": 1, "Score": 18.7, "Status": "Opposition"}, {"City": "La Chapelle-sur-Erdre", "Candidate_Name": "FREDERIC BARBELIVIEN", "population": 20331.0, "Ordre": 7, "Score": 47.92, "Status": "Opposition"}, {"City": "Chamali\u00e8res", "Candidate_Name": "THOMAS MERZI", "population": 17454.0, "Ordre": 1, "Score": 30.32, "Status": "Opposition"}, {"City": "Le Pr\u00e9 Saint Gervais", "Candidate_Name": "STEPHANE COMMUN", "population": 16865.0, "Ordre": 3, "Score": 53.19, "Status": "Majorit\u00e9"}, {"City": "Les Herbiers", "Candidate_Name": "GUYLAINE MERLET", "population": 16453.0, "Ordre": 4, "Score": 30.88, "Status": "Opposition"}, {"City": "Landerneau", "Candidate_Name": "FABRICE FOURFOOZ", "population": 16206.0, "Ordre": 2, "Score": 24.39, "Status": "Opposition"}, {"City": "Mayenne", "Candidate_Name": "JEAN PIERRE LE SCORNET", "population": 12900.0, "Ordre": 1, "Score": 41.18, "Status": "Opposition"}, {"City": "Villeneuve l\u00e8s Avignon", "Candidate_Name": "FLORENT LEMONT", "population": 12617.0, "Ordre": 4, "Score": 26.71, "Status": "Opposition"}, {"City": "Seyssinet-Pariset", "Candidate_Name": "MICHEL LANGLAIS", "population": 11753.0, "Ordre": 15, "Score": 62.16, "Status": "Majorit\u00e9"}, {"City": "Enghien-Les-Bains", "Candidate_Name": "RACHEL MOLERE ATTAL", "population": 11440.0, "Ordre": 1, "Score": 20.41, "Status": "Opposition"}, {"City": "Le Pont-de-Claix", "Candidate_Name": "CHRISTOPHE FERRARI", "population": 10805.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Portet sur Garonne", "Candidate_Name": "REGIS LEBASTARD", "population": 9805.0, "Ordre": 13, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Cebazat", "Candidate_Name": "NARMIN SHANA", "population": 8946.0, "Ordre": 2, "Score": 23.5, "Status": "Opposition"}, {"City": "Talmont Saint-Hilaire", "Candidate_Name": "PATRICK GENU", "population": 8161.0, "Ordre": 2, "Score": 27.88, "Status": "Opposition"}, {"City": "La Tour du Pin", "Candidate_Name": "PASCALE PARENTHOUX", "population": 8138.0, "Ordre": 3, "Score": 29.31, "Status": "Opposition"}, {"City": "Falaise", "Candidate_Name": "CECILE LE VAGUERESE MARIE", "population": 7782.0, "Ordre": 2, "Score": 59.61, "Status": "Majorit\u00e9"}, {"City": "Mo\u00e9lan sur Mer", "Candidate_Name": "JULIEN DESTREMONT", "population": 6756.0, "Ordre": 7, "Score": 49.93, "Status": "Opposition"}, {"City": "Vic-le-Comte", "Candidate_Name": "FLEURIANE REY", "population": 5242.0, "Ordre": 18, "Score": 58.96, "Status": "Majorit\u00e9"}, {"City": "Montagnac", "Candidate_Name": "MICHEL GARCIA", "population": 4436.0, "Ordre": 1, "Score": 24.48, "Status": "Opposition"}, {"City": "La R\u00e9ole", "Candidate_Name": "BRUNO MARTY", "population": 4396.0, "Ordre": 1, "Score": 65.95, "Status": "Majorit\u00e9"}, {"City": "Angoulins", "Candidate_Name": "MANON GABRIEL", "population": 4117.0, "Ordre": 1, "Score": 40.15, "Status": "Opposition"}, {"City": "Montendre", "Candidate_Name": "MICHEL LATHIERE", "population": 3228.0, "Ordre": 5, "Score": 59.42, "Status": "Majorit\u00e9"}, {"City": "Montfrin", "Candidate_Name": "PHILIPPE MARCHESI", "population": 3129.0, "Ordre": 5, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Batz sur mer", "Candidate_Name": "CATHERINE SORIA", "population": 2823.0, "Ordre": 2, "Score": 21.61, "Status": "Opposition"}, {"City": "Saint-Paterne - Le-Chevain", "Candidate_Name": "PATRICK DAHL", "population": 2096.0, "Ordre": 3, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Chambourg-sur-Indre", "Candidate_Name": "QUENTIN AUBOIRE", "population": 1236.0, "Ordre": 5, "Score": 68.8, "Status": "Majorit\u00e9"}, {"City": "Orvilliers", "Candidate_Name": "YASMINA KASMI BAKKALI", "population": 946.0, "Ordre": 11, "Score": 51.68, "Status": "Majorit\u00e9"}, {"City": "Saint-R\u00e8gle", "Candidate_Name": "DELPHINE CHAYETTE", "population": 614.0, "Ordre": 10, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "SAINT-THOMAS-DE-CONAC", "Candidate_Name": "HUGHES SCIARD", "population": 575.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Grosmagny", "Candidate_Name": "LUC FLEURY", "population": 534.0, "Ordre": 9, "Score": 61.54, "Status": "Majorit\u00e9"}, {"City": "Vinzieux", "Candidate_Name": "HUGO BIOLLEY", "population": 503.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Chatel en Tri\u00e8ves", "Candidate_Name": "FANNY LACROIX", "population": 491.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}
@@ -259,7 +340,7 @@
             const innerWidth = width - margin.left - margin.right;
             const innerHeight = height - margin.top - margin.bottom;
 
-            const colorMaj = "#D4A017", colorOpp = "#F2E394"; 
+            const colorOpp = "#F2E394"; 
 
             const container = d3.select("#pictogram-container");
             const svg = container.html("").append("svg")
@@ -290,8 +371,8 @@
 
             svg.selectAll("circle.point").data(data).enter().append("circle").attr("class", "point")
                 .attr("cx", d => xScale(d.population)).attr("cy", d => yScale(d.Ordre)).attr("r", 5.5)
-                .attr("fill", d => d.Status === "Majorité" ? colorMaj : colorOpp)
-                .attr("stroke", d => d.Status === "Majorité" ? "#fff" : colorMaj)
+                .attr("fill", d => d.Status === "Majorité" ? colorPP : colorOpp)
+                .attr("stroke", d => d.Status === "Majorité" ? "#fff" : colorPP)
                 .attr("stroke-width", d => d.Status === "Majorité" ? 0.5 : 1)
                 .attr("opacity", 0.9)
                 .on("mouseover", function(event, d) {
@@ -308,7 +389,7 @@
                     `).style("left", (x + 15) + "px").style("top", (y - 28) + "px");
                 })
                 .on("mouseout", function(d) {
-                    d3.select(this).attr("r", 5.5).attr("opacity", 0.9).attr("stroke", d.Status === "Majorité" ? "#fff" : colorMaj);
+                    d3.select(this).attr("r", 5.5).attr("opacity", 0.9).attr("stroke", d.Status === "Majorité" ? "#fff" : colorPP);
                     tooltip.transition().duration(500).style("opacity", 0);
                 });
 
@@ -317,8 +398,8 @@
             legendGroup.append("text").attr("x", 15).attr("y", 25).attr("class", "leg-title").text("Statut de l'élu");
 
             const legendItems = [
-                { status: "Majorité", color: colorMaj, stroke: "none", strokeWidth: 0 },
-                { status: "Opposition", color: colorOpp, stroke: colorMaj, strokeWidth: 1 }
+                { status: "Majorité", color: colorPP, stroke: "none", strokeWidth: 0 },
+                { status: "Opposition", color: colorOpp, stroke: colorPP, strokeWidth: 1 }
             ];
 
             const legendEntry = legendGroup.selectAll(".legend-entry").data(legendItems).enter().append("g").attr("class", "legend-entry").attr("transform", (d, i) => `translate(15, ${48 + i * 25})`);
@@ -329,24 +410,21 @@
             });
         }
 
+
         // ------------------------------------------------
-        // 3. DATA & INITIALIZATION FOR CHART 3 (Maires)
+        // 4. GRAPHIQUE 4 (Maires - Composite)
         // ------------------------------------------------
         drawMairesChart();
 
         function drawMairesChart() {
             const ppData = [
-                { name: "Le Pont-de-Claix", pop: 10805 },
-                { name: "La Réole", pop: 4396 },
-                { name: "St-Thomas", pop: 575 },
-                { name: "Vinzieux", pop: 503 },
-                { name: "Châtel-en-Trièves", pop: 491 }
+                { name: "Saint-Denis", pop: 148907, type: "Gauche" },
+                { name: "Le Pont-de-Claix", pop: 10805, type: "PP" },
+                { name: "La Réole", pop: 4396, type: "PP" },
+                { name: "St-Thomas", pop: 575, type: "PP" },
+                { name: "Vinzieux", pop: 503, type: "PP" },
+                { name: "Châtel-en-Trièves", pop: 491, type: "PP" }
             ];
-
-            const colorOther = "#E5E7EB";        
-            const colorOtherParties = "#9CA3AF"; 
-            const colorLeft = "#E57373";         
-            const colorPP = "#F59E0B";           
 
             const container = d3.select("#maires-container");
             const tooltip = container.append("div").attr("class", "pp-tooltip").attr("id", "tooltip-maires");
@@ -357,7 +435,7 @@
             const width1 = 380, height1 = 280;
             const svg1 = d3.select("#zoom-viz").append("svg")
                 .attr("width", width1).attr("height", height1)
-                .attr("viewBox", `0 0 ${width1} ${height1}`) // Added viewBox for responsiveness
+                .attr("viewBox", `0 0 ${width1} ${height1}`) 
                 .style("display", "block").style("margin", "0 auto");
 
             const totalCommunes = 33305, leftCommunes = 589, otherPartiesCommunes = 1756, ppCommunes = 5;
@@ -382,14 +460,14 @@
             svg1.append("rect").attr("x", leftX).attr("y", topY + hLeftReste + hLeftOtherParties).attr("width", barWidth).attr("height", hLeftGauche).attr("fill", colorLeft);
 
             svg1.append("text").attr("x", leftX + barWidth/2).attr("y", topY - 20).style("font-size", "12px").style("font-weight", "bold").style("fill", "#111").style("text-anchor", "middle").text("Total");
-            svg1.append("text").attr("x", leftX + barWidth/2).attr("y", topY - 6).style("font-size", "11px").style("fill", "#666").style("text-anchor", "middle").text("(33 305)");
+            svg1.append("text").attr("x", leftX + barWidth/2).attr("y", topY - 6).style("font-size", "11px").style("fill", "#666").style("text-anchor", "middle").text("33 305");
             svg1.append("text").attr("x", leftX + barWidth/2).attr("y", topY + hLeftReste/2).style("font-size", "12px").style("fill", "#666").style("text-anchor", "middle").style("alignment-baseline", "middle").text("Autres");
 
             svg1.append("rect").attr("x", rightX).attr("y", topY).attr("width", barWidth).attr("height", hRightOtherLeft).attr("fill", colorLeft);
             svg1.append("rect").attr("x", rightX).attr("y", topY + hRightOtherLeft).attr("width", barWidth).attr("height", hRightPP).attr("fill", colorPP);
 
             svg1.append("text").attr("x", rightX + barWidth/2).attr("y", topY - 20).style("font-size", "12px").style("font-weight", "bold").style("fill", colorLeft).style("text-anchor", "middle").text("Gauche");
-            svg1.append("text").attr("x", rightX + barWidth/2).attr("y", topY - 6).style("font-size", "11px").style("fill", colorLeft).style("text-anchor", "middle").text("(589)");
+            svg1.append("text").attr("x", rightX + barWidth/2).attr("y", topY - 6).style("font-size", "11px").style("fill", colorLeft).style("text-anchor", "middle").text("589");
 
             const ppCenterY = topY + maxHeight - (hRightPP / 2); 
             svg1.append("line").attr("x1", rightX + barWidth).attr("y1", ppCenterY).attr("x2", rightX + barWidth + 15).attr("y2", ppCenterY).attr("stroke", "#111").attr("stroke-width", 1);
@@ -405,12 +483,12 @@
             const svg2 = d3.select("#circle-viz").append("svg")
                 .attr("width", width2 + margin2.left + margin2.right)
                 .attr("height", height2 + margin2.top + margin2.bottom)
-                .attr("viewBox", `0 0 ${width2 + margin2.left + margin2.right} ${height2 + margin2.top + margin2.bottom}`) // Added viewBox
+                .attr("viewBox", `0 0 ${width2 + margin2.left + margin2.right} ${height2 + margin2.top + margin2.bottom}`) 
                 .style("display", "block").style("margin", "0 auto")
                 .append("g").attr("transform", `translate(${margin2.left},${margin2.top})`);
 
-            const popMax = 11000;
-            const circleRadiusScale = d3.scaleSqrt().domain([0, popMax]).range([0, 45]);
+            const popMax = 150000; 
+            const circleRadiusScale = d3.scaleSqrt().domain([0, popMax]).range([0, 50]);
             const dataSorted = ppData.sort((a,b) => b.pop - a.pop);
             
             const xCoord = d3.scalePoint().domain(dataSorted.map(d => d.name)).range([15, width2 - 15]).padding(0.2);
@@ -422,7 +500,8 @@
 
             svg2.selectAll("circle.pop-circle").data(dataSorted).enter().append("circle").attr("class", "pop-circle")
                 .attr("cx", d => xCoord(d.name)).attr("cy", d => height2 - circleRadiusScale(d.pop)).attr("r", d => circleRadiusScale(d.pop))
-                .attr("fill", colorPP).attr("stroke", "#fff").attr("stroke-width", 1.5).attr("opacity", 0.9)
+                .attr("fill", d => d.type === "Gauche" ? colorLeft : colorPP)
+                .attr("stroke", "#fff").attr("stroke-width", 1.5).attr("opacity", 0.9)
                 .style("cursor", "pointer")
                 .on("mousemove", function(event, d) {
                     d3.select(this).attr("stroke", "#111").attr("stroke-width", 2).attr("opacity", 1);
@@ -430,7 +509,7 @@
                     tooltip.style("opacity", 1).html(`
                         <strong>${d.name}</strong>
                         Population : <span style="font-weight:bold">${d.pop.toLocaleString('fr-FR')} hab.</span><br>
-                        Statut : <span style="color:#A67A0F; font-weight:bold">Victoire (1er tour)</span>
+                        Étiquette : <span style="color:${d.type === 'Gauche' ? colorLeft : colorPP}; font-weight:bold">${d.type}</span>
                     `).style("left", (x + 20) + "px").style("top", (y - 10) + "px");
                 })
                 .on("mouseout", function(event, d) {
@@ -441,7 +520,38 @@
             svg2.selectAll("text.pop-label").data(dataSorted).enter().append("text")
                 .attr("x", d => xCoord(d.name)).attr("y", d => height2 - (circleRadiusScale(d.pop) * 2) - 8)
                 .attr("text-anchor", "middle").style("font-size", "11px").style("font-weight", "600").style("fill", "#111")
-                .text(d => d.pop.toLocaleString('fr-FR'));
+                .text(d => Math.round(d.pop / 1000) + "k");
+
+            // --- LEGEND: SIZE OF CITIES ---
+            // --- LEGEND: SIZE OF CITIES ---
+            // Tailles réduites pour que la légende prenne moins de place
+            // --- LEGEND: SIZE OF CITIES ---
+            const mairesSizes = [50000, 25000, 10000]; 
+            const maxRadiusMaires = circleRadiusScale(100000);
+            
+const mairesLegendGroup = svg2.append("g")
+                .attr("transform", `translate(${width2 - 110}, ${maxRadiusMaires + 30})`);
+            
+            mairesLegendGroup.append("text")
+                .attr("x", 15)
+                .attr("y", -maxRadiusMaires - 25)
+                .attr("class", "leg-title")
+                .style("text-anchor", "middle")
+                .text("Taille de la ville");
+
+            mairesSizes.forEach(size => {
+                let radius = circleRadiusScale(size);
+                mairesLegendGroup.append("circle")
+                    .attr("cx", 0).attr("cy", -radius).attr("r", radius)
+                    .attr("fill", "none").attr("stroke", "#9CA3AF").attr("stroke-width", 1.2);
+                mairesLegendGroup.append("line")
+                    .attr("x1", 0).attr("y1", -radius * 2).attr("x2", maxRadiusMaires + 15).attr("y2", -radius * 2)
+                    .attr("stroke", "#D1D5DB").attr("stroke-dasharray", "2,2");
+                mairesLegendGroup.append("text")
+                    .attr("x", maxRadiusMaires + 20).attr("y", -radius * 2 + 4)
+                    .attr("class", "leg-desc")
+                    .text((size / 1000) + "k hab.");
+            });
         }
     </script>
 </body>
