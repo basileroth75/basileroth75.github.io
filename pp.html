@@ -20,6 +20,8 @@
         .wp-scientific-figure .figure-header { margin-bottom: 15px; border-bottom: 1px solid #E5E7EB; padding-bottom: 12px; }
         .wp-scientific-figure .figure-title { font-size: 16px; font-weight: bold; color: #111; margin: 0 0 5px 0; line-height: 1.3; }
         .wp-scientific-figure .lecture-help { font-size: 13px; color: #6b7280; font-style: italic; margin: 0; line-height: 1.5; }
+        .wp-scientific-figure .figure-footer { margin-top: 15px; padding-top: 12px; border-top: 1px solid #E5E7EB; font-size: 12px; color: #6b7280; line-height: 1.5; }
+        .wp-scientific-figure .figure-footer a { color: #4B5563; text-decoration: underline; }
         
         /* Layout Wrappers */
         .chart-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; padding-bottom: 10px; margin-top: 25px; position: relative; display: flex; justify-content: center; }
@@ -63,19 +65,22 @@
 
     <div class="wp-scientific-figure">
         <div class="figure-header">
-            <h2 class="figure-title">Bilan des têtes de listes dans les villes de + 10k habitants</h2>
+            <h2 class="figure-title">Bilan des têtes de listes dans les villes de + 10 000 habitants</h2>
             <p class="lecture-help">
-                Aide à la lecture : La longueur de la ligne indique le score de la liste au 1er tour (en %). La taille de la bulle est proportionnelle à la population de la ville.
+                Aide à la lecture : la longueur de la ligne indique le score de la liste au 1<sup>er</sup> tour (en %). La taille de la bulle est proportionnelle à la population de la ville.
             </p>  
         </div>
         <div id="lollipop-container" class="chart-wrapper"></div>
+        <div class="figure-footer">
+            Sources : <a href="https://www.data.gouv.fr/organizations/ministere-de-linterieur" target="_blank" rel="noopener noreferrer">data.gouv.fr</a>, <a href="https://www.insee.fr/" target="_blank" rel="noopener noreferrer">Insee</a>, Place Publique.
+        </div>
     </div>
 
     <div class="wp-scientific-figure">
         <div class="figure-header">
-            <h2 class="figure-title">Nombre d'élus au conseil municipal à l'issue du 1er tour</h2>
+            <h2 class="figure-title">Nombre d'élus au conseil municipal à l'issue du 1<sup>er</sup> tour</h2>
             <p class="lecture-help">
-                Aide à la lecture : Répartition des 469 338 conseillers municipaux élus dès le 1er tour. À gauche, la répartition globale. À droite, un zoom sur la gauche.
+                Aide à la lecture : répartition des 469 338 conseillers municipaux élus dès le 1<sup>er</sup> tour. À gauche, la répartition globale. À droite, un zoom sur la gauche.
             </p>  
         </div>
         <div id="elus-container" class="chart-wrapper-flex" style="flex-direction: column; align-items: center;">
@@ -84,8 +89,11 @@
                 <div class="legend-item"><div class="box" style="background:#E5E7EB"></div>Sans étiquette / Reste</div>
                 <div class="legend-item"><div class="box" style="background:#9CA3AF"></div>Autres partis (52 078)</div>
                 <div class="legend-item"><div class="box" style="background:#E57373"></div>Gauche (18 828)</div>
-                <div class="legend-item"><div class="box" style="background:#D4A017"></div>PP (61)</div>
+                <div class="legend-item"><div class="box" style="background:#D4A017"></div>Place Publique (61)</div>
             </div>
+        </div>
+        <div class="figure-footer">
+            Sources : <a href="https://www.data.gouv.fr/organizations/ministere-de-linterieur" target="_blank" rel="noopener noreferrer">data.gouv.fr</a>, <a href="https://www.insee.fr/" target="_blank" rel="noopener noreferrer">Insee</a>, Place Publique.
         </div>
     </div>
 
@@ -93,17 +101,20 @@
         <div class="figure-header">
             <h2 class="figure-title">Place Publique aux municipales : des élus rarement bien placés dans les grandes villes</h2>
             <p class="lecture-help">
-                Aide à la lecture : Chaque point représente un élu Place Publique au conseil municipal. L'axe horizontal indique la taille de la ville, l'axe vertical sa position sur la liste. Les nuances jaunes indiquent si l'élu siège dans la majorité ou dans l'opposition.
+                Aide à la lecture : chaque point représente un élu Place Publique au conseil municipal. L'axe horizontal indique la taille de la ville, l'axe vertical sa position sur la liste. Les nuances jaunes indiquent si l'élu siège dans la majorité ou dans l'opposition.
             </p>  
         </div>
         <div id="pictogram-container" class="chart-wrapper"></div>
+        <div class="figure-footer">
+            Sources : <a href="https://www.data.gouv.fr/organizations/ministere-de-linterieur" target="_blank" rel="noopener noreferrer">data.gouv.fr</a>, <a href="https://www.insee.fr/" target="_blank" rel="noopener noreferrer">Insee</a>, Place Publique.
+        </div>
     </div>
 
     <div class="wp-scientific-figure">
         <div class="figure-header">
-            <h2 class="figure-title">Les maires Place Publique élus au 1er tour</h2>
+            <h2 class="figure-title">Les maires Place Publique élus au 1<sup>er</sup> tour</h2>
             <p class="lecture-help">
-                Aide à la lecture : Résultats à l'issue du 1er tour des élections. À gauche, un zoom sur le spectre politique des 33 305 communes. À droite, la taille de la bulle est proportionnelle à la population de la ville (Saint-Denis ajoutée à titre de comparaison).
+                Aide à la lecture : résultats à l'issue du 1<sup>er</sup> tour des élections. À gauche, un zoom sur le spectre politique des 33 305 communes. À droite, la taille de la bulle est proportionnelle à la population de la ville (Saint-Denis ajoutée à titre de comparaison).
             </p>  
         </div>
 
@@ -116,7 +127,7 @@
                     <div class="legend-item"><div class="box" style="background:#E5E7EB"></div>Sans étiquette / Reste</div>
                     <div class="legend-item"><div class="box" style="background:#9CA3AF"></div>Autres partis (1756)</div>
                     <div class="legend-item"><div class="box" style="background:#E57373"></div>Gauche (589)</div>
-                    <div class="legend-item"><div class="box" style="background:#D4A017"></div>PP (5)</div>
+                    <div class="legend-item"><div class="box" style="background:#D4A017"></div>Place Publique (5)</div>
                 </div>
             </div>
 
@@ -125,6 +136,9 @@
                 <p class="panel-desc">Population des communes remportées dès le premier tour</p>
                 <div id="circle-viz"></div>
             </div>
+        </div>
+        <div class="figure-footer">
+            Sources : <a href="https://www.data.gouv.fr/organizations/ministere-de-linterieur" target="_blank" rel="noopener noreferrer">data.gouv.fr</a>, <a href="https://www.insee.fr/" target="_blank" rel="noopener noreferrer">Insee</a>, Place Publique.
         </div>
     </div>
 
@@ -142,21 +156,21 @@
           {"City": "Grenoble", "Candidate_Name": "ROMAIN GENTIL", "population": 157477.0, "Ordre": 1, "Score": 10.0, "Status":  "Battu au 1er tour"}, 
           {"City": "Perpignan", "Candidate_Name": "AGNES LANGEVINE", "population": 119656.0, "Ordre": 1, "Score": 15.94, "Status": "Battu au 1er tour"}, 
           {"City": "Asni\u00e8res-sur-Seine", "Candidate_Name": "LARBI EL HADRI", "population": 89662.0, "Ordre": 1, "Score": 4.47, "Status": "Battu au 1er tour"},
-          {"City": "Antony", "Candidate_Name": "EVENNOU VIRGINIE", "population": 63232.0, "Ordre": 1, "Score": 11.27, "Status": "Qualifi\u00e9 (2nd tour)"}, 
+          {"City": "Antony", "Candidate_Name": "EVENNOU VIRGINIE", "population": 63232.0, "Ordre": 1, "Score": 11.27, "Status": "Qualifi\u00e9 (Second tour)"}, 
           {"City": "Meaux", "Candidate_Name": "VALENTINE ROUSSEAU", "population": 55616.0, "Ordre": 1, "Score": 9.73, "Status": "Battu au 1er tour"},
           {"City": "Saint-Priest", "Candidate_Name": "GILLES GRANDVAL", "population": 48822.0, "Ordre": 1, "Score": 14.21, "Status": "Battu au 1er tour"},
-          {"City": "Saint-Brieuc", "Candidate_Name": "HERVE GUIHARD", "population": 44224.0, "Ordre": 1, "Score": 33.2, "Status": "Qualifi\u00e9 (2nd tour)"},
-          {"City": "Saint Cloud", "Candidate_Name": "ANNE MARIE CRAVERO", "population": 29727.0, "Ordre": 1, "Score": 11.27, "Status": "Battu au 1er tour"}, 
-          {"City": "Le Kremlin Bic\u00eatre", "Candidate_Name": "JEAN FRANCOIS DELAGE", "population": 24380.0, "Ordre": 1, "Score": 26.88, "Status":"Qualifi\u00e9 (2nd tour)"}, 
+          {"City": "Saint-Brieuc", "Candidate_Name": "HERVE GUIHARD", "population": 44224.0, "Ordre": 1, "Score": 33.2, "Status": "Qualifi\u00e9 (Second tour)"},
+          {"City": "Saint-Cloud", "Candidate_Name": "ANNE MARIE CRAVERO", "population": 29727.0, "Ordre": 1, "Score": 11.27, "Status": "Battu au 1er tour"}, 
+          {"City": "Le Kremlin-Bic\u00eatre", "Candidate_Name": "JEAN FRANCOIS DELAGE", "population": 24380.0, "Ordre": 1, "Score": 26.88, "Status":"Qualifi\u00e9 (Second tour)"}, 
           {"City": "Neuilly-Plaisance", "Candidate_Name": "OLIVIER PRIGENT", "population": 21415.0, "Ordre": 1, "Score": 18.7, "Status": "Battu au 1er tour"}, 
-          {"City": "Cugnaux", "Candidate_Name": "ALBERT SANCHEZ", "population": 20341.0, "Ordre": 1, "Score": 18.72, "Status": "Qualifi\u00e9 (2nd tour)"}, 
+          {"City": "Cugnaux", "Candidate_Name": "ALBERT SANCHEZ", "population": 20341.0, "Ordre": 1, "Score": 18.72, "Status": "Qualifi\u00e9 (Second tour)"}, 
           {"City": "Chamali\u00e8res", "Candidate_Name": "THOMAS MERZI", "population": 17454.0, "Ordre": 1, "Score": 30.32, "Status": "Battu au 1er tour"}, 
           {"City": "Mayenne", "Candidate_Name": "JEAN PIERRE LE SCORNET", "population": 12900.0, "Ordre": 1, "Score": 41.18, "Status": "Battu au 1er tour"},
-          {"City": "Enghien-Les-Bains", "Candidate_Name": "RACHEL MOLERE ATTAL", "population": 11440.0, "Ordre": 1, "Score": 20.41, "Status": "Battu au 1er tour"},
+          {"City": "Enghien-les-Bains", "Candidate_Name": "RACHEL MOLERE ATTAL", "population": 11440.0, "Ordre": 1, "Score": 20.41, "Status": "Battu au 1er tour"},
           {"City": "Le Pont-de-Claix", "Candidate_Name": "CHRISTOPHE FERRARI", "population": 10805.0, "Ordre": 1, "Score": 100.0, "Status": "Victoire (1er tour)"}
         ];
 
-        const statusOrder = {"Victoire (1er tour)": 1, "Qualifié (2nd tour)": 2, "Battu au 1er tour": 3};
+        const statusOrder = {"Victoire (1er tour)": 1, "Qualifié (Second tour)": 2, "Battu au 1er tour": 3};
         dataLollipop.sort((a, b) => {
             if (statusOrder[a.Status] !== statusOrder[b.Status]) return statusOrder[a.Status] - statusOrder[b.Status];
             return b.Score - a.Score; 
@@ -191,15 +205,18 @@
 
             const xAxis = d3.axisBottom(xScale).ticks(5).tickFormat(d => d + "%");
             svg.append("g").attr("transform", `translate(0,${innerHeight})`).call(xAxis);
-            svg.append("text").attr("class", "axis-label").attr("x", innerWidth / 2).attr("y", innerHeight + 40).attr("text-anchor", "middle").text("Score obtenu au 1er tour (%)");
+            
+            const axisLabel = svg.append("text").attr("class", "axis-label").attr("x", innerWidth / 2).attr("y", innerHeight + 40).attr("text-anchor", "middle");
+            axisLabel.append("tspan").text("Score obtenu au 1");
+            axisLabel.append("tspan").attr("dy", "-4").style("font-size", "9px").text("er");
+            axisLabel.append("tspan").attr("dy", "4").text(" tour (%)");
 
             svg.append("line").attr("x1", xScale(50)).attr("x2", xScale(50)).attr("y1", -15).attr("y2", innerHeight)
                 .attr("stroke", "#9CA3AF").attr("stroke-width", 1).attr("stroke-dasharray", "4,4").attr("opacity", 0.5);
             svg.append("text").attr("x", xScale(50)).attr("y", -20).attr("text-anchor", "middle").style("font-size", "11px").style("fill", "#9CA3AF").text("Majorité absolue (50%)");
 
             const yAxis = d3.axisLeft(yScale).tickSize(0);
-            svg.append("g").attr("class", "y-axis").call(yAxis).selectAll("text").attr("dx", "-10px") 
-                .style("font-size", "12px").style("font-weight", d => d === "Saint-Brieuc" ? "bold" : "500");
+            svg.append("g").attr("class", "y-axis").call(yAxis).selectAll("text").attr("dx", "-10px").style("font-size", "12px").style("font-weight", "500");
             svg.select(".y-axis path").remove();
 
             svg.selectAll(".lollipop-line").data(data).enter().append("line").attr("class", "lollipop-line")
@@ -210,7 +227,7 @@
                 .attr("cx", d => xScale(d.Score)).attr("cy", d => yScale(d.City)).attr("r", d => rScale(d.population))
                 .attr("fill", d => {
                     if(d.Status === "Victoire (1er tour)") return colorPP;
-                    if(d.Status === "Qualifié (2nd tour)") return colorQualif;
+                    if(d.Status === "Qualifié (Second tour)") return colorQualif;
                     return colorBattu;
                 })
                 .attr("stroke", d => d.Status === "Battu au 1er tour" ? colorBattuStroke : "none").attr("stroke-width", 1.5).attr("opacity", 0.95)
@@ -219,7 +236,9 @@
                     d3.select(this).attr("stroke", "#111").attr("opacity", 1);
                     let statutColor = colorBattuStroke;
                     if(d.Status === "Victoire (1er tour)") statutColor = "#A67A0F";
-                    if(d.Status === "Qualifié (2nd tour)") statutColor = "#B38510";
+                    if(d.Status === "Qualifié (Second tour)") statutColor = "#B38510";
+
+                    let formattedStatus = d.Status.replace("1er", "1<sup>er</sup>");
 
                     const [x, y] = d3.pointer(event, document.getElementById('lollipop-container'));
                     tooltip.style("opacity", 1).html(`
@@ -227,7 +246,7 @@
                         Ville : ${d.City}<br>
                         Population : <strong>${d.population.toLocaleString('fr-FR')} hab.</strong><br>
                         Score de liste : <strong>${d.Score.toLocaleString('fr-FR')}%</strong><br>
-                        Statut : <span style="color:${statutColor}; font-weight:bold">${d.Status}</span>
+                        Statut : <span style="color:${statutColor}; font-weight:bold">${formattedStatus}</span>
                     `).style("left", (x + 20) + "px").style("top", (y - 30) + "px");
                 })
                 .on("mouseout", function(event, d) {
@@ -249,7 +268,7 @@
             legendGroup.append("circle").attr("cx", 6).attr("cy", 22).attr("r", 6).attr("fill", colorPP);
             legendGroup.append("text").attr("x", 20).attr("y", 26).attr("class", "leg-title").attr("fill", "#A67A0F").text("Victoire (1)");
             legendGroup.append("circle").attr("cx", 6).attr("cy", 48).attr("r", 6).attr("fill", colorQualif);
-            legendGroup.append("text").attr("x", 20).attr("y", 52).attr("class", "leg-title").attr("fill", "#A67A0F").text("2nd Tour (4)");
+            legendGroup.append("text").attr("x", 20).attr("y", 52).attr("class", "leg-title").attr("fill", "#A67A0F").text("Second tour (4)");
             legendGroup.append("circle").attr("cx", 6).attr("cy", 74).attr("r", 6).attr("fill", colorBattu).attr("stroke", colorBattuStroke);
             legendGroup.append("text").attr("x", 20).attr("y", 78).attr("class", "leg-title").attr("fill", "#4B5563").text("Éliminés (10)");
             legendGroup.append("line").attr("x1", 0).attr("x2", 120).attr("y1", 105).attr("y2", 105).attr("stroke", "#E5E7EB").attr("stroke-dasharray", "3,3");
@@ -262,7 +281,7 @@
                 let radius = rScale(size);
                 nestedLegendGroup.append("circle").attr("cx", 0).attr("cy", -radius).attr("r", radius).attr("fill", "none").attr("stroke", "#9CA3AF").attr("stroke-width", 1.2);
                 nestedLegendGroup.append("line").attr("x1", 0).attr("y1", -radius * 2).attr("x2", maxRadius + 15).attr("y2", -radius * 2).attr("stroke", "#D1D5DB").attr("stroke-dasharray", "2,2");
-                nestedLegendGroup.append("text").attr("x", maxRadius + 20).attr("y", -radius * 2 + 4).attr("class", "leg-desc").text((size / 1000) + "k hab.");
+                nestedLegendGroup.append("text").attr("x", maxRadius + 20).attr("y", -radius * 2 + 4).attr("class", "leg-desc").text((size / 1000) + " k hab.");
             });
         }
 
@@ -277,13 +296,13 @@
 
             d3.select("#elus-zoom-viz").html(""); 
             
-            const width1 = 450, height1 = 300;
+            const width1 = 500, height1 = 300;
             const svg1 = d3.select("#elus-zoom-viz").append("svg")
                 .attr("width", width1).attr("height", height1)
                 .attr("viewBox", `0 0 ${width1} ${height1}`) 
                 .style("display", "block").style("margin", "0 auto");
 
-            const barWidth = 75, maxHeight = 210, topY = 40, leftX = 60, rightX = 280;
+            const barWidth = 75, maxHeight = 210, topY = 40, leftX = 60, rightX = 260;
 
             // Compute heights - with visual minimum adjustments so the small slices remain visible
             const rawHLeftGauche = (leftElus / totalElus) * maxHeight;
@@ -321,7 +340,7 @@
 
             const ppCenterY = topY + maxHeight - (hRightPP / 2); 
             svg1.append("line").attr("x1", rightX + barWidth).attr("y1", ppCenterY).attr("x2", rightX + barWidth + 15).attr("y2", ppCenterY).attr("stroke", "#111").attr("stroke-width", 1);
-            svg1.append("text").attr("x", rightX + barWidth + 20).attr("y", ppCenterY).style("font-size", "13px").style("font-weight", "bold").style("fill", colorPP).style("alignment-baseline", "middle").text("PP : 61");
+            svg1.append("text").attr("x", rightX + barWidth + 20).attr("y", ppCenterY).style("font-size", "13px").style("font-weight", "bold").style("fill", colorPP).style("alignment-baseline", "middle").text("Place Publique : 61");
         }
 
 
@@ -329,7 +348,10 @@
         // 3. GRAPHIQUE 3 (Scatter / Pictogram)
         // ------------------------------------------------
         const dataScatter = [
-            {"City": "Perpignan", "Candidate_Name": "AGNES LANGEVINE", "population": 119656.0, "Ordre": 1, "Score": 15.94, "Status": "Opposition"}, {"City": "Dunkerque", "Candidate_Name": "PEERS LUDOVIC", "population": 86788.0, "Ordre": 41, "Score": 64.47, "Status": "Majorit\u00e9"}, {"City": "Levallois-Perret", "Candidate_Name": "DANIELE ZELIC", "population": 68009.0, "Ordre": 2, "Score": 11.68, "Status": "Opposition"}, {"City": "Valence", "Candidate_Name": "FRANCINE PROST", "population": 64483.0, "Ordre": 4, "Score": 17.82, "Status": "Opposition"}, {"City": "Meaux", "Candidate_Name": "VALENTINE ROUSSEAU", "population": 55616.0, "Ordre": 1, "Score": 9.73, "Status": "Opposition"}, {"City": "Chelles", "Candidate_Name": "ERIC POMMAGEOT", "population": 54309.0, "Ordre": 3, "Score": 23.79, "Status": "Opposition"}, {"City": "Laval", "Candidate_Name": "AGNES CAMARENA", "population": 49657.0, "Ordre": 10, "Score": 54.49, "Status": "Majorit\u00e9"}, {"City": "Saint-Herblain", "Candidate_Name": "BUREAU JOCELYN", "population": 49537.0, "Ordre": 21, "Score": 53.68, "Status": "Majorit\u00e9"}, {"City": "Saint-Priest", "Candidate_Name": "GILLES GRANDVAL", "population": 48822.0, "Ordre": 1, "Score": 14.21, "Status": "Opposition"}, {"City": "Meudon", "Candidate_Name": "BLANDINE CORNEVIN", "population": 46342.0, "Ordre": 2, "Score": 23.74, "Status": "Opposition"}, {"City": "Alfortville", "Candidate_Name": "FRANCOIS VITSE", "population": 45046.0, "Ordre": 23, "Score": 76.03, "Status": "Majorit\u00e9"}, {"City": "Puteaux", "Candidate_Name": "PIERRE BONSACK", "population": 43672.0, "Ordre": 3, "Score": 13.99, "Status": "Opposition"}, {"City": "Caluire-et-Cuire", "Candidate_Name": "JACQUES TYROL CHARY", "population": 43572.0, "Ordre": 5, "Score": 27.44, "Status": "Opposition"}, {"City": "Boulogne-sur-Mer", "Candidate_Name": "CLAUDE COUQUET", "population": 40910.0, "Ordre": 9, "Score": 53.94, "Status": "Majorit\u00e9"}, {"City": "Ch\u00e2tillon", "Candidate_Name": "EVA LINARES CRUZ", "population": 36777.0, "Ordre": 9, "Score": 61.59, "Status": "Majorit\u00e9"}, {"City": "Sainte Genevi\u00e8ve des Bois", "Candidate_Name": "AMIR BEN MERZOUG", "population": 35846.0, "Ordre": 7, "Score": 54.57, "Status": "Majorit\u00e9"}, {"City": "Cachan", "Candidate_Name": "SAFAE TERRISSE", "population": 30592.0, "Ordre": 29, "Score": 64.39, "Status": "Majorit\u00e9"}, {"City": "Saint Cloud", "Candidate_Name": "ANNE MARIE CRAVERO", "population": 29727.0, "Ordre": 1, "Score": 11.27, "Status": "Opposition"}, {"City": "Vanves", "Candidate_Name": "MATTHIEU BORRAS", "population": 28014.0, "Ordre": 8, "Score": 45.54, "Status": "Opposition"}, {"City": "Vanves", "Candidate_Name": "JEAN NAKACHE", "population": 28014.0, "Ordre": 2, "Score": 45.54, "Status": "Opposition"}, {"City": "Blagnac", "Candidate_Name": "CATHERINE ELISSALDE", "population": 26466.0, "Ordre": 18, "Score": 55.43, "Status": "Majorit\u00e9"}, {"City": "Blagnac", "Candidate_Name": "JEAN MARC FUENTES", "population": 26466.0, "Ordre": 27, "Score": 55.43, "Status": "Majorit\u00e9"}, {"City": "Vertou", "Candidate_Name": "JEAN MARC CHIROL", "population": 26002.0, "Ordre": 4, "Score": 31.37, "Status": "Opposition"}, {"City": "Aurillac", "Candidate_Name": "JEAN MARIE BOYER", "population": 25815.0, "Ordre": 2, "Score": 38.53, "Status": "Opposition"}, {"City": "Frontignan", "Candidate_Name": "KELVINE GOUVERNAYRE", "population": 23808.0, "Ordre": 2, "Score": 51.16, "Status": "Majorit\u00e9"}, {"City": "Les Lilas", "Candidate_Name": "SIGALIT LAVON", "population": 23469.0, "Ordre": 8, "Score": 74.7, "Status": "Majorit\u00e9"}, {"City": "Les Lilas", "Candidate_Name": "TIFFANY GEORGES", "population": 23469.0, "Ordre": 24, "Score": 74.7, "Status": "Majorit\u00e9"}, {"City": "Les Lilas", "Candidate_Name": "JUDITH LINDENBERG", "population": 23469.0, "Ordre": 30, "Score": 74.7, "Status": "Majorit\u00e9"}, {"City": "Gif sur Yvette", "Candidate_Name": "PIERRE PATRICK FAURE", "population": 22352.0, "Ordre": 5, "Score": 29.09, "Status": "Opposition"}, {"City": "Neuilly-Plaisance", "Candidate_Name": "OLIVIER PRIGENT", "population": 21415.0, "Ordre": 1, "Score": 18.7, "Status": "Opposition"}, {"City": "La Chapelle-sur-Erdre", "Candidate_Name": "FREDERIC BARBELIVIEN", "population": 20331.0, "Ordre": 7, "Score": 47.92, "Status": "Opposition"}, {"City": "Chamali\u00e8res", "Candidate_Name": "THOMAS MERZI", "population": 17454.0, "Ordre": 1, "Score": 30.32, "Status": "Opposition"}, {"City": "Le Pr\u00e9 Saint Gervais", "Candidate_Name": "STEPHANE COMMUN", "population": 16865.0, "Ordre": 3, "Score": 53.19, "Status": "Majorit\u00e9"}, {"City": "Les Herbiers", "Candidate_Name": "GUYLAINE MERLET", "population": 16453.0, "Ordre": 4, "Score": 30.88, "Status": "Opposition"}, {"City": "Landerneau", "Candidate_Name": "FABRICE FOURFOOZ", "population": 16206.0, "Ordre": 2, "Score": 24.39, "Status": "Opposition"}, {"City": "Mayenne", "Candidate_Name": "JEAN PIERRE LE SCORNET", "population": 12900.0, "Ordre": 1, "Score": 41.18, "Status": "Opposition"}, {"City": "Villeneuve l\u00e8s Avignon", "Candidate_Name": "FLORENT LEMONT", "population": 12617.0, "Ordre": 4, "Score": 26.71, "Status": "Opposition"}, {"City": "Seyssinet-Pariset", "Candidate_Name": "MICHEL LANGLAIS", "population": 11753.0, "Ordre": 15, "Score": 62.16, "Status": "Majorit\u00e9"}, {"City": "Enghien-Les-Bains", "Candidate_Name": "RACHEL MOLERE ATTAL", "population": 11440.0, "Ordre": 1, "Score": 20.41, "Status": "Opposition"}, {"City": "Le Pont-de-Claix", "Candidate_Name": "CHRISTOPHE FERRARI", "population": 10805.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Portet sur Garonne", "Candidate_Name": "REGIS LEBASTARD", "population": 9805.0, "Ordre": 13, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Cebazat", "Candidate_Name": "NARMIN SHANA", "population": 8946.0, "Ordre": 2, "Score": 23.5, "Status": "Opposition"}, {"City": "Talmont Saint-Hilaire", "Candidate_Name": "PATRICK GENU", "population": 8161.0, "Ordre": 2, "Score": 27.88, "Status": "Opposition"}, {"City": "La Tour du Pin", "Candidate_Name": "PASCALE PARENTHOUX", "population": 8138.0, "Ordre": 3, "Score": 29.31, "Status": "Opposition"}, {"City": "Falaise", "Candidate_Name": "CECILE LE VAGUERESE MARIE", "population": 7782.0, "Ordre": 2, "Score": 59.61, "Status": "Majorit\u00e9"}, {"City": "Mo\u00e9lan sur Mer", "Candidate_Name": "JULIEN DESTREMONT", "population": 6756.0, "Ordre": 7, "Score": 49.93, "Status": "Opposition"}, {"City": "Vic-le-Comte", "Candidate_Name": "FLEURIANE REY", "population": 5242.0, "Ordre": 18, "Score": 58.96, "Status": "Majorit\u00e9"}, {"City": "Montagnac", "Candidate_Name": "MICHEL GARCIA", "population": 4436.0, "Ordre": 1, "Score": 24.48, "Status": "Opposition"}, {"City": "La R\u00e9ole", "Candidate_Name": "BRUNO MARTY", "population": 4396.0, "Ordre": 1, "Score": 65.95, "Status": "Majorit\u00e9"}, {"City": "Angoulins", "Candidate_Name": "MANON GABRIEL", "population": 4117.0, "Ordre": 1, "Score": 40.15, "Status": "Opposition"}, {"City": "Montendre", "Candidate_Name": "MICHEL LATHIERE", "population": 3228.0, "Ordre": 5, "Score": 59.42, "Status": "Majorit\u00e9"}, {"City": "Montfrin", "Candidate_Name": "PHILIPPE MARCHESI", "population": 3129.0, "Ordre": 5, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Batz sur mer", "Candidate_Name": "CATHERINE SORIA", "population": 2823.0, "Ordre": 2, "Score": 21.61, "Status": "Opposition"}, {"City": "Saint-Paterne - Le-Chevain", "Candidate_Name": "PATRICK DAHL", "population": 2096.0, "Ordre": 3, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Chambourg-sur-Indre", "Candidate_Name": "QUENTIN AUBOIRE", "population": 1236.0, "Ordre": 5, "Score": 68.8, "Status": "Majorit\u00e9"}, {"City": "Orvilliers", "Candidate_Name": "YASMINA KASMI BAKKALI", "population": 946.0, "Ordre": 11, "Score": 51.68, "Status": "Majorit\u00e9"}, {"City": "Saint-R\u00e8gle", "Candidate_Name": "DELPHINE CHAYETTE", "population": 614.0, "Ordre": 10, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "SAINT-THOMAS-DE-CONAC", "Candidate_Name": "HUGHES SCIARD", "population": 575.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Grosmagny", "Candidate_Name": "LUC FLEURY", "population": 534.0, "Ordre": 9, "Score": 61.54, "Status": "Majorit\u00e9"}, {"City": "Vinzieux", "Candidate_Name": "HUGO BIOLLEY", "population": 503.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Chatel en Tri\u00e8ves", "Candidate_Name": "FANNY LACROIX", "population": 491.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}
+            // Ajout du point Paris 13
+            {"City": "Paris 13", "Candidate_Name": "Élu(e) Paris 13", "population": 177735.0, "Ordre": 34, "Score": 51.52 , "Status": "Majorité"},
+            // Données existantes
+            {"City": "Perpignan", "Candidate_Name": "AGNES LANGEVINE", "population": 119656.0, "Ordre": 1, "Score": 15.94, "Status": "Opposition"}, {"City": "Dunkerque", "Candidate_Name": "PEERS LUDOVIC", "population": 86788.0, "Ordre": 41, "Score": 64.47, "Status": "Majorit\u00e9"}, {"City": "Levallois-Perret", "Candidate_Name": "DANIELE ZELIC", "population": 68009.0, "Ordre": 2, "Score": 11.68, "Status": "Opposition"}, {"City": "Valence", "Candidate_Name": "FRANCINE PROST", "population": 64483.0, "Ordre": 4, "Score": 17.82, "Status": "Opposition"}, {"City": "Meaux", "Candidate_Name": "VALENTINE ROUSSEAU", "population": 55616.0, "Ordre": 1, "Score": 9.73, "Status": "Opposition"}, {"City": "Chelles", "Candidate_Name": "ERIC POMMAGEOT", "population": 54309.0, "Ordre": 3, "Score": 23.79, "Status": "Opposition"}, {"City": "Laval", "Candidate_Name": "AGNES CAMARENA", "population": 49657.0, "Ordre": 10, "Score": 54.49, "Status": "Majorit\u00e9"}, {"City": "Saint-Herblain", "Candidate_Name": "BUREAU JOCELYN", "population": 49537.0, "Ordre": 21, "Score": 53.68, "Status": "Majorit\u00e9"}, {"City": "Saint-Priest", "Candidate_Name": "GILLES GRANDVAL", "population": 48822.0, "Ordre": 1, "Score": 14.21, "Status": "Opposition"}, {"City": "Meudon", "Candidate_Name": "BLANDINE CORNEVIN", "population": 46342.0, "Ordre": 2, "Score": 23.74, "Status": "Opposition"}, {"City": "Alfortville", "Candidate_Name": "FRANCOIS VITSE", "population": 45046.0, "Ordre": 23, "Score": 76.03, "Status": "Majorit\u00e9"}, {"City": "Puteaux", "Candidate_Name": "PIERRE BONSACK", "population": 43672.0, "Ordre": 3, "Score": 13.99, "Status": "Opposition"}, {"City": "Caluire-et-Cuire", "Candidate_Name": "JACQUES TYROL CHARY", "population": 43572.0, "Ordre": 5, "Score": 27.44, "Status": "Opposition"}, {"City": "Boulogne-sur-Mer", "Candidate_Name": "CLAUDE COUQUET", "population": 40910.0, "Ordre": 9, "Score": 53.94, "Status": "Majorit\u00e9"}, {"City": "Ch\u00e2tillon", "Candidate_Name": "EVA LINARES CRUZ", "population": 36777.0, "Ordre": 9, "Score": 61.59, "Status": "Majorit\u00e9"}, {"City": "Sainte Genevi\u00e8ve des Bois", "Candidate_Name": "AMIR BEN MERZOUG", "population": 35846.0, "Ordre": 7, "Score": 54.57, "Status": "Majorit\u00e9"}, {"City": "Cachan", "Candidate_Name": "SAFAE TERRISSE", "population": 30592.0, "Ordre": 29, "Score": 64.39, "Status": "Majorit\u00e9"}, {"City": "Saint-Cloud", "Candidate_Name": "ANNE MARIE CRAVERO", "population": 29727.0, "Ordre": 1, "Score": 11.27, "Status": "Opposition"}, {"City": "Vanves", "Candidate_Name": "MATTHIEU BORRAS", "population": 28014.0, "Ordre": 8, "Score": 45.54, "Status": "Opposition"}, {"City": "Vanves", "Candidate_Name": "JEAN NAKACHE", "population": 28014.0, "Ordre": 2, "Score": 45.54, "Status": "Opposition"}, {"City": "Blagnac", "Candidate_Name": "CATHERINE ELISSALDE", "population": 26466.0, "Ordre": 18, "Score": 55.43, "Status": "Majorit\u00e9"}, {"City": "Blagnac", "Candidate_Name": "JEAN MARC FUENTES", "population": 26466.0, "Ordre": 27, "Score": 55.43, "Status": "Majorit\u00e9"}, {"City": "Vertou", "Candidate_Name": "JEAN MARC CHIROL", "population": 26002.0, "Ordre": 4, "Score": 31.37, "Status": "Opposition"}, {"City": "Aurillac", "Candidate_Name": "JEAN MARIE BOYER", "population": 25815.0, "Ordre": 2, "Score": 38.53, "Status": "Opposition"}, {"City": "Frontignan", "Candidate_Name": "KELVINE GOUVERNAYRE", "population": 23808.0, "Ordre": 2, "Score": 51.16, "Status": "Majorit\u00e9"}, {"City": "Les Lilas", "Candidate_Name": "SIGALIT LAVON", "population": 23469.0, "Ordre": 8, "Score": 74.7, "Status": "Majorit\u00e9"}, {"City": "Les Lilas", "Candidate_Name": "TIFFANY GEORGES", "population": 23469.0, "Ordre": 24, "Score": 74.7, "Status": "Majorit\u00e9"}, {"City": "Les Lilas", "Candidate_Name": "JUDITH LINDENBERG", "population": 23469.0, "Ordre": 30, "Score": 74.7, "Status": "Majorit\u00e9"}, {"City": "Gif sur Yvette", "Candidate_Name": "PIERRE PATRICK FAURE", "population": 22352.0, "Ordre": 5, "Score": 29.09, "Status": "Opposition"}, {"City": "Neuilly-Plaisance", "Candidate_Name": "OLIVIER PRIGENT", "population": 21415.0, "Ordre": 1, "Score": 18.7, "Status": "Opposition"}, {"City": "La Chapelle-sur-Erdre", "Candidate_Name": "FREDERIC BARBELIVIEN", "population": 20331.0, "Ordre": 7, "Score": 47.92, "Status": "Opposition"}, {"City": "Chamali\u00e8res", "Candidate_Name": "THOMAS MERZI", "population": 17454.0, "Ordre": 1, "Score": 30.32, "Status": "Opposition"}, {"City": "Le Pr\u00e9 Saint Gervais", "Candidate_Name": "STEPHANE COMMUN", "population": 16865.0, "Ordre": 3, "Score": 53.19, "Status": "Majorit\u00e9"}, {"City": "Les Herbiers", "Candidate_Name": "GUYLAINE MERLET", "population": 16453.0, "Ordre": 4, "Score": 30.88, "Status": "Opposition"}, {"City": "Landerneau", "Candidate_Name": "FABRICE FOURFOOZ", "population": 16206.0, "Ordre": 2, "Score": 24.39, "Status": "Opposition"}, {"City": "Mayenne", "Candidate_Name": "JEAN PIERRE LE SCORNET", "population": 12900.0, "Ordre": 1, "Score": 41.18, "Status": "Opposition"}, {"City": "Villeneuve l\u00e8s Avignon", "Candidate_Name": "FLORENT LEMONT", "population": 12617.0, "Ordre": 4, "Score": 26.71, "Status": "Opposition"}, {"City": "Seyssinet-Pariset", "Candidate_Name": "MICHEL LANGLAIS", "population": 11753.0, "Ordre": 15, "Score": 62.16, "Status": "Majorit\u00e9"}, {"City": "Enghien-les-Bains", "Candidate_Name": "RACHEL MOLERE ATTAL", "population": 11440.0, "Ordre": 1, "Score": 20.41, "Status": "Opposition"}, {"City": "Le Pont-de-Claix", "Candidate_Name": "CHRISTOPHE FERRARI", "population": 10805.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Portet sur Garonne", "Candidate_Name": "REGIS LEBASTARD", "population": 9805.0, "Ordre": 13, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Cebazat", "Candidate_Name": "NARMIN SHANA", "population": 8946.0, "Ordre": 2, "Score": 23.5, "Status": "Opposition"}, {"City": "Talmont Saint-Hilaire", "Candidate_Name": "PATRICK GENU", "population": 8161.0, "Ordre": 2, "Score": 27.88, "Status": "Opposition"}, {"City": "La Tour du Pin", "Candidate_Name": "PASCALE PARENTHOUX", "population": 8138.0, "Ordre": 3, "Score": 29.31, "Status": "Opposition"}, {"City": "Falaise", "Candidate_Name": "CECILE LE VAGUERESE MARIE", "population": 7782.0, "Ordre": 2, "Score": 59.61, "Status": "Majorit\u00e9"}, {"City": "Mo\u00e9lan sur Mer", "Candidate_Name": "JULIEN DESTREMONT", "population": 6756.0, "Ordre": 7, "Score": 49.93, "Status": "Opposition"}, {"City": "Vic-le-Comte", "Candidate_Name": "FLEURIANE REY", "population": 5242.0, "Ordre": 18, "Score": 58.96, "Status": "Majorit\u00e9"}, {"City": "Montagnac", "Candidate_Name": "MICHEL GARCIA", "population": 4436.0, "Ordre": 1, "Score": 24.48, "Status": "Opposition"}, {"City": "La R\u00e9ole", "Candidate_Name": "BRUNO MARTY", "population": 4396.0, "Ordre": 1, "Score": 65.95, "Status": "Majorit\u00e9"}, {"City": "Angoulins", "Candidate_Name": "MANON GABRIEL", "population": 4117.0, "Ordre": 1, "Score": 40.15, "Status": "Opposition"}, {"City": "Montendre", "Candidate_Name": "MICHEL LATHIERE", "population": 3228.0, "Ordre": 5, "Score": 59.42, "Status": "Majorit\u00e9"}, {"City": "Montfrin", "Candidate_Name": "PHILIPPE MARCHESI", "population": 3129.0, "Ordre": 5, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Batz sur mer", "Candidate_Name": "CATHERINE SORIA", "population": 2823.0, "Ordre": 2, "Score": 21.61, "Status": "Opposition"}, {"City": "Saint-Paterne - Le-Chevain", "Candidate_Name": "PATRICK DAHL", "population": 2096.0, "Ordre": 3, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Chambourg-sur-Indre", "Candidate_Name": "QUENTIN AUBOIRE", "population": 1236.0, "Ordre": 5, "Score": 68.8, "Status": "Majorit\u00e9"}, {"City": "Orvilliers", "Candidate_Name": "YASMINA KASMI BAKKALI", "population": 946.0, "Ordre": 11, "Score": 51.68, "Status": "Majorit\u00e9"}, {"City": "Saint-R\u00e8gle", "Candidate_Name": "DELPHINE CHAYETTE", "population": 614.0, "Ordre": 10, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "SAINT-THOMAS-DE-CONAC", "Candidate_Name": "HUGHES SCIARD", "population": 575.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Grosmagny", "Candidate_Name": "LUC FLEURY", "population": 534.0, "Ordre": 9, "Score": 61.54, "Status": "Majorit\u00e9"}, {"City": "Vinzieux", "Candidate_Name": "HUGO BIOLLEY", "population": 503.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}, {"City": "Chatel en Tri\u00e8ves", "Candidate_Name": "FANNY LACROIX", "population": 491.0, "Ordre": 1, "Score": 100.0, "Status": "Majorit\u00e9"}
         ];
 
         drawScatterPlot(dataScatter);
@@ -352,11 +374,14 @@
                 
             const tooltip = container.append("div").attr("class", "pp-tooltip").attr("id", "tooltip-scatter");
 
-            const xScale = d3.scaleLinear().domain([0, 125000]).range([0, innerWidth]);
+            // Extension de l'axe X pour inclure Paris 13 (177 000)
+            const xScale = d3.scaleLinear().domain([0, 185000]).range([0, innerWidth]);
+            
             const maxOrdre = d3.max(data, d => d.Ordre);
-            const yScale = d3.scaleLinear().domain([maxOrdre + 2, 1]).range([innerHeight, 0]);
+            // Remise de l'axe Y dans un sens mathématique "classique" (le 0 en bas)
+            const yScale = d3.scaleLinear().domain([0, maxOrdre + 2]).range([innerHeight, 0]);
 
-            let yTicks = yScale.ticks(8).filter(d => d > 1); 
+            let yTicks = yScale.ticks(8).filter(d => d > 0); 
             yTicks.unshift(1); 
             
             const yAxisGrid = d3.axisLeft(yScale).tickValues(yTicks).tickSize(-innerWidth).tickFormat('');
@@ -384,7 +409,7 @@
                         <strong>${d.Candidate_Name}</strong>
                         Ville : ${d.City} (${d.population.toLocaleString('fr-FR')} hab.)<br>
                         Place : ${d.Ordre}<br>
-                        Score de liste : ${d.Score}%<br>
+                        Score de liste : ${typeof d.Score === 'number' ? d.Score.toLocaleString('fr-FR') + '%' : d.Score}<br>
                         Statut : <span style="color:${d.Status === 'Majorité' ? '#B38510' : '#A67A0F'}; font-weight:bold">${d.Status}</span>
                     `).style("left", (x + 15) + "px").style("top", (y - 28) + "px");
                 })
@@ -419,11 +444,11 @@
         function drawMairesChart() {
             const ppData = [
                 { name: "Saint-Denis", pop: 148907, type: "Gauche" },
-                { name: "Le Pont-de-Claix", pop: 10805, type: "PP" },
-                { name: "La Réole", pop: 4396, type: "PP" },
-                { name: "St-Thomas", pop: 575, type: "PP" },
-                { name: "Vinzieux", pop: 503, type: "PP" },
-                { name: "Châtel-en-Trièves", pop: 491, type: "PP" }
+                { name: "Le Pont-de-Claix", pop: 10805, type: "Place Publique" },
+                { name: "La Réole", pop: 4396, type: "Place Publique" },
+                { name: "St-Thomas", pop: 575, type: "Place Publique" },
+                { name: "Vinzieux", pop: 503, type: "Place Publique" },
+                { name: "Châtel-en-Trièves", pop: 491, type: "Place Publique" }
             ];
 
             const container = d3.select("#maires-container");
@@ -439,7 +464,7 @@
                 .style("display", "block").style("margin", "0 auto");
 
             const totalCommunes = 33305, leftCommunes = 589, otherPartiesCommunes = 1756, ppCommunes = 5;
-            const barWidth = 60, maxHeight = 180, topY = 50, leftX = 40, rightX = 220;
+            const barWidth = 60, maxHeight = 180, topY = 50, leftX = 40, rightX = 200;
 
             const hLeftGauche = (leftCommunes / totalCommunes) * maxHeight; 
             const hLeftOtherParties = (otherPartiesCommunes / totalCommunes) * maxHeight;
@@ -471,7 +496,7 @@
 
             const ppCenterY = topY + maxHeight - (hRightPP / 2); 
             svg1.append("line").attr("x1", rightX + barWidth).attr("y1", ppCenterY).attr("x2", rightX + barWidth + 15).attr("y2", ppCenterY).attr("stroke", "#111").attr("stroke-width", 1);
-            svg1.append("text").attr("x", rightX + barWidth + 20).attr("y", ppCenterY).style("font-size", "12px").style("font-weight", "bold").style("fill", colorPP).style("alignment-baseline", "middle").text("PP : 5");
+            svg1.append("text").attr("x", rightX + barWidth + 20).attr("y", ppCenterY).style("font-size", "12px").style("font-weight", "bold").style("fill", colorPP).style("alignment-baseline", "middle").text("Place Publique : 5");
 
 
             // --- VIZ 2: PROPORTIONAL CIRCLES ON X-AXIS ---
@@ -520,16 +545,13 @@
             svg2.selectAll("text.pop-label").data(dataSorted).enter().append("text")
                 .attr("x", d => xCoord(d.name)).attr("y", d => height2 - (circleRadiusScale(d.pop) * 2) - 8)
                 .attr("text-anchor", "middle").style("font-size", "11px").style("font-weight", "600").style("fill", "#111")
-                .text(d => Math.round(d.pop / 1000) + "k");
+                .text(d => Math.round(d.pop / 1000) + " k");
 
-            // --- LEGEND: SIZE OF CITIES ---
-            // --- LEGEND: SIZE OF CITIES ---
-            // Tailles réduites pour que la légende prenne moins de place
             // --- LEGEND: SIZE OF CITIES ---
             const mairesSizes = [50000, 25000, 10000]; 
             const maxRadiusMaires = circleRadiusScale(100000);
             
-const mairesLegendGroup = svg2.append("g")
+            const mairesLegendGroup = svg2.append("g")
                 .attr("transform", `translate(${width2 - 110}, ${maxRadiusMaires + 30})`);
             
             mairesLegendGroup.append("text")
@@ -550,7 +572,7 @@ const mairesLegendGroup = svg2.append("g")
                 mairesLegendGroup.append("text")
                     .attr("x", maxRadiusMaires + 20).attr("y", -radius * 2 + 4)
                     .attr("class", "leg-desc")
-                    .text((size / 1000) + "k hab.");
+                    .text((size / 1000) + " k hab.");
             });
         }
     </script>
