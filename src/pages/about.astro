@@ -1,0 +1,26 @@
+---
+import PageLayout from "@/layouts/Base.astro";
+
+const meta = {
+	description: "About Basile Roth",
+	title: "About",
+};
+---
+
+<PageLayout meta={meta}>
+	<h1 class="title mb-12">About</h1>
+	<div class="prose prose-sm prose-cactus max-w-none">
+		<p>
+			Hi, I'm Basile. I work on data visualizations and research projects.
+		</p>
+		<p>You can find some of my work here:</p>
+		<ul class="list-inside list-disc" role="list">
+			<li>
+				<a class="cactus-link" href="/map_antarctica.html">Antarctica Marine Protected Areas – interactive map</a>
+			</li>
+			<li>
+				<a class="cactus-link" href="/map_antarctica_existing_mpas.html">Existing Antarctic MPAs – interactive map</a>
+			</li>
+		</ul>
+	</div>
+</PageLayout>
