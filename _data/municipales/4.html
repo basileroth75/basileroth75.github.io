@@ -1,0 +1,146 @@
+<div class="wp-scientific-figure wp-custom-fig4">
+    <style>
+        .wp-custom-fig4 {
+            background-color: #F7F7F9; border: 1px solid #D1D5DB; padding: 20px 15px;
+            max-width: 800px; margin: 40px auto; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #333; position: relative;
+        }
+        .wp-custom-fig4 .figure-header { margin-bottom: 10px; border-bottom: 1px solid #E5E7EB; padding-bottom: 8px; }
+        .wp-custom-fig4 .figure-title { font-size: 16px; font-weight: bold; color: #111; margin: 0 0 5px 0; line-height: 1.3; }
+        .wp-custom-fig4 .figure-caption { font-size: 13px; color: #555; line-height: 1.4; margin: 0; }
+        .wp-custom-fig4 .legend-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 20px; font-size: 12px; }
+        .wp-custom-fig4 .legend-item { display: flex; align-items: center; gap: 6px; }
+        .wp-custom-fig4 .circle-legend { width: 12px; height: 12px; border-radius: 50%; }
+        .wp-custom-fig4 .filter-container { text-align: center; margin-bottom: 10px; }
+        .wp-custom-fig4 .dumbbell-container { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; padding-bottom: 10px; }
+        .wp-custom-fig4 .x-axis text, .wp-custom-fig4 .y-axis text { font-size: 11px; fill: #555; font-weight: bold; }
+        .d3-tooltip-fig4 {
+            position: absolute; text-align: left; padding: 10px 12px; font-family: inherit; font-size: 12px;
+            background: rgba(255, 255, 255, 0.98); border: 1px solid #D1D5DB; border-radius: 6px; pointer-events: none;
+            opacity: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); color: #333; z-index: 9999; transition: opacity 0.1s;
+        }
+    </style>
+
+    <div class="figure-header">
+        <h2 class="figure-title">Entre 2020 et 2026, très peu de partis progressent de manière notable sur la parité en tête de leurs listes</h2>
+        <p class="figure-caption">Comparaison de la proportion de femmes têtes de liste par parti entre les élections de 2020 et 2026. Survolez les lignes pour afficher l'évolution en détail.</p>
+    </div>
+
+    <div class="legend-container">
+        <div class="legend-item"><div class="circle-legend" style="background-color: #ccc;"></div><span>Élections 2020</span></div>
+        <div class="legend-item"><div class="circle-legend" style="background-color: #555;"></div><span>Élections 2026</span></div>
+    </div>
+
+    <div class="filter-container">
+        <label style="cursor: pointer; font-size: 12px; background-color: #e9e9e9; padding: 6px 10px; border: 1px solid #ccc; border-radius: 4px; display: inline-block;">
+            <input type="checkbox" id="filter-parity-small" checked style="margin-right: 5px; vertical-align: middle;"> 
+            Masquer les partis avec moins de 20 listes
+        </label>
+    </div>
+
+    <div class="dumbbell-container" id="d3-parity-dumbbell-custom"></div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+(function() {
+    const globalColorMapping = {
+        "Divers": "#999999", "Divers centre": "#6B99A1", "Divers droite": "#5C80A6", "Divers gauche": "#DF9B9B", 
+        "Droite souverainiste (ex-DLF)": "#334D66", "Ecologiste": "#70A37F", "Extrême droite": "#1A252F", 
+        "Extrême gauche": "#8B3E3E", "La France insoumise": "#B56565", "Les Républicains": "#4D7094", 
+        "Les Écologistes (ex-EELV)": "#5C8A6B", "Modem": "#C28F5B", "Parti communiste français": "#A05252", 
+        "Parti socialiste": "#C97A7A", "Rassemblement National": "#2B3E50", "Renaissance / LREM": "#C2A85B", 
+        "Régionalistes": "#6B8E8E", "Union de la droite": "#3D5C7A", "Union de la gauche": "#C97A7A", 
+        "Union des Démocrates et Indépendants": "#6B99A1", "Union du centre": "#6B99A1"
+    };
+
+    const data = [
+        { Party_Name: "Divers", Female_Pct_2020: 0.225, Female_Pct_2026: 0.236, Total: 1400 },
+        { Party_Name: "Divers centre", Female_Pct_2020: 0.235, Female_Pct_2026: 0.244, Total: 1162 },
+        { Party_Name: "Divers droite", Female_Pct_2020: 0.203, Female_Pct_2026: 0.218, Total: 2202 },
+        { Party_Name: "Divers gauche", Female_Pct_2020: 0.256, Female_Pct_2026: 0.282, Total: 1884 },
+        { Party_Name: "Droite souverainiste (ex-DLF)", Female_Pct_2020: 0.200, Female_Pct_2026: 0.000, Total: 6 },
+        { Party_Name: "Ecologiste", Female_Pct_2020: 0.328, Female_Pct_2026: 0.326, Total: 43 },
+        { Party_Name: "Extrême droite", Female_Pct_2020: 0.184, Female_Pct_2026: 0.194, Total: 93 },
+        { Party_Name: "Extrême gauche", Female_Pct_2020: 0.356, Female_Pct_2026: 0.401, Total: 377 },
+        { Party_Name: "La France insoumise", Female_Pct_2020: 0.366, Female_Pct_2026: 0.379, Total: 243 },
+        { Party_Name: "Les Républicains", Female_Pct_2020: 0.223, Female_Pct_2026: 0.219, Total: 151 },
+        { Party_Name: "Les Écologistes (ex-EELV)", Female_Pct_2020: 0.390, Female_Pct_2026: 0.394, Total: 33 },
+        { Party_Name: "Modem", Female_Pct_2020: 0.056, Female_Pct_2026: 0.200, Total: 5 },
+        { Party_Name: "Parti communiste français", Female_Pct_2020: 0.314, Female_Pct_2026: 0.245, Total: 49 },
+        { Party_Name: "Parti socialiste", Female_Pct_2020: 0.257, Female_Pct_2026: 0.340, Total: 94 },
+        { Party_Name: "Rassemblement National", Female_Pct_2020: 0.221, Female_Pct_2026: 0.227, Total: 405 },
+        { Party_Name: "Renaissance / LREM", Female_Pct_2020: 0.287, Female_Pct_2026: 0.571, Total: 7 },
+        { Party_Name: "Régionalistes", Female_Pct_2020: 0.165, Female_Pct_2026: 0.380, Total: 50 },
+        { Party_Name: "Union de la droite", Female_Pct_2020: 0.211, Female_Pct_2026: 0.100, Total: 50 },
+        { Party_Name: "Union de la gauche", Female_Pct_2020: 0.313, Female_Pct_2026: 0.294, Total: 463 },
+        { Party_Name: "Union des Démocrates et Indépendants", Female_Pct_2020: 0.214, Female_Pct_2026: 0.130, Total: 23 },
+        { Party_Name: "Union du centre", Female_Pct_2020: 0.349, Female_Pct_2026: 0.158, Total: 57 }
+    ];
+
+    data.forEach(d => { d.Color = globalColorMapping[d.Party_Name] || "#8C8C8C"; });
+
+    const containerWidth = document.getElementById("d3-parity-dumbbell-custom").clientWidth || 700;
+    const svgWidth = Math.max(containerWidth, 550); 
+    const margin = {top: 10, right: 30, bottom: 40, left: 220}; 
+    const width = svgWidth - margin.left - margin.right;
+    const tooltip = d3.select("body").append("div").attr("class", "d3-tooltip-fig4");
+
+    function drawParityDumbbell(hideSmallParties) {
+        d3.select("#d3-parity-dumbbell-custom").html("");
+
+        let chartData = data;
+        if(hideSmallParties) chartData = data.filter(d => d.Total >= 20);
+
+        chartData.sort((a, b) => a.Female_Pct_2026 - b.Female_Pct_2026);
+        
+        const height = chartData.length * 35; 
+        const svg = d3.select("#d3-parity-dumbbell-custom").append("svg")
+            .attr("width", svgWidth)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+        const x = d3.scaleLinear().domain([0, 0.6]).range([0, width]);
+        const y = d3.scaleBand().domain(chartData.map(d => d.Party_Name)).range([0, height]).padding(1);
+
+        svg.append("g").attr("class", "x-axis").attr("transform", `translate(0,${height})`).call(d3.axisBottom(x).ticks(6).tickFormat(d => (d * 100) + " %"));
+        svg.append("g").attr("class", "y-axis").call(d3.axisLeft(y).tickSize(0)).select(".domain").remove();
+
+        svg.selectAll(".grid-line").data(chartData).enter().append("line")
+            .attr("x1", 0).attr("x2", width).attr("y1", d => y(d.Party_Name)).attr("y2", d => y(d.Party_Name)).attr("stroke", "#E5E7EB").attr("stroke-dasharray", "2,2").attr("stroke-width", 1);
+
+        const row = svg.selectAll(".row").data(chartData).enter().append("g").attr("class", "row");
+
+        row.append("line").attr("x1", d => x(d.Female_Pct_2020)).attr("x2", d => x(d.Female_Pct_2026)).attr("y1", d => y(d.Party_Name)).attr("y2", d => y(d.Party_Name))
+            .attr("stroke", d => d.Female_Pct_2026 >= d.Female_Pct_2020 ? d.Color : "#ccc").attr("stroke-width", 3);
+
+        row.append("circle").attr("cx", d => x(d.Female_Pct_2020)).attr("cy", d => y(d.Party_Name)).attr("r", 5).attr("fill", "#ccc").attr("stroke", "#fff").attr("stroke-width", 1);
+        row.append("circle").attr("cx", d => x(d.Female_Pct_2026)).attr("cy", d => y(d.Party_Name)).attr("r", 7).attr("fill", d => d.Color).attr("stroke", "#fff").attr("stroke-width", 1);
+
+        row.append("rect").attr("x", 0).attr("y", d => y(d.Party_Name) - 15).attr("width", width).attr("height", 30).attr("fill", "transparent").style("cursor", "pointer")
+            .on("mouseover", function(event, d) {
+                d3.select(this.parentNode).selectAll("circle").attr("stroke", "#333"); 
+                const diff = (d.Female_Pct_2026 - d.Female_Pct_2020) * 100;
+                const sign = diff > 0 ? "+" : "";
+                const color = diff > 0 ? "#16A34A" : (diff < 0 ? "#DC2626" : "#666");
+
+                tooltip.style("opacity", 1).html(`
+                    <div style="color: ${d.Color}; font-weight: bold; font-size: 13px; margin-bottom: 5px; border-bottom: 1px solid #eee; padding-bottom: 3px;">${d.Party_Name}</div>
+                    <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <div><b>2020 :</b> ${(d.Female_Pct_2020 * 100).toFixed(1)} %</div>
+                        <div><b>2026 :</b> ${(d.Female_Pct_2026 * 100).toFixed(1)} %</div>
+                        <div style="margin-top: 4px; padding-top: 4px; border-top: 1px dashed #ccc;">
+                            <b>Évolution :</b> <span style="color: ${color}; font-weight: bold;">${sign}${diff.toFixed(1)} pts</span>
+                        </div>
+                    </div>
+                `).style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 40) + "px");
+            })
+            .on("mouseout", function() {
+                d3.select(this.parentNode).selectAll("circle").attr("stroke", "#fff");
+                tooltip.style("opacity", 0);
+            });
+    }
+
+    drawParityDumbbell(true);
+    d3.select("#filter-parity-small").on("change", function() { drawParityDumbbell(this.checked); });
+})();
+</script>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Figure 3 - Sankey Mobilité Politique</title>
+    
+    <style>
+        .sankey-container.wp-scientific-figure {
+            background-color: #F7F7F9;
+            border: 1px solid #D1D5DB;
+            padding: 20px 15px;
+            margin: 40px auto; 
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #333;
+            position: relative;
+            overflow: visible;
+        }
+        .sankey-container .figure-header { 
+            margin-bottom: 15px; 
+            border-bottom: 1px solid #E5E7EB; 
+            padding-bottom: 8px; 
+        }
+        .sankey-container .figure-title { 
+            font-size: 16px; 
+            font-weight: bold; 
+            color: #111; 
+            margin: 0 0 5px 0; 
+            line-height: 1.3; 
+        }
+        .sankey-container .figure-caption { 
+            font-size: 13px; 
+            color: #555; 
+            line-height: 1.4; 
+        }
+
+        /* Infobulles */
+        .custom-tooltip {
+            position: absolute; 
+            text-align: left; 
+            padding: 10px 12px;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
+            font-size: 12px;
+            background: rgba(255, 255, 255, 0.98); 
+            border: 1px solid #D1D5DB; 
+            border-radius: 6px;
+            pointer-events: none; 
+            opacity: 0; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            color: #333; 
+            z-index: 9999; 
+            transition: opacity 0.1s ease-in-out;
+        }
+        .custom-tooltip .tooltip-title { 
+            font-weight: bold; 
+            font-size: 13px; 
+            margin-bottom: 6px; 
+            border-bottom: 1px solid #eee; 
+            padding-bottom: 4px; 
+            color: #111; 
+        }
+        .custom-tooltip .tooltip-data { 
+            margin-bottom: 3px; 
+        }
+
+        /* Elements du Sankey */
+        .sankey-node rect { 
+            cursor: pointer; 
+            transition: stroke-width 0.1s; 
+        }
+        .sankey-link { 
+            transition: stroke-opacity 0.2s; 
+            cursor: pointer; 
+        }
+
+        /* Menu déroulant */
+        #sankey-controls { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            flex-wrap: wrap; 
+            margin-bottom: 15px; 
+        }
+        .custom-select-wrapper { 
+            position: relative; 
+            display: inline-block; 
+        }
+        #party-selector-button {
+            background-color: #fff; 
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            padding: 8px 12px;
+            cursor: pointer; 
+            min-width: 250px; 
+            text-align: left; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+        }
+        .custom-select-wrapper:hover #party-selector-button { 
+            background-color: #e9e9e9; 
+        }
+        .custom-select-wrapper:hover #party-selector-dropdown { 
+            display: block; 
+        }
+        #party-selector-dropdown {
+            display: none; 
+            position: absolute; 
+            background-color: #ffffff; 
+            width: 100%;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1); 
+            z-index: 10; 
+            border: 1px solid #ccc; 
+            max-height: 250px; 
+            overflow-y: auto;
+        }
+        #party-selector-dropdown label { 
+            display: block; 
+            padding: 8px 12px; 
+            cursor: pointer; 
+            font-size: 13px; 
+            white-space: nowrap; 
+        }
+        #party-selector-dropdown label:hover { 
+            background-color: #f1f1f1; 
+        }
+        #party-selector-dropdown input { 
+            margin-right: 8px; 
+            vertical-align: middle; 
+        }
+
+        /* Ajustements pour les mobiles */
+        @media (max-width: 768px) {
+            #sankey-controls { flex-direction: column; align-items: stretch; gap: 10px; }
+            .custom-select-wrapper { width: 100%; }
+            #party-selector-button { min-width: 100%; width: 100%; }
+            #multi_sankey { height: 400px !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wp-scientific-figure sankey-container">
+        <div class="figure-header">
+            <h2 class="figure-title">Mouvement des candidats qui se représentent entre 2020 et 2026 par nuance politique.</h2>
+            <p class="figure-caption">Ce graphique illustre les mouvements des candidats au départ de certains partis vers leur nouvelle nuance en 2026. <strong>Utilisez le menu déroulant</strong> pour ajouter ou retirer des nuances de l'analyse. Survolez les blocs ou les liens pour afficher les volumes de transferts. Source : <a href="https://www.data.gouv.fr/datasets/elections-municipales-2020-candidatures-au-1er-tour" target="_blank" rel="noopener noreferrer">data.gouv.fr</a></p>  
+        </div>
+        
+        <div id="sankey-controls" style="font-size: 14px; padding: 0 15px;">
+            <label for="party-selector-button" style="font-weight: bold;">Choisir les partis de départ :</label>
+            <div class="custom-select-wrapper">
+                <button id="party-selector-button">Renaissance / LREM</button>
+                <div id="party-selector-dropdown">
+                    </div>
+            </div>
+            <button id="reset-sankey-selection" style="padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; cursor: pointer;">Réinitialiser</button>
+        </div>
+        
+        <p style="font-size: 13px; font-style: italic; color: #666; text-align: center; margin-top: 0; margin-bottom: 10px;">Lecture : Les flux et nombres affichés représentent le nombre de candidats passés d'un parti à un autre entre 2020 et 2026 dans la même circonscription.</p>
+        
+        <div id="multi_sankey" style="width: 100%; height: 600px; max-height: 80vh;"></div>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+
+    <script>
+        // Configuration globale requise pour le Sankey
+        const globalColorMapping = {
+            "LEXG": "#8B3E3E", "Liste d'extrême-gauche": "#8B3E3E", "Extrême gauche": "#8B3E3E",
+            "LCOM": "#A05252", "Liste du Parti communiste français": "#A05252", "Parti communiste français": "#A05252",
+            "LFI": "#B56565", "Liste de La France insoumise": "#B56565", "La France insoumise": "#B56565",
+            "LSOC": "#C97A7A", "Liste du Parti socialiste": "#C97A7A", "Parti socialiste": "#C97A7A",
+            "LUG": "#C97A7A", "Liste d'union à gauche": "#C97A7A", "Union de la gauche": "#C97A7A",
+            "LDVG": "#DF9B9B", "Liste divers gauche": "#DF9B9B", "Divers gauche": "#DF9B9B",
+            "LVEC": "#5C8A6B", "Liste Les Ecologistes": "#5C8A6B", "Les Écologistes (ex-EELV)": "#5C8A6B", "Les Ecologistes": "#5C8A6B",
+            "LECO": "#70A37F", "Liste écologiste": "#70A37F", "Ecologiste": "#70A37F",
+            "LREN": "#C2A85B", "Liste Renaissance": "#C2A85B", "Renaissance / LREM": "#C2A85B", "LREM": "#C2A85B", "Renaissance / LREM (Restés)": "#C2A85B",
+            "LMDM": "#C28F5B", "Liste Mouvement démocrate (MoDem)": "#C28F5B", "Modem": "#C28F5B",
+            "LHOR": "#5FA8D3", "Liste Horizons": "#5FA8D3", "Horizons": "#5FA8D3",
+            "LUDI": "#6B99A1", "Liste de l'Union des Démocrates et des Indépendants": "#6B99A1", "Union des Démocrates et Indépendants": "#6B99A1",
+            "LUC": "#6B99A1", "Liste d'union au centre": "#6B99A1", "Union du centre": "#6B99A1",
+            "LDVC": "#6B99A1", "Liste divers centre": "#6B99A1", "Divers centre": "#6B99A1",
+            "LLR": "#4D7094", "Liste des Républicains": "#4D7094", "Les Républicains": "#4D7094", "Les Républicains (Restés)": "#4D7094", "Les Républicains (Rejoints)": "#4D7094",
+            "LUD": "#3D5C7A", "Liste d'union à droite": "#3D5C7A", "Union de la droite": "#3D5C7A",
+            "LDVD": "#5C80A6", "Liste divers droite": "#5C80A6", "Divers droite": "#5C80A6",
+            "LDSV": "#334D66", "Liste de droite souverainiste": "#334D66", "Droite souverainiste (ex-DLF)": "#334D66",
+            "LREC": "#4B2C5E", "Liste Reconquête !": "#4B2C5E", "Reconquête": "#4B2C5E",
+            "LUDR": "#1F2D3A", "Liste d'union des droites pour la République": "#1F2D3A", "Union des droites pour la République": "#1F2D3A",
+            "LRN": "#2B3E50", "Liste du Rassemblement National": "#2B3E50", "Rassemblement National": "#2B3E50",
+            "LUXD": "#1A252F", "Liste d'union à l'extrême-droite": "#1A252F", "Union de l'extrême droite": "#1A252F",
+            "LEXD": "#1A252F", "Liste d'extrême droite": "#1A252F", "Extrême droite": "#1A252F",
+            "LREG": "#6B8E8E", "Liste régionaliste": "#6B8E8E", "Régionalistes": "#6B8E8E",
+            "LDIV": "#999999", "Liste Divers": "#999999", "Divers": "#999999",
+            "Ne se représente pas": "#8C8C8C"
+        };
+        const fallbackColor = "#8C8C8C";
+
+        // Vérifie si la tooltip existe déjà
+        let globalTooltip = d3.select(".custom-tooltip");
+        if (globalTooltip.empty()) {
+            globalTooltip = d3.select("body").append("div").attr("class", "custom-tooltip");
+        }
+
+        // Initialisation du Sankey
+        (function() {
+            const container = d3.select("#multi_sankey");
+            const controlsContainer = d3.select("#sankey-controls");
+            const partySelectorButton = controlsContainer.select("#party-selector-button");
+            const partySelectorDropdown = controlsContainer.select("#party-selector-dropdown");
+            const resetButton = controlsContainer.select("#reset-sankey-selection");
+
+            const widthTotal = 900;
+            const heightTotal = 600;
+            const margin = { top: 30, right: 150, bottom: 20, left: 150 }; 
+            const width = widthTotal - margin.left - margin.right;
+            const height = heightTotal - margin.top - margin.bottom;
+
+            const svg = container
+                .append("svg")
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("viewBox", `0 0 ${widthTotal} ${heightTotal}`)
+                .attr("preserveAspectRatio", "xMidYMid meet")
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
+
+            d3.json("https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/municpales/sankey_data.json").then(allData => {
+
+                const sourceParties = allData.nodes
+                    .filter(n => n.name.endsWith('(2020)'))
+                    .map(n => n.name.replace(' (2020)', ''))
+                    .sort();
+                
+                // Remplissage du menu déroulant
+                const labels = partySelectorDropdown.selectAll("label")
+                    .data(sourceParties)
+                    .join("label");
+
+                labels.append("input")
+                    .attr("type", "checkbox")
+                    .attr("value", d => d)
+                    .property("checked", d => d === "Renaissance / LREM")
+                    .on("change", () => {
+                        const selectedParties = getSelectedParties();
+                        updateChart(selectedParties);
+                        updateButtonText(selectedParties);
+                    });
+
+                labels.append("span").text(d => ` ${d}`);
+
+                resetButton.on("click", () => {
+                    partySelectorDropdown.selectAll("input").property("checked", false);
+                    updateChart([]);
+                    updateButtonText([]);
+                });
+
+                function getSelectedParties() {
+                    const selected = [];
+                    partySelectorDropdown.selectAll("input:checked").each(function(d) { selected.push(d); });
+                    return selected;
+                }
+
+                function updateButtonText(selectedParties) {
+                    if (selectedParties.length === 0) {
+                        partySelectorButton.text("Sélectionner des partis");
+                    } else if (selectedParties.length === 1) {
+                        partySelectorButton.text(selectedParties[0]);
+                    } else {
+                        partySelectorButton.text(`${selectedParties.length} partis sélectionnés`);
+                    }
+                }
+
+                function updateChart(selectedParties) {
+                    svg.selectAll("*").remove();
+
+                    if (selectedParties.length === 0) {
+                        svg.append("text")
+                            .attr("x", width / 2).attr("y", height / 2)
+                            .attr("text-anchor", "middle").style("font-size", "16px").style("fill", "#888")
+                            .text("Veuillez sélectionner au moins un parti dans la liste.");
+                        return;
+                    }
+
+                    const selectedSourceFullNames = selectedParties.map(p => p + ' (2020)');
+                    const originalNodeIndexMap = new Map(allData.nodes.map((node, i) => [node.name, i]));
+                    const selectedSourceIndices = selectedSourceFullNames.map(name => originalNodeIndexMap.get(name)).filter(i => i !== undefined);
+
+                    // On filtre les liens et on retire la catégorie "Ne se représente pas"
+                    const filteredLinks = allData.links.filter(link => {
+                        const sourceNodeIsSelected = selectedSourceIndices.includes(link.source);
+                        const targetNodeName = allData.nodes[link.target].name;
+                        return sourceNodeIsSelected && targetNodeName !== "Ne se représente pas";
+                    });
+                        
+                    const activeNodeIndices = new Set();
+                    filteredLinks.forEach(link => {
+                        activeNodeIndices.add(link.source);
+                        activeNodeIndices.add(link.target);
+                    });
+
+                    const graphNodes = Array.from(activeNodeIndices).map(originalIndex => ({
+                        ...allData.nodes[originalIndex],
+                        originalIndex: originalIndex
+                    }));
+
+                    const newIndexMap = new Map(graphNodes.map((node, i) => [node.originalIndex, i]));
+
+                    const graphLinks = filteredLinks.map(link => ({
+                        source: newIndexMap.get(link.source),
+                        target: newIndexMap.get(link.target),
+                        value: link.value
+                    }));
+
+                    const data = { nodes: graphNodes, links: graphLinks };
+                    data.nodes.forEach(d => {
+                        const cleanName = d.name.replace(/\s\(\d{4}\)$/, '');
+                        d.color = globalColorMapping[cleanName] || fallbackColor;
+                    });
+
+                    svg.append("text").attr("x", 0).attr("y", -10).attr("text-anchor", "start").style("font-size", "16px").style("font-weight", "bold").style("fill", "#333").text("2020");
+                    svg.append("text").attr("x", width).attr("y", -10).attr("text-anchor", "end").style("font-size", "16px").style("font-weight", "bold").style("fill", "#333").text("2026");
+
+                    const sankey = d3.sankey().nodeWidth(25).nodePadding(18).extent([[0, 0], [width, height]]);
+                    const { nodes, links } = sankey(data);
+
+                      // Create a defs section for gradients
+                    const defs = svg.append("defs");
+
+                    // Add a gradient for each link
+                    links.forEach((link, i) => {
+                        const gradient = defs.append("linearGradient")
+                            .attr("id", `gradient-${i}`)
+                            .attr("gradientUnits", "userSpaceOnUse")
+                            .attr("x1", link.source.x1)
+                            .attr("x2", link.target.x0);
+
+                        gradient.append("stop").attr("offset", "0%").attr("stop-color", link.source.color);
+                        gradient.append("stop").attr("offset", "100%").attr("stop-color", link.target.color);
+                    });
+
+                    const link = svg.append("g").selectAll(".sankey-link")
+                        .data(links).join("path").attr("class", "sankey-link")
+                        .attr("d", d3.sankeyLinkHorizontal())
+                        .attr("fill", "none")
+                        .attr("stroke", (d, i) => `url(#gradient-${i})`)
+                        .attr("stroke-opacity", 0.5).attr("stroke-width", d => Math.max(1, d.width))
+                        .on("mouseover", function(event, d) {
+                            d3.select(this).attr("stroke-opacity", 0.7);
+                            globalTooltip.style("opacity", 1)
+                                .html(`<div class='tooltip-title'>Détail du transfert</div><div class='tooltip-data'>De : <b>${d.source.name.replace(/\s\(\d{4}\)$/, '')}</b></div><div class='tooltip-data'>Vers : <b>${d.target.name.replace(/\s\(\d{4}\)$/, '')}</b></div><div class='tooltip-data' style='margin-top: 5px; color: #d9534f;'><b>${d.value}</b> candidats</div>`);
+                        })
+                        .on("mousemove", function(event) { globalTooltip.style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 25) + "px"); })
+                        .on("mouseout", function() { d3.select(this).attr("stroke-opacity", 0.5); globalTooltip.style("opacity", 0); });
+
+                    const node = svg.append("g").selectAll(".sankey-node")
+                        .data(nodes).join("g").attr("class", "sankey-node");
+
+                    node.append("rect")
+                        .attr("x", d => d.x0).attr("y", d => d.y0)
+                        .attr("height", d => Math.max(1, d.y1 - d.y0))
+                        .attr("width", d => d.x1 - d.x0)
+                        .attr("fill", d => d.color).attr("stroke", "#000").attr("stroke-width", 0.5)
+                        .on("mouseover", function(event, d) {
+                            d3.select(this).attr("stroke-width", 2);
+                            link.attr("stroke-opacity", l => (l.source.name === d.name || l.target.name === d.name) ? 0.7 : 0.1);
+                            globalTooltip.style("opacity", 1).html(`<div class='tooltip-title'>${d.name.replace(/\s\(\d{4}\)$/, '')}</div><div class='tooltip-data'>Total de <b>${d.value}</b> candidats</div>`);
+                        })
+                        .on("mousemove", function(event) { globalTooltip.style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 25) + "px"); })
+                        .on("mouseout", function() { d3.select(this).attr("stroke-width", 0.5); link.attr("stroke-opacity", 0.5); globalTooltip.style("opacity", 0); });
+
+                    node.append("text")
+                        .attr("x", d => d.x0 < width / 2 ? d.x0 - 8 : d.x1 + 8)
+                        .attr("y", d => (d.y1 + d.y0) / 2)
+                        .attr("dy", "0.35em")
+                        .attr("text-anchor", d => d.x0 < width / 2 ? "end" : "start")
+                        .text(d => d.name.replace(/\s\(\d{4}\)$/, ''))
+                        .style("font-size", "12px")
+                        .style("font-family", '"Helvetica Neue", Helvetica, Arial, sans-serif')
+                        .style("fill", "#444")
+                        .style("font-weight", d => d.x0 < width / 2 ? "bold" : "normal")
+                        .style("pointer-events", "none");
+                }
+
+                // Dessin initial
+                updateChart(["Renaissance / LREM"]);
+
+            }).catch(err => {
+                console.error("Erreur Sankey :", err);
+                container.html("<p style='color:red; text-align:center;'><em>Données indisponibles.</em></p>");
+            });
+        })();
+    </script>
+</body>
+</html>

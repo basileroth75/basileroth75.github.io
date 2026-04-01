@@ -1,0 +1,157 @@
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style>
+    .wp-scientific-figure { background-color: #F7F7F9; border: 1px solid #D1D5DB; padding: 20px 15px; max-width: 860px; margin: 40px auto; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #333; position: relative; border-radius: 4px; }
+    .wp-scientific-figure .figure-header { margin-bottom: 15px; border-bottom: 1px solid #E5E7EB; padding-bottom: 12px; }
+    .wp-scientific-figure .figure-title { font-size: 16px; font-weight: bold; color: #111; margin: 0 0 5px 0; line-height: 1.3; }
+    .wp-scientific-figure .lecture-help { font-size: 13px; color: #6b7280; font-style: italic; margin: 0; line-height: 1.5; }
+    .wp-scientific-figure .figure-footer { margin-top: 15px; padding-top: 12px; border-top: 1px solid #E5E7EB; font-size: 12px; color: #6b7280; line-height: 1.5; }
+    .wp-scientific-figure .figure-footer a { color: #4B5563; text-decoration: underline; }
+    .chart-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; padding-bottom: 10px; margin-top: 25px; position: relative; display: flex; justify-content: center; }
+    .pp-tooltip { position: absolute; text-align: left; padding: 10px 14px; font-size: 12px; background: rgba(255, 255, 255, 0.98); border: 1px solid #D1D5DB; box-shadow: 0 4px 12px rgba(0,0,0,0.15); pointer-events: none; opacity: 0; border-radius: 6px; z-index: 50; font-family: inherit; line-height: 1.4; transition: opacity 0.2s ease; }
+    .pp-tooltip strong { color: #111; font-size: 13px; display: block; margin-bottom: 4px; border-bottom: 1px solid #eee; padding-bottom: 4px;}
+    .axis-label { font-size: 13px; fill: #4B5563; font-weight: 600; font-style: italic; }
+    .y-axis text { font-size: 12px; fill: #111; font-weight: 500; }
+    .score-label { font-size: 11px; fill: #333; font-weight: 600; }
+    .tick text { fill: #4B5563; font-size: 11px; }
+    .grid line { stroke: #D1D5DB; stroke-opacity: 0.6; stroke-dasharray: 4,4; shape-rendering: crispEdges; }
+    .grid path { stroke-width: 0; }
+    .leg-title { font-size: 13px; font-weight: bold; fill: #111827; }
+    .leg-desc { font-size: 11px; fill: #6b7280; font-weight: 500; }
+    .wp-scientific-figure>div>svg { width: 100%; height: auto; display: block; }
+</style>
+
+<div class="wp-scientific-figure">
+    <div class="figure-header">
+        <h2 class="figure-title">Bilan des têtes de listes dans les villes de + 10 000 habitants</h2>
+        <p class="lecture-help">Aide à la lecture : la longueur de la ligne indique le score de la liste au 1<sup>er</sup> tour (en %). La taille de la bulle est proportionnelle à la population de la ville.</p>  
+    </div>
+    <div id="lollipop-container" class="chart-wrapper"></div>
+    <div class="figure-footer">
+        Sources : <a href="https://www.data.gouv.fr/organizations/ministere-de-linterieur" target="_blank" rel="noopener noreferrer">data.gouv.fr</a>, <a href="https://www.insee.fr/" target="_blank" rel="noopener noreferrer">Insee</a>, Place Publique.
+    </div>
+</div>
+
+<script>
+(function() {
+    const colorOther = "#E5E7EB", colorOtherParties = "#9CA3AF", colorLeft = "#E57373", colorPP = "#D4A017"; 
+    
+    const dataLollipop = [
+        {"City": "Grenoble", "Candidate_Name": "ROMAIN GENTIL", "population": 157477.0, "Ordre": 1, "Score": 10.0, "Status":  "Battu au 1er tour"}, 
+        {"City": "Perpignan", "Candidate_Name": "AGNES LANGEVINE", "population": 119656.0, "Ordre": 1, "Score": 15.94, "Status": "Battu au 1er tour"}, 
+        {"City": "Asni\u00e8res-sur-Seine", "Candidate_Name": "LARBI EL HADRI", "population": 89662.0, "Ordre": 1, "Score": 4.47, "Status": "Battu au 1er tour"},
+        {"City": "Antony", "Candidate_Name": "EVENNOU VIRGINIE", "population": 63232.0, "Ordre": 1, "Score": 11.27, "Status": "Qualifi\u00e9 (Second tour)"}, 
+        {"City": "Meaux", "Candidate_Name": "VALENTINE ROUSSEAU", "population": 55616.0, "Ordre": 1, "Score": 9.73, "Status": "Battu au 1er tour"},
+        {"City": "Saint-Priest", "Candidate_Name": "GILLES GRANDVAL", "population": 48822.0, "Ordre": 1, "Score": 14.21, "Status": "Battu au 1er tour"},
+        {"City": "Saint-Brieuc", "Candidate_Name": "HERVE GUIHARD", "population": 44224.0, "Ordre": 1, "Score": 33.2, "Status": "Qualifi\u00e9 (Second tour)"},
+        {"City": "Saint-Cloud", "Candidate_Name": "ANNE MARIE CRAVERO", "population": 29727.0, "Ordre": 1, "Score": 11.27, "Status": "Battu au 1er tour"}, 
+        {"City": "Le Kremlin-Bic\u00eatre", "Candidate_Name": "JEAN FRANCOIS DELAGE", "population": 24380.0, "Ordre": 1, "Score": 26.88, "Status":"Qualifi\u00e9 (Second tour)"}, 
+        {"City": "Neuilly-Plaisance", "Candidate_Name": "OLIVIER PRIGENT", "population": 21415.0, "Ordre": 1, "Score": 18.7, "Status": "Battu au 1er tour"}, 
+        {"City": "Cugnaux", "Candidate_Name": "ALBERT SANCHEZ", "population": 20341.0, "Ordre": 1, "Score": 18.72, "Status": "Qualifi\u00e9 (Second tour)"}, 
+        {"City": "Chamali\u00e8res", "Candidate_Name": "THOMAS MERZI", "population": 17454.0, "Ordre": 1, "Score": 30.32, "Status": "Battu au 1er tour"}, 
+        {"City": "Mayenne", "Candidate_Name": "JEAN PIERRE LE SCORNET", "population": 12900.0, "Ordre": 1, "Score": 41.18, "Status": "Battu au 1er tour"},
+        {"City": "Enghien-les-Bains", "Candidate_Name": "RACHEL MOLERE ATTAL", "population": 11440.0, "Ordre": 1, "Score": 20.41, "Status": "Battu au 1er tour"},
+        {"City": "Le Pont-de-Claix", "Candidate_Name": "CHRISTOPHE FERRARI", "population": 10805.0, "Ordre": 1, "Score": 100.0, "Status": "Victoire (1er tour)"}
+    ];
+
+    const statusOrder = {"Victoire (1er tour)": 1, "Qualifié (Second tour)": 2, "Battu au 1er tour": 3};
+    dataLollipop.sort((a, b) => {
+        if (statusOrder[a.Status] !== statusOrder[b.Status]) return statusOrder[a.Status] - statusOrder[b.Status];
+        return b.Score - a.Score; 
+    });
+
+    const width = 820, height = 580; 
+    const margin = { top: 30, right: 260, bottom: 60, left: 160 }; 
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
+
+    const colorQualif = "#E5C158", colorBattu = "#E5E7EB", colorBattuStroke = "#9CA3AF"; 
+
+    const container = d3.select("#lollipop-container");
+    const svg = container.html("").append("svg")
+        .attr("width", width).attr("height", height)
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+        
+    const tooltip = container.append("div").attr("class", "pp-tooltip").attr("id", "tooltip-lollipop");
+
+    const xScale = d3.scaleLinear().domain([0, 105]).range([0, innerWidth]);
+    const yScale = d3.scaleBand().domain(dataLollipop.map(d => d.City)).range([0, innerHeight]).padding(1); 
+    const rScale = d3.scaleSqrt().domain([10000, 160000]).range([6, 24]); 
+
+    const xAxisGrid = d3.axisBottom(xScale).tickSize(-innerHeight).tickFormat('').ticks(5);
+    svg.append('g').attr('class', 'grid').attr("transform", `translate(0,${innerHeight})`).call(xAxisGrid);
+
+    const xAxis = d3.axisBottom(xScale).ticks(5).tickFormat(d => d + "%");
+    svg.append("g").attr("transform", `translate(0,${innerHeight})`).call(xAxis);
+    
+    const axisLabel = svg.append("text").attr("class", "axis-label").attr("x", innerWidth / 2).attr("y", innerHeight + 40).attr("text-anchor", "middle");
+    axisLabel.append("tspan").text("Score obtenu au 1");
+    axisLabel.append("tspan").attr("dy", "-4").style("font-size", "9px").text("er");
+    axisLabel.append("tspan").attr("dy", "4").text(" tour (%)");
+
+    svg.append("line").attr("x1", xScale(50)).attr("x2", xScale(50)).attr("y1", -15).attr("y2", innerHeight)
+        .attr("stroke", "#9CA3AF").attr("stroke-width", 1).attr("stroke-dasharray", "4,4").attr("opacity", 0.5);
+    svg.append("text").attr("x", xScale(50)).attr("y", -20).attr("text-anchor", "middle").style("font-size", "11px").style("fill", "#9CA3AF").text("Majorité absolue (50%)");
+
+    const yAxis = d3.axisLeft(yScale).tickSize(0);
+    svg.append("g").attr("class", "y-axis").call(yAxis).selectAll("text").attr("dx", "-10px").style("font-size", "12px").style("font-weight", "500");
+    svg.select(".y-axis path").remove();
+
+    svg.selectAll(".lollipop-line").data(dataLollipop).enter().append("line").attr("class", "lollipop-line")
+        .attr("x1", 0).attr("y1", d => yScale(d.City)).attr("x2", d => xScale(d.Score)).attr("y2", d => yScale(d.City))
+        .attr("stroke", d => d.Status === "Battu au 1er tour" ? "#E5E7EB" : "#D1D5DB").attr("stroke-width", 2);
+
+    svg.selectAll(".lollipop-circle").data(dataLollipop).enter().append("circle").attr("class", "lollipop-circle")
+        .attr("cx", d => xScale(d.Score)).attr("cy", d => yScale(d.City)).attr("r", d => rScale(d.population))
+        .attr("fill", d => {
+            if(d.Status === "Victoire (1er tour)") return colorPP;
+            if(d.Status === "Qualifié (Second tour)") return colorQualif;
+            return colorBattu;
+        })
+        .attr("stroke", d => d.Status === "Battu au 1er tour" ? colorBattuStroke : "none").attr("stroke-width", 1.5).attr("opacity", 0.95)
+        .style("cursor", "pointer")
+        .on("mousemove", function(event, d) {
+            d3.select(this).attr("stroke", "#111").attr("opacity", 1);
+            let statutColor = colorBattuStroke;
+            if(d.Status === "Victoire (1er tour)") statutColor = "#A67A0F";
+            if(d.Status === "Qualifié (Second tour)") statutColor = "#B38510";
+            let formattedStatus = d.Status.replace("1er", "1<sup>er</sup>");
+            const [x, y] = d3.pointer(event, document.getElementById('lollipop-container'));
+            tooltip.style("opacity", 1).html(`<strong>${d.Candidate_Name}</strong>Ville : ${d.City}<br>Population : <strong>${d.population.toLocaleString('fr-FR')} hab.</strong><br>Score de liste : <strong>${d.Score.toLocaleString('fr-FR')}%</strong><br>Statut : <span style="color:${statutColor}; font-weight:bold">${formattedStatus}</span>`).style("left", (x + 20) + "px").style("top", (y - 30) + "px");
+        })
+        .on("mouseout", function(event, d) {
+            d3.select(this).attr("stroke", d.Status === "Battu au 1er tour" ? colorBattuStroke : "none").attr("opacity", 0.95);
+            tooltip.style("opacity", 0);
+        });
+
+    svg.selectAll(".score-label").data(dataLollipop).enter().append("text").attr("class", "score-label")
+        .attr("y", d => yScale(d.City) + 3).attr("x", d => xScale(d.Score) + rScale(d.population) + 8) 
+        .text(d => d.Score.toLocaleString('fr-FR') + "%").attr("fill", d => d.Status === "Battu au 1er tour" ? "#6b7280" : "#111");
+
+    const vicLimit = (yScale(dataLollipop[0].City) + yScale(dataLollipop[1].City)) / 2;
+    const qualLimit = (yScale(dataLollipop[4].City) + yScale(dataLollipop[5].City)) / 2;
+    svg.append("line").attr("x1", -margin.left + 20).attr("x2", innerWidth).attr("y1", vicLimit).attr("y2", vicLimit).attr("stroke", "#D1D5DB").attr("stroke-dasharray", "2,2");
+    svg.append("line").attr("x1", -margin.left + 20).attr("x2", innerWidth).attr("y1", qualLimit).attr("y2", qualLimit).attr("stroke", "#D1D5DB").attr("stroke-dasharray", "2,2");
+
+    const legendGroup = svg.append("g").attr("transform", `translate(${innerWidth + 40}, 60)`);
+    legendGroup.append("text").attr("x", 0).attr("y", 0).attr("class", "leg-title").text("Issue du scrutin");
+    legendGroup.append("circle").attr("cx", 6).attr("cy", 22).attr("r", 6).attr("fill", colorPP);
+    legendGroup.append("text").attr("x", 20).attr("y", 26).attr("class", "leg-title").attr("fill", "#A67A0F").text("Victoire (1)");
+    legendGroup.append("circle").attr("cx", 6).attr("cy", 48).attr("r", 6).attr("fill", colorQualif);
+    legendGroup.append("text").attr("x", 20).attr("y", 52).attr("class", "leg-title").attr("fill", "#A67A0F").text("Second tour (4)");
+    legendGroup.append("circle").attr("cx", 6).attr("cy", 74).attr("r", 6).attr("fill", colorBattu).attr("stroke", colorBattuStroke);
+    legendGroup.append("text").attr("x", 20).attr("y", 78).attr("class", "leg-title").attr("fill", "#4B5563").text("Éliminés (10)");
+    legendGroup.append("line").attr("x1", 0).attr("x2", 120).attr("y1", 105).attr("y2", 105).attr("stroke", "#E5E7EB").attr("stroke-dasharray", "3,3");
+
+    legendGroup.append("text").attr("x", 0).attr("y", 135).attr("class", "leg-title").text("Taille de la ville");
+    const sizes = [150000, 50000, 10000], maxRadius = rScale(d3.max(sizes));
+    const nestedLegendGroup = legendGroup.append("g").attr("transform", `translate(${maxRadius + 5}, 195)`);
+
+    sizes.forEach(size => {
+        let radius = rScale(size);
+        nestedLegendGroup.append("circle").attr("cx", 0).attr("cy", -radius).attr("r", radius).attr("fill", "none").attr("stroke", "#9CA3AF").attr("stroke-width", 1.2);
+        nestedLegendGroup.append("line").attr("x1", 0).attr("y1", -radius * 2).attr("x2", maxRadius + 15).attr("y2", -radius * 2).attr("stroke", "#D1D5DB").attr("stroke-dasharray", "2,2");
+        nestedLegendGroup.append("text").attr("x", maxRadius + 20).attr("y", -radius * 2 + 4).attr("class", "leg-desc").text((size / 1000) + " k hab.");
+    });
+})();
+</script>

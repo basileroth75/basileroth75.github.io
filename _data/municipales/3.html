@@ -1,0 +1,133 @@
+<div class="wp-scientific-figure wp-custom-fig2quater">
+    <style>
+        .wp-custom-fig2quater {
+            background-color: #F7F7F9; border: 1px solid #D1D5DB; padding: 20px 15px;
+            max-width: 800px; margin: 40px auto; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #333; position: relative;
+        }
+        .wp-custom-fig2quater .figure-header { margin-bottom: 10px; border-bottom: 1px solid #E5E7EB; padding-bottom: 8px; }
+        .wp-custom-fig2quater .figure-title { font-size: 16px; font-weight: bold; color: #111; margin: 0 0 5px 0; line-height: 1.3; }
+        .wp-custom-fig2quater .figure-caption { font-size: 13px; color: #555; line-height: 1.4; margin: 0; }
+        .wp-custom-fig2quater #diverging-chart-container { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; padding-bottom: 10px; margin-top: 15px; }
+        .wp-custom-fig2quater .x-axis text, .wp-custom-fig2quater .y-axis text { font-size: 11px; fill: #555; font-weight: bold; }
+        .d3-tooltip-fig2quater {
+            position: absolute; text-align: left; padding: 10px 12px; font-family: inherit; font-size: 12px;
+            background: rgba(255, 255, 255, 0.98); border: 1px solid #D1D5DB; border-radius: 6px; pointer-events: none;
+            opacity: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); color: #333; z-index: 9999; transition: opacity 0.1s;
+        }
+        .d3-tooltip-fig2quater .tooltip-title { font-weight: bold; font-size: 13px; margin-bottom: 2px; }
+    </style>
+
+    <div class="figure-header">
+        <h2 class="figure-title">Sous-représentées et moins élues : pour les femmes, la double peine.</h2>
+        <p class="figure-caption">Ce graphique présente la différence entre la probabilité pour une femme d'être élue et la probabilité moyenne d'être élu au sein de la même force politique. Une barre vers la gauche indique que les femmes ont moins de chances d'être élues. Source : <a href="https://www.data.gouv.fr/datasets/elections-municipales-2020-liste-des-candidats-elus-au-t1-et-liste-des-communes-entierement-pourvues" target="_blank" rel="noopener noreferrer">data.gouv.fr</a></p>    
+    </div>
+
+    <div id="diverging-chart-container">
+        <div id="diverging-chart"></div>
+    </div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+(function() {
+    const groupMapping = {
+        "LVEC": "Bloc de gauche", "LREG": "Bloc de gauche", "LFI": "Bloc de gauche", "LSOC": "Bloc de gauche", "LECO": "Bloc de gauche", "LUG": "Bloc de gauche", "LCOM": "Bloc de gauche","LRDG": "Bloc de gauche",
+        "LDVC": "Bloc central", "LLR": "Bloc central","LREM": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central","LMDM": "Bloc central",
+        "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite", "LDLF": "Extrême-droite"
+    };
+
+    const groupedColors = { "Bloc de gauche": "#C97A7A", "Bloc central": "#6B99A1", "Extrême-droite": "#2B3E50", "Liste Divers Gauche": "#DF9B9B", "Liste Divers": "#999999", };
+
+    const divergingDataRaw = [{"Nuance Liste":"LCOM","Total Men":81,"Elected Men":35,"Elected Men %":43.21,"Total Women":34,"Elected Women":7,"Total candidates":115,"% elected candidates":36.52,"Elected Women %":20.59},{"Nuance Liste":"Liste Divers","Total Men":1091,"Elected Men":277,"Elected Men %":25.39,"Total Women":316,"Elected Women":63,"Total candidates":1407,"% elected candidates":24.16,"Elected Women %":19.94},{"Nuance Liste":"LDLF","Total Men":8,"Elected Men":1,"Elected Men %":12.5,"Total Women":2,"Elected Women":0,"Total candidates":10,"% elected candidates":10.0,"Elected Women %":0.0},{"Nuance Liste":"LDVC","Total Men":848,"Elected Men":281,"Elected Men %":33.14,"Total Women":262,"Elected Women":51,"Total candidates":1110,"% elected candidates":29.91,"Elected Women %":19.47},{"Nuance Liste":"LDVD","Total Men":1683,"Elected Men":784,"Elected Men %":46.58,"Total Women":437,"Elected Women":150,"Total candidates":2120,"% elected candidates":44.06,"Elected Women %":34.32},{"Nuance Liste":"Liste Divers Gauche","Total Men":1560,"Elected Men":522,"Elected Men %":33.46,"Total Women":532,"Elected Women":123,"Total candidates":2092,"% elected candidates":30.83,"Elected Women %":23.12},{"Nuance Liste":"LECO","Total Men":111,"Elected Men":10,"Elected Men %":9.01,"Total Women":55,"Elected Women":7,"Total candidates":166,"% elected candidates":10.24,"Elected Women %":12.73},{"Nuance Liste":"LEXD","Total Men":30,"Elected Men":4,"Elected Men %":13.33,"Total Women":6,"Elected Women":0,"Total candidates":36,"% elected candidates":11.11,"Elected Women %":0.0},{"Nuance Liste":"LFI","Total Men":51,"Elected Men":1,"Elected Men %":1.96,"Total Women":29,"Elected Women":0,"Total candidates":80,"% elected candidates":1.25,"Elected Women %":0.0},{"Nuance Liste":"LLR","Total Men":234,"Elected Men":142,"Elected Men %":60.68,"Total Women":68,"Elected Women":24,"Total candidates":302,"% elected candidates":54.97,"Elected Women %":35.29},{"Nuance Liste":"LMDM","Total Men":16,"Elected Men":3,"Elected Men %":18.75,"Total Women":1,"Elected Women":0,"Total candidates":17,"% elected candidates":17.65,"Elected Women %":0.0},{"Nuance Liste":"LRDG","Total Men":3,"Elected Men":2,"Elected Men %":66.67,"Total Women":1,"Elected Women":0,"Total candidates":4,"% elected candidates":50.0,"Elected Women %":0.0},{"Nuance Liste":"LREG","Total Men":66,"Elected Men":7,"Elected Men %":10.61,"Total Women":13,"Elected Women":0,"Total candidates":79,"% elected candidates":8.86,"Elected Women %":0.0},{"Nuance Liste":"LREM","Total Men":167,"Elected Men":14,"Elected Men %":8.38,"Total Women":70,"Elected Women":0,"Total candidates":237,"% elected candidates":5.91,"Elected Women %":0.0},{"Nuance Liste":"LRN","Total Men":294,"Elected Men":9,"Elected Men %":3.06,"Total Women":83,"Elected Women":0,"Total candidates":377,"% elected candidates":2.39,"Elected Women %":0.0},{"Nuance Liste":"LSOC","Total Men":126,"Elected Men":64,"Elected Men %":50.79,"Total Women":45,"Elected Women":17,"Total candidates":171,"% elected candidates":47.37,"Elected Women %":37.78},{"Nuance Liste":"LUC","Total Men":50,"Elected Men":12,"Elected Men %":24.0,"Total Women":26,"Elected Women":3,"Total candidates":76,"% elected candidates":19.74,"Elected Women %":11.54},{"Nuance Liste":"LUD","Total Men":56,"Elected Men":35,"Elected Men %":62.5,"Total Women":14,"Elected Women":9,"Total candidates":70,"% elected candidates":62.86,"Elected Women %":64.29},{"Nuance Liste":"LUDI","Total Men":42,"Elected Men":23,"Elected Men %":54.76,"Total Women":11,"Elected Women":7,"Total candidates":53,"% elected candidates":56.6,"Elected Women %":63.64},{"Nuance Liste":"LUG","Total Men":190,"Elected Men":82,"Elected Men %":43.16,"Total Women":85,"Elected Women":26,"Total candidates":275,"% elected candidates":39.27,"Elected Women %":30.59},{"Nuance Liste":"LVEC","Total Men":102,"Elected Men":9,"Elected Men %":8.82,"Total Women":67,"Elected Women":5,"Total candidates":169,"% elected candidates":8.28,"Elected Women %":7.46}]
+
+
+    const aggregatedObj = {};
+    divergingDataRaw.forEach(d => {
+        const groupName = groupMapping[d["Nuance Liste"]] || d["Nuance Liste"];
+        if (!aggregatedObj[groupName]) {
+            aggregatedObj[groupName] = { "party": groupName, "Total Men": 0, "Elected Men": 0, "Total Women": 0, "Elected Women": 0, "Total candidates": 0, "subParties": new Set() };
+        }
+        aggregatedObj[groupName]["Total Men"] += d["Total Men"];
+        aggregatedObj[groupName]["Elected Men"] += d["Elected Men"];
+        aggregatedObj[groupName]["Total Women"] += d["Total Women"];
+        aggregatedObj[groupName]["Elected Women"] += d["Elected Women"];
+        aggregatedObj[groupName]["Total candidates"] += d["Total candidates"];
+        if (groupMapping[d["Nuance Liste"]]) aggregatedObj[groupName].subParties.add(d["Nuance Liste"]);
+    });
+
+    const data = Object.values(aggregatedObj).map(d => {
+        const totalElected = d["Elected Men"] + d["Elected Women"];
+        d["% elected candidates"] = d["Total candidates"] > 0 ? (totalElected / d["Total candidates"]) * 100 : 0;
+        d["Elected Women %"] = d["Total Women"] > 0 ? (d["Elected Women"] / d["Total Women"]) * 100 : 0;
+        d.overall = d["% elected candidates"];
+        d.women = d["Elected Women %"];
+        d.diff = d.women - d.overall;
+        d.subPartiesList = Array.from(d.subParties).join(', ');
+        return d;
+    }).sort((a, b) => a.diff - b.diff);
+
+    const margin = {top: 40, right: 30, bottom: 40, left: 160}; 
+    const containerWidth = document.getElementById("diverging-chart-container").clientWidth || 600;
+    const svgWidth = Math.max(containerWidth, 550); 
+    const width = svgWidth - margin.left - margin.right;
+    
+    const svg = d3.select("#diverging-chart").append("svg").attr("width", svgWidth).append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+    const tooltip = d3.select("body").append("div").attr("class", "d3-tooltip-fig2quater");
+
+    const x = d3.scaleLinear().range([0, width]);
+    const y = d3.scaleBand().padding(0.2);
+
+    const xAxisGroup = svg.append("g").attr("class", "x-axis");
+    const yAxisGroup = svg.append("g").attr("class", "y-axis");
+
+    svg.append("text").attr("x", width / 4).attr("y", -25).attr("text-anchor", "middle").style("font-size", "10px").style("fill", "#666").text("← Déficit pour les femmes");
+    svg.append("text").attr("x", (width / 4) * 3).attr("y", -25).attr("text-anchor", "middle").style("font-size", "10px").style("fill", "#666").text("Avantage pour les femmes →");
+
+    const zeroLine = svg.append("line").attr("y1", 0).attr("stroke", "#991B1B").attr("stroke-width", 1.5).attr("stroke-dasharray", "4,4");
+
+    function updateDiverging(chartData) {
+        const height = chartData.length * 30; 
+        d3.select("#diverging-chart svg").transition().duration(400).attr("height", height + margin.top + margin.bottom);
+        
+        const xMax = d3.max(chartData, d => Math.abs(d.diff)) || 10; 
+        x.domain([-xMax - 2, xMax + 2]);
+        y.domain(chartData.map(d => d.party)).range([0, height]);
+
+        xAxisGroup.transition().duration(400).call(d3.axisTop(x).tickFormat(d => (d > 0 ? "+" : "") + d.toFixed(0) + "%"));
+        yAxisGroup.transition().duration(400).call(d3.axisLeft(y).tickSize(0));
+        zeroLine.transition().duration(400).attr("x1", x(0)).attr("x2", x(0)).attr("y2", height);
+
+        svg.selectAll(".bar").data(chartData, d => d.party)
+            .join(
+                enter => enter.append("rect").attr("class", "bar").attr("x", x(0)).attr("y", d => y(d.party)).attr("width", 0).attr("height", y.bandwidth())
+                    .attr("fill", d => groupedColors[d.party] || "#cccccc").style("cursor", "pointer"),
+                update => update,
+                exit => exit.transition().duration(400).attr("width", 0).attr("x", x(0)).remove()
+            )
+            .on("mouseover", function(event, d) {
+                d3.select(this).style("opacity", 0.7);
+                const gapColor = d.diff >= 0 ? '#1a9850' : '#d73027';
+                const sign = d.diff >= 0 ? '+' : '';
+                const partyColor = groupedColors[d.party] || "#cccccc";
+                const subPartiesHtml = d.subPartiesList ? `<div style="font-size: 0.85em; color: #777; font-style: italic; margin-bottom: 6px;">Comprend : ${d.subPartiesList}</div>` : '';
+
+                tooltip.transition().duration(200).style("opacity", 1);
+                tooltip.html(`
+                    <div class="tooltip-title" style="color: ${partyColor};">${d.party}</div>
+                    ${subPartiesHtml}
+                    <div>Candidats totaux : <b>${d["Total candidates"]}</b></div>
+                    <div style="color:#555">↳ Hommes : ${d["Total Men"]} | Femmes : ${d["Total Women"]}</div>
+                    <hr style="border: 0; border-top: 1px solid #eee; margin: 6px 0;">
+                    <div>Taux d'élection global : <b>${d.overall.toFixed(1)}%</b></div>
+                    <div>Taux d'élection Femmes : <b>${d.women.toFixed(1)}%</b></div>
+                    <div style="margin-top: 4px;">Écart : <b style="color:${gapColor}">${sign}${d.diff.toFixed(2)}%</b></div>
+                `).style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 28) + "px");
+            })
+            .on("mousemove", event => tooltip.style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 28) + "px"))
+            .on("mouseout", function() { d3.select(this).style("opacity", 1); tooltip.transition().duration(200).style("opacity", 0); })
+            .transition().duration(500).attr("y", d => y(d.party)).attr("height", y.bandwidth()).attr("x", d => Math.min(x(0), x(d.diff))).attr("width", d => Math.abs(x(d.diff) - x(0)));
+    }
+    
+    updateDiverging(data);
+})();
+</script>

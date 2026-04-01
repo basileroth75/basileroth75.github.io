@@ -1,0 +1,132 @@
+<div class="wp-scientific-figure wp-custom-fig1bis">
+    <style>
+        .wp-custom-fig1bis {
+            background-color: #F7F7F9; border: 1px solid #D1D5DB; padding: 20px 15px;
+            max-width: 650px; margin: 40px auto; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #333; position: relative;
+        }
+        .wp-custom-fig1bis .figure-header { margin-bottom: 10px; border-bottom: 1px solid #E5E7EB; padding-bottom: 8px; }
+        .wp-custom-fig1bis .figure-title { font-size: 16px; font-weight: bold; color: #111; margin: 0 0 5px 0; line-height: 1.3; }
+        .wp-custom-fig1bis .figure-caption { font-size: 13px; color: #555; line-height: 1.4; margin: 0; }
+        .wp-custom-fig1bis .legend-container { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; font-size: 12px; }
+        .wp-custom-fig1bis .legend-item { display: flex; align-items: center; gap: 6px; }
+        .wp-custom-fig1bis .color-box { width: 12px; height: 12px; border: 1px solid #999; }
+        .wp-custom-fig1bis #d3-academic-chart-grouped { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px; width: 100%; }
+        .wp-custom-fig1bis .x-axis text { font-size: 10px; fill: #555; }
+        .wp-custom-fig1bis .domain, .wp-custom-fig1bis .tick line { stroke: #D1D5DB; }
+        .d3-tooltip-fig1bis {
+            position: absolute; text-align: left; padding: 10px 12px; font-family: inherit; font-size: 12px;
+            background: rgba(255, 255, 255, 0.98); border: 1px solid #D1D5DB; border-radius: 6px; pointer-events: none;
+            opacity: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15); color: #333; z-index: 9999; transition: opacity 0.1s;
+        }
+        .d3-tooltip-fig1bis .tooltip-title { font-weight: bold; font-size: 13px; margin-bottom: 6px; border-bottom: 1px solid #eee; padding-bottom: 4px; }
+    </style>
+
+    <div class="figure-header">
+        <h2 class="figure-title">En tête des listes aux municipales, personne n’atteint la parité. L’extrême-droite mauvaise élève.</h2>
+<p class="figure-caption">Proportion de femmes et d'hommes têtes de liste après regroupement des principales forces politiques. Survolez les barres pour voir les effectifs exacts. Source : <a href="https://www.data.gouv.fr/datasets/elections-municipales-2026-listes-candidates-au-premier-tour" target="_blank" rel="noopener noreferrer">data.gouv.fr</a></p>    </div>
+
+    <div class="legend-container">
+        <div class="legend-item"><div class="color-box" style="background-color: #555;"></div><span>Femmes</span></div>
+        <div class="legend-item"><div class="color-box" style="background-color: #555; opacity: 0.3;"></div><span>Hommes</span></div>
+        <div class="legend-item"><svg width="24" height="14"><line x1="0" y1="7" x2="24" y2="7" stroke="#991B1B" stroke-dasharray="4,3" stroke-width="2"></line></svg><span>Moy. nationale (24,4 %)</span></div>
+    </div>
+
+    <div id="d3-academic-chart-grouped"></div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+(function() {
+    const rawData = [{"Code":"LDSV","Party_Name":"Liste de droite souverainiste","Total":6,"Females":0.0,"Males":6.0,"Female_Pct":0.0,"Male_Pct":1.0,"Color":"#334D66"},{"Code":"LUDI","Party_Name":"Liste de l'Union des D\u00e9mocrates et des Ind\u00e9pendants","Total":23,"Females":3.0,"Males":20.0,"Female_Pct":0.1304347826,"Male_Pct":0.8695652174,"Color":"#6B99A1"},{"Code":"LUXD","Party_Name":"Liste d'union \u00e0 l'extr\u00eame-droite","Total":104,"Females":19.0,"Males":85.0,"Female_Pct":0.1826923077,"Male_Pct":0.8173076923,"Color":"#1A252F"},{"Code":"LMDM","Party_Name":"Liste Mouvement d\u00e9mocrate (MoDem)","Total":5,"Females":1.0,"Males":4.0,"Female_Pct":0.2,"Male_Pct":0.8,"Color":"#C28F5B"},{"Code":"LUD","Party_Name":"Liste d'union \u00e0 droite","Total":68,"Females":14.0,"Males":54.0,"Female_Pct":0.2058823529,"Male_Pct":0.7941176471,"Color":"#3D5C7A"},{"Code":"LDVD","Party_Name":"Liste divers droite","Total":2229,"Females":491.0,"Males":1738.0,"Female_Pct":0.2202781516,"Male_Pct":0.7797218484,"Color":"#5C80A6"},{"Code":"LLR","Party_Name":"Liste des R\u00e9publicains","Total":152,"Females":34.0,"Males":118.0,"Female_Pct":0.2236842105,"Male_Pct":0.7763157895,"Color":"#4D7094"},{"Code":"LEXD","Party_Name":"Liste d'extr\u00eame droite","Total":112,"Females":26.0,"Males":86.0,"Female_Pct":0.2321428571,"Male_Pct":0.7678571429,"Color":"#1A252F"},{"Code":"LRN","Party_Name":"Liste du Rassemblement National","Total":416,"Females":98.0,"Males":318.0,"Female_Pct":0.2355769231,"Male_Pct":0.7644230769,"Color":"#2B3E50"},{"Code":"LDIV","Party_Name":"Liste Divers","Total":1417,"Females":335.0,"Males":1082.0,"Female_Pct":0.2364149612,"Male_Pct":0.7635850388,"Color":"#999999"},{"Code":"LCOM","Party_Name":"Liste du Parti communiste fran\u00e7ais","Total":49,"Females":12.0,"Males":37.0,"Female_Pct":0.2448979592,"Male_Pct":0.7551020408,"Color":"#A05252"},{"Code":"LDVC","Party_Name":"Liste divers centre","Total":1181,"Females":291.0,"Males":890.0,"Female_Pct":0.2464013548,"Male_Pct":0.7535986452,"Color":"#6B99A1"},{"Code":"LUC","Party_Name":"Liste d'union au centre","Total":74,"Females":19.0,"Males":55.0,"Female_Pct":0.2567567568,"Male_Pct":0.7432432432,"Color":"#6B99A1"},{"Code":"LREC","Party_Name":"Liste Reconqu\u00eate !","Total":18,"Females":5.0,"Males":13.0,"Female_Pct":0.2777777778,"Male_Pct":0.7222222222,"Color":"#4B2C5E"},{"Code":"LDVG","Party_Name":"Liste divers gauche","Total":1903,"Females":537.0,"Males":1366.0,"Female_Pct":0.2821860221,"Male_Pct":0.7178139779,"Color":"#DF9B9B"},{"Code":"LUDR","Party_Name":"Liste d'union des droites pour la R\u00e9publique","Total":20,"Females":6.0,"Males":14.0,"Female_Pct":0.3,"Male_Pct":0.7,"Color":"#1F2D3A"},{"Code":"LUG","Party_Name":"Liste d'union \u00e0 gauche","Total":496,"Females":154.0,"Males":342.0,"Female_Pct":0.310483871,"Male_Pct":0.689516129,"Color":"#C97A7A"},{"Code":"LSOC","Party_Name":"Liste du Parti socialiste","Total":95,"Females":32.0,"Males":63.0,"Female_Pct":0.3368421053,"Male_Pct":0.6631578947,"Color":"#C97A7A"},{"Code":"LECO","Party_Name":"Liste \u00e9cologiste","Total":44,"Females":15.0,"Males":29.0,"Female_Pct":0.3409090909,"Male_Pct":0.6590909091,"Color":"#70A37F"},{"Code":"LREG","Party_Name":"Liste r\u00e9gionaliste","Total":79,"Females":27.0,"Males":52.0,"Female_Pct":0.3417721519,"Male_Pct":0.6582278481,"Color":"#6B8E8E"},{"Code":"LHOR","Party_Name":"Liste Horizons","Total":8,"Females":3.0,"Males":5.0,"Female_Pct":0.375,"Male_Pct":0.625,"Color":"#5FA8D3"},{"Code":"LVEC","Party_Name":"Liste Les Ecologistes","Total":33,"Females":13.0,"Males":20.0,"Female_Pct":0.3939393939,"Male_Pct":0.6060606061,"Color":"#5C8A6B"},{"Code":"LFI","Party_Name":"Liste de La France insoumise","Total":277,"Females":110.0,"Males":167.0,"Female_Pct":0.3971119134,"Male_Pct":0.6028880866,"Color":"#B56565"},{"Code":"LEXG","Party_Name":"Liste d'extr\u00eame-gauche","Total":411,"Females":168.0,"Males":243.0,"Female_Pct":0.4087591241,"Male_Pct":0.5912408759,"Color":"#8B3E3E"},{"Code":"LREN","Party_Name":"Liste Renaissance","Total":7,"Females":4.0,"Males":3.0,"Female_Pct":0.5714285714,"Male_Pct":0.4285714286,"Color":"#C2A85B"}]
+
+    const globalColorMapping = { "LDIV": "#999999" ,"LEXG": "#8B3E3E" };
+    const groupMapping = {
+        "LVEC": "Bloc de gauche", "LREG": "Bloc de gauche", "LFI": "Bloc de gauche", "LSOC": "Bloc de gauche", "LECO": "Bloc de gauche", "LUG": "Bloc de gauche", "LCOM": "Bloc de gauche","LDVG": "Bloc de gauche",
+        "LDVC": "Bloc central","LMDM": "Bloc central", "LREN": "Bloc central","LHOR": "Bloc central", "LLR": "Bloc central", "LDVD": "Bloc central", "LUC": "Bloc central", "LUDI": "Bloc central", "LUD": "Bloc central","LUDR": "Bloc central",
+        "LUXD": "Extrême-droite", "LEXD": "Extrême-droite", "LRN": "Extrême-droite", "LDSV": "Extrême-droite",  "LREC": "Extrême-droite"
+    };
+
+    const groupedColors = { "Bloc de gauche": "#C97A7A", "Bloc central": "#6B99A1", "Extrême-droite": "#2B3E50" };
+
+    const aggregated = {};
+    rawData.forEach(d => {
+        let groupName = groupMapping[d.Code] || d.Party_Name; 
+        if (!aggregated[groupName]) {
+            aggregated[groupName] = { Party_Name: groupName, Code: groupName, Total: 0, Females: 0, Males: 0, OriginalCode: d.Code, SubParties: [] };
+        }
+        aggregated[groupName].Total += d.Total;
+        aggregated[groupName].Females += d.Females;
+        aggregated[groupName].Males += d.Males;
+        if (groupMapping[d.Code]) aggregated[groupName].SubParties.push(d.Party_Name);
+    });
+
+    const dataGrouped = Object.values(aggregated).map(d => {
+        d.Female_Pct = d.Total > 0 ? d.Females / d.Total : 0;
+        d.Male_Pct = d.Total > 0 ? d.Males / d.Total : 0;
+        d.Color = groupedColors[d.Party_Name] || globalColorMapping[d.OriginalCode] || "#8C8C8C";
+        return d;
+    });
+
+    const margin = {top: 40, right: 15, bottom: 10, left: 15}; 
+    const containerWidth = document.getElementById("d3-academic-chart-grouped").clientWidth || 450;
+    const svgWidth = Math.max(containerWidth, 400); 
+    const width = svgWidth - margin.left - margin.right;
+
+    const tooltip = d3.select("body").append("div").attr("class", "d3-tooltip-fig1bis");
+
+    const svg = d3.select("#d3-academic-chart-grouped").append("svg")
+        .attr("width", svgWidth)
+        .append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+
+    const x = d3.scaleLinear().domain([0, 1]).range([0, width]);
+    const y = d3.scaleBand().padding(0.3); 
+
+    svg.append("g").attr("class", "x-axis").call(d3.axisTop(x).ticks(5).tickFormat(d => (d * 100) + " %"));
+    svg.append("text").attr("x", width / 2).attr("y", -25).attr("text-anchor", "middle").style("font-size", "11px").style("font-style", "italic").style("fill", "#555").text("% de femmes têtes de liste");
+
+    const avgLine = svg.append("line").attr("x1", x(0.24494)).attr("x2", x(0.24494)).attr("stroke", "#991B1B").attr("stroke-dasharray", "4,3").attr("stroke-width", 1.5).style("pointer-events", "none"); 
+
+    function updateGroupedChart(chartData) {
+        chartData.sort((a, b) => b.Female_Pct - a.Female_Pct);
+        const height = chartData.length * 40; 
+        d3.select("#d3-academic-chart-grouped svg").transition().duration(400).attr("height", height + margin.top + margin.bottom);
+        y.domain(chartData.map(d => d.Code)).range([0, height]).padding(0.45);
+        avgLine.transition().duration(400).attr("y1", 0).attr("y2", height);
+
+        const row = svg.selectAll(".row").data(chartData, d => d.Code);
+        row.exit().transition().duration(300).style("opacity", 0).remove();
+        
+        const rowEnter = row.enter().append("g").attr("class", "row").style("opacity", 0);
+        rowEnter.append("text").attr("class", "party-label");
+        rowEnter.append("rect").attr("class", "female-bar");
+        rowEnter.append("rect").attr("class", "male-bar");
+        rowEnter.append("line").attr("class", "divider-line");
+        rowEnter.append("rect").attr("class", "hover-rect");
+
+        const rowUpdate = rowEnter.merge(row);
+        rowUpdate.transition().duration(400).attr("transform", d => `translate(0, ${y(d.Code)})`).style("opacity", 1);
+
+        rowUpdate.select(".party-label").attr("x", width).attr("y", -4).attr("text-anchor", "end").text(d => d.Party_Name).style("font-size", "11px").style("font-weight", "bold").style("fill", "#333");
+        rowUpdate.select(".female-bar").transition().duration(400).attr("x", 0).attr("y", 0).attr("height", y.bandwidth()).attr("width", d => x(d.Female_Pct)).attr("fill", d => d.Color);
+        rowUpdate.select(".male-bar").transition().duration(400).attr("x", d => x(d.Female_Pct)).attr("y", 0).attr("height", y.bandwidth()).attr("width", d => x(d.Male_Pct)).attr("fill", d => d.Color).attr("opacity", 0.3);
+        rowUpdate.select(".divider-line").transition().duration(400).attr("x1", d => x(d.Female_Pct)).attr("x2", d => x(d.Female_Pct)).attr("y1", 0).attr("y2", y.bandwidth()).attr("stroke", "#fff").attr("stroke-width", 2);
+
+        rowUpdate.select(".hover-rect").attr("x", 0).attr("y", -15).attr("width", width).attr("height", y.bandwidth() + 15).attr("fill", "transparent").style("cursor", "pointer")
+            .on("mouseover", function() { d3.select(this.parentNode).style("opacity", 0.6); tooltip.style("opacity", 1); })
+            .on("mousemove", function(event, d) {
+                const subPartiesHTML = d.SubParties.length > 0 ? `<div style="margin-top:6px; padding-top:4px; font-size:10px; color:#777; font-style: italic; line-height: 1.3;"><b>Inclut :</b><br>• ${d.SubParties.join('<br>• ')}</div>` : '';
+                tooltip.html(`
+                    <div class="tooltip-title" style="color: ${d.Color};">${d.Party_Name}</div>
+                    <div><b>Femmes :</b> ${d.Females} (${(d.Female_Pct * 100).toFixed(1)} %)</div>
+                    <div><b>Hommes :</b> ${d.Males} (${(d.Male_Pct * 100).toFixed(1)} %)</div>
+                    <div style="margin-top:6px; font-size:11px; color:#666; border-top: 1px solid #eee; padding-top:4px;">Total listes : ${d.Total}</div>
+                    ${subPartiesHTML}
+                `).style("left", (event.pageX + 15) + "px").style("top", (event.pageY - 40) + "px");
+            })
+            .on("mouseout", function() { d3.select(this.parentNode).style("opacity", 1); tooltip.style("opacity", 0); });
+    }
+    
+    // Filtrage des petits partis désactivé ici pour coller à la vue d'ensemble, ou avec threshold
+    updateGroupedChart(dataGrouped.filter(d => d.Total >= 20));
+})();
+</script>
