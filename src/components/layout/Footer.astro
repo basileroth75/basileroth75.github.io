@@ -2,23 +2,67 @@
 import { menuLinks, siteConfig } from "@/site.config";
 
 const year = new Date().getFullYear();
+
+const contactLinks = [
+	{
+		label: "GitHub",
+		href: "https://github.com/basileroth75",
+		icon: `<svg aria-hidden="true" focusable="false" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.604-3.369-1.34-3.369-1.34-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836a9.59 9.59 0 0 1 2.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.641.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>`,
+	},
+	{
+		label: "Email",
+		href: "mailto:basile.roth@proton.me",
+		icon: `<svg aria-hidden="true" focusable="false" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"/></svg>`,
+	},
+	{
+		label: "Signal",
+		href: "https://signal.me/#eu/jTM6MausYd8XNgJ86agbIgBspeQK9K4KeGjVwCmsqioqmQ8yB2lNfrbVF4CR-Fnd",
+		icon: `<svg aria-hidden="true" focusable="false" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12.001 1C5.925 1 1 5.925 1 12c0 1.86.476 3.61 1.314 5.137L1.05 22l4.948-1.25A10.96 10.96 0 0 0 12 23c6.075 0 11-4.925 11-11S18.076 1 12.001 1zm0 2A9 9 0 0 1 21 12a9 9 0 0 1-9 9 8.963 8.963 0 0 1-4.516-1.213l-.232-.137-2.43.614.626-2.36-.155-.243A8.963 8.963 0 0 1 3 12a9 9 0 0 1 9-9zm-3.5 4.5a.75.75 0 0 0-.54.23c-.26.28-.99 1-1 2.5s1.04 3.38 1.19 3.61c.15.23 2.04 3.25 5.03 4.43.7.27 1.25.43 1.68.56.7.2 1.35.17 1.85.1.57-.08 1.74-.73 1.99-1.44.25-.71.25-1.32.17-1.44-.08-.12-.29-.19-.6-.34-.31-.15-1.86-.93-2.15-1.04-.29-.11-.5-.17-.71.17s-.82 1.04-1.01 1.25c-.19.21-.37.24-.68.08-.31-.16-1.29-.48-2.46-1.53-.91-.82-1.52-1.83-1.7-2.14-.18-.31-.02-.48.13-.63.14-.14.31-.36.47-.54.16-.18.21-.31.31-.52.1-.21.05-.39-.03-.54-.08-.15-.71-1.72-.97-2.36-.24-.58-.5-.5-.71-.51H8.5z"/></svg>`,
+	},
+];
 ---
 
-<footer
-	class="text-muted mt-auto flex w-full flex-col items-center justify-center gap-y-2 pt-20 pb-4 text-center align-top font-semibold sm:flex-row sm:justify-between sm:text-xs"
->
-	<div class="me-0 sm:me-4">
-		&copy; {siteConfig.author}
-		{year}.<span class="inline-block">&nbsp;🚀&nbsp;{siteConfig.title}&nbsp;🌵&nbsp;</span>
+<footer class="mt-auto pt-16 pb-6">
+	<!-- Contact band -->
+	<div class="border-muted border-t pt-8 mb-8">
+		<p class="text-muted mb-4 text-center text-xs font-semibold uppercase tracking-widest">Contact</p>
+		<ul class="flex justify-center gap-6" role="list">
+			{
+				contactLinks.map(({ label, href, icon }) => (
+					<li>
+						<a
+							class="text-muted hover:text-link flex flex-col items-center gap-1 transition-colors"
+							href={href}
+							rel="noreferrer noopener"
+							target={href.startsWith("mailto") ? "_self" : "_blank"}
+							title={label}
+						>
+							<Fragment set:html={icon} />
+							<span class="text-xs">{label}</span>
+						</a>
+					</li>
+				))
+			}
+		</ul>
 	</div>
-	<nav aria-labelledby="footer_links" class="sm:divide-muted flex gap-x-2 sm:gap-x-0 sm:divide-x">
-		<p id="footer_links" class="sr-only">More on this site</p>
-		{
-			menuLinks.map((link) => (
-				<a class="hover:text-global-text px-4 py-2 hover:underline sm:py-0" href={link.path}>
-					{link.title}
-				</a>
-			))
-		}
-	</nav>
+
+	<!-- Bottom bar -->
+	<div
+		class="text-muted flex w-full flex-col items-center justify-center gap-y-2 text-center text-xs font-semibold sm:flex-row sm:justify-between"
+	>
+		<div>
+			&copy; {siteConfig.author}
+			{year}.
+		</div>
+		<nav aria-labelledby="footer_links" class="sm:divide-muted flex gap-x-2 sm:gap-x-0 sm:divide-x">
+			<p id="footer_links" class="sr-only">More on this site</p>
+			{
+				menuLinks.map((link) => (
+					<a class="hover:text-global-text px-4 py-2 hover:underline sm:py-0" href={link.path}>
+						{link.title}
+					</a>
+				))
+			}
+		</nav>
+	</div>
 </footer>

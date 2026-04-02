@@ -1,0 +1,203 @@
+---
+import PageLayout from "@/layouts/Base.astro";
+
+const meta = {
+	description: "Articles, research and data projects by Basile Roth",
+	title: "Work",
+};
+
+const journalism = [
+	{
+		date: "20 mars 2026",
+		outlet: "Politis",
+		title: "Raphaël Glucksmann et Place publique : beaucoup de bruit pour (très) peu d'élus",
+		url: "https://www.politis.fr/articles/2026/03/politique-raphael-glucksmann-et-place-publique-beaucoup-de-bruit-pour-tres-peu-delus/",
+		description:
+			"Malgré une forte visibilité médiatique, Place publique n'a obtenu que 0,3 % des élus de gauche lors des municipales 2026. Malgré une forte visibilité médiatique, Place publique n'a obtenu que 0,3 % des élus de gauche lors des municipales 2026. Malgré une forte visibilité médiatique, Place publique n'a obtenu que 0,3 % des élus de gauche lors des municipales 2026. Malgré une forte visibilité médiatique, Place publique n'a obtenu que 0,3 % des élus de gauche lors des municipales 2026.",
+		tags: ["dataviz", "politique"],
+	},
+	{
+		date: "5 mars 2026",
+		outlet: "Politis",
+		title: "Municipales : pour la Macronie, le grand effacement",
+		url: "https://www.politis.fr/articles/2026/03/analyse-infographie-municipales-pour-la-macronie-le-grand-effacement/",
+		description:
+			"Renaissance ne présente que sept listes aux municipales 2026, contre 247 en 2020, se dissolvant dans des alliances pour masquer son effacement.",
+		tags: ["dataviz", "politique"],
+	},
+	{
+		date: "5 mars 2026",
+		outlet: "Politis",
+		title: "Municipales : en tête de liste, les femmes très largement sous-représentées, surtout à droite",
+		url: "https://www.politis.fr/articles/2026/03/analyse-infographie-municipales-en-tete-de-liste-les-femmes-tres-largement-sous-representees-surtout-a-droite/",
+		description:
+			"Seules 24,4 % des têtes de liste sont des femmes, malgré les obligations de parité, avec des écarts très marqués selon les blocs politiques.",
+		tags: ["dataviz", "politique", "parité"],
+	},
+	{
+		date: "12 février 2026",
+		outlet: "Politis",
+		title: "Municipales : découvrez si votre commune respecte les quotas de logements sociaux",
+		url: "https://www.politis.fr/articles/2026/02/municipales-decouvrez-si-votre-commune-respecte-les-quotas-de-logements-sociaux/",
+		description:
+			"Une carte interactive pour vérifier si votre commune respecte la loi SRU — 334 communes refusent de s'y conformer.",
+		tags: ["dataviz", "cartographie"],
+	},
+	{
+		date: "1er juillet 2025",
+		outlet: "Politis",
+		title: "RN et Bayrou : une alliance par les votes",
+		url: "https://www.politis.fr/articles/2025/07/rn-et-bayrou-une-alliance-par-les-votes/",
+		description:
+			"Analyse des votes parlementaires révélant que le RN soutient régulièrement le gouvernement Bayrou, contredisant son image d'opposition.",
+		tags: ["dataviz", "politique", "scraping"],
+	},
+	{
+		date: "26 mai 2025",
+		outlet: "Politis",
+		title: "Loi Duplomb : ces députés bons petits soldats de la FNSEA",
+		url: "https://www.politis.fr/articles/2025/05/loi-duplomb-ces-deputes-bons-petits-soldats-de-la-fnsea/",
+		description:
+			"Enquête exclusive : 37 % des amendements déposés par des parlementaires non-NFP sur ce projet de loi reprennent mot pour mot des demandes de la FNSEA.",
+		tags: ["scraping", "politique", "data"],
+	},
+];
+
+const research = [
+	{
+		date: "Juin 2025",
+		title: "Greenlobby — Comprendre et contrer le lobbying en France",
+		url: "https://website.services.dataforgood.fr/projets/green-lobby",
+		pdf: "https://greenlobby.org/wp-content/uploads/2025/06/Infographie-Lobby-dinteret-general-Greenlobby.pdf",
+		partner: "Data for Good × Greenlobby",
+		description:
+			"Premier rapport Greenlobby : anatomie des lobbys conventionnels (pantouflage, fabrique de la loi), impacts économiques, et méthode pour construire un contre-lobby d'intérêt général.",
+		tags: ["data", "politique", "scraping"],
+	},
+	{
+		date: "16 septembre 2024",
+		title: "Spatiotemporal Variability of Fin Whale and Blue Whale Calls Detected by Land Seismometers Along the Lower St. Lawrence Seaway",
+		url: "https://seismica.library.mcgill.ca/article/view/1153/1640",
+		partner: "Seismica · Vol. 3, No. 2",
+		description:
+			"Utilisation de sismomètres terrestres pour détecter les vocalisations de baleines à nageoires et bleues dans le Saint-Laurent (2020–2022) — 14 076 détections de rorquals communs et 3 739 de baleines bleues.",
+		tags: ["data", "environnement", "machine learning"],
+	},
+];
+
+const code = [
+	{
+		date: "17 juin 2020",
+		title: "A Social Distancing Detector using TensorFlow, Python and OpenCV",
+		url: "https://medium.com/data-science/a-social-distancing-detector-using-a-tensorflow-object-detection-model-python-and-opencv-4450a431238",
+		partner: "Medium · Towards Data Science",
+		description:
+			"Détecteur de distanciation sociale combinant deep learning et vision par ordinateur : détection de personnes par TensorFlow et transformation de perspective pour mesurer les distances.",
+		tags: ["machine learning", "computer vision", "python"],
+	},
+];
+---
+
+<PageLayout meta={meta}>
+	<h1 class="title mb-12">Work</h1>
+
+	<!-- Research & Papers -->
+	<section class="mb-16">
+		<h2 class="title text-accent mb-8 text-xl">Recherche & rapports</h2>
+		<ul class="space-y-6" role="list">
+			{
+				research.map((item) => (
+					<li class="border-muted border-l-2 pl-5">
+						<p class="text-muted mb-1 text-sm">{item.date} · {item.partner}</p>
+						<a
+							class="cactus-link text-base font-semibold"
+							href={item.url}
+							rel="noreferrer noopener"
+							target="_blank"
+						>
+							{item.title}
+						</a>
+						<p class="mt-1 mb-2 text-sm">{item.description}</p>
+						<div class="flex flex-wrap gap-1.5">
+							{item.tags.map((tag) => (
+								<span class="bg-accent/10 text-accent rounded px-2 py-0.5 text-xs font-medium">
+									{tag}
+								</span>
+							))}
+						</div>
+						{item.pdf && (
+							<a
+								class="text-muted hover:text-link mt-2 inline-block text-xs underline underline-offset-2"
+								href={item.pdf}
+								rel="noreferrer noopener"
+								target="_blank"
+							>
+								Télécharger le rapport (PDF)
+							</a>
+						)}
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
+	<!-- Code & Projects -->
+	<section class="mb-16">
+		<h2 class="title text-accent mb-8 text-xl">Code & projets</h2>
+		<ul class="space-y-6" role="list">
+			{
+				code.map((item) => (
+					<li class="border-muted border-l-2 pl-5">
+						<p class="text-muted mb-1 text-sm">{item.date} · {item.partner}</p>
+						<a
+							class="cactus-link text-base font-semibold"
+							href={item.url}
+							rel="noreferrer noopener"
+							target="_blank"
+						>
+							{item.title}
+						</a>
+						<p class="mt-1 mb-2 text-sm">{item.description}</p>
+						<div class="flex flex-wrap gap-1.5">
+							{item.tags.map((tag) => (
+								<span class="bg-accent/10 text-accent rounded px-2 py-0.5 text-xs font-medium">
+									{tag}
+								</span>
+							))}
+						</div>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
+	<!-- Data Journalism -->
+	<section>
+		<h2 class="title text-accent mb-8 text-xl">Journalisme de données — Politis</h2>
+		<ul class="space-y-6" role="list">
+			{
+				journalism.map((item) => (
+					<li class="border-muted border-l-2 pl-5">
+						<p class="text-muted mb-1 text-sm">{item.date} · {item.outlet}</p>
+						<a
+							class="cactus-link text-base font-semibold"
+							href={item.url}
+							rel="noreferrer noopener"
+							target="_blank"
+						>
+							{item.title}
+						</a>
+						<p class="mt-1 mb-2 text-sm">{item.description}</p>
+						<div class="flex flex-wrap gap-1.5">
+							{item.tags.map((tag) => (
+								<span class="bg-accent/10 text-accent rounded px-2 py-0.5 text-xs font-medium">
+									{tag}
+								</span>
+							))}
+						</div>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+</PageLayout>
