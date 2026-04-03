@@ -1,0 +1,77 @@
+---
+import PageLayout from "@/layouts/Base.astro";
+
+const meta = {
+	description: "Intérêts et engagements de Basile Roth",
+	title: "Interests",
+};
+
+const interests = [
+	{
+		title: "Sports d'endurance",
+		icon: "🏃",
+		description:
+			"Finisher du Norseman — le championnat mondial d'extrême triathlon en Norvège. J'ai aussi couru de multiples ultra-trails et marathons. L'endurance comme école de patience et de dépassement de soi.",
+		tags: ["Triathlon", "Ultra-trail", "Marathon"],
+	},
+	{
+		title: "Rugby",
+		icon: "🏉",
+		description:
+			"Étudiant athlète rugby au plus haut niveau en Amérique du Nord. Le rugby m'a appris le leadership, la gestion de la pression et l'importance du collectif.",
+		tags: ["Compétition", "Leadership", "Équipe"],
+	},
+	{
+		title: "Fresque du Climat",
+		icon: "🌍",
+		description:
+			"Animateur bénévole d'ateliers publics de sensibilisation aux enjeux du changement climatique. Un outil pédagogique puissant pour rendre la science du climat accessible à tous.",
+		tags: ["Bénévolat", "Climat", "Pédagogie"],
+	},
+	{
+		title: "Data for Good",
+		icon: "📊",
+		description:
+			"Bénévole depuis 2023 au sein de cette association qui mobilise des data scientists pour des projets d'intérêt général : environnement, inclusion sociale, éducation, citoyenneté.",
+		tags: ["Bénévolat", "Data", "Impact"],
+	},
+	{
+		title: "Lecture",
+		icon: "📚",
+		description:
+			"Passionné de non-fiction : sciences, politique, histoire et essais. La lecture comme moyen de rester curieux et de comprendre le monde sous différents angles.",
+		tags: ["Non-fiction", "Sciences", "Politique"],
+	},
+	{
+		title: "Culture & voyages",
+		icon: "✈️",
+		description:
+			"Expériences professionnelles et personnelles au Canada, en Australie et en Afrique du Sud (Université Stellenbosch). Citoyen français, australien et suisse — trois cultures, trois regards sur le monde.",
+		tags: ["International", "Langues", "Découverte"],
+	},
+];
+---
+
+<PageLayout meta={meta}>
+	<h1 class="title mb-4">Interests</h1>
+	<p class="text-muted mb-16 text-sm">Ce qui m'anime en dehors du travail.</p>
+
+	<ul class="grid gap-5 sm:grid-cols-2" role="list">
+		{
+			interests.map((item) => (
+				<li class="border-muted flex flex-col rounded-lg border p-5">
+					<p class="mb-3 text-2xl">{item.icon}</p>
+					<p class="mb-2 font-semibold">{item.title}</p>
+					<p class="text-muted flex-1 text-sm">{item.description}</p>
+					<div class="mt-4 flex flex-wrap gap-1.5">
+						{item.tags.map((tag) => (
+							<span class="bg-accent/10 text-accent rounded px-2 py-0.5 text-xs font-medium">
+								{tag}
+							</span>
+						))}
+					</div>
+				</li>
+			))
+		}
+	</ul>
+</PageLayout>

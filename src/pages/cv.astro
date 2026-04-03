@@ -1,0 +1,238 @@
+---
+import PageLayout from "@/layouts/Base.astro";
+
+const meta = {
+	description: "CV de Basile Roth — Senior Data Scientist",
+	title: "CV",
+};
+
+const experience = [
+	{
+		period: "Mars 2025–présent",
+		role: "Senior Data Scientist",
+		org: "AssessFirst",
+		location: "Paris, FR",
+		items: [
+			"Création de pipeline de modèles d'IA multimodaux (STT, TTS, LLM) pour faciliter le travail des ressources humaines.",
+			"Mise en production de ces agents via des pipelines CI/CD sur l'infrastructure AWS (S3, Lambda, SageMaker). Gestion de CPU/GPU.",
+			"Gestion de projet : définition des besoins, rencontres clients, échéancier, budget, communication constante avec les équipes Tech et Produit.",
+		],
+	},
+	{
+		period: "Sept 2022–Nov 2024",
+		role: "Senior Data Scientist",
+		org: "Mila, Institut Québécois d'IA (Y. Bengio)",
+		location: "Montréal, CA",
+		items: [
+			"Proposition, conception, développement et évaluation de solutions deep learning pour des clients dans des projets privés de recherche appliquée.",
+			"Modélisation : fine-tuning de LLMs, modèles multimodaux et transformers.",
+			"Domaines d'application : santé, éducation, environnement, énergie.",
+			"Conseil scientifique, rédaction et publication d'articles scientifiques.",
+			"Développement d'outils open-source pour la communauté ML.",
+			"Sensibilisation des clients à l'utilisation responsable et éthique de l'IA.",
+		],
+	},
+	{
+		period: "Avr 2021–Sept 2022",
+		role: "Data Scientist",
+		org: "Nectar Tech",
+		location: "Montréal, CA",
+		items: [
+			"Prototypage et déploiement de modèles d'apprentissage profond aidant les apiculteurs à améliorer leurs prises de décisions en gestion de stocks.",
+			"Création d'un pipeline d'entraînement et de déploiement des modèles en intégrant des sources de données multimodales.",
+			"Outils : DataBricks, Azure, PostgreSQL, Tensorflow, Plotly, MLFlow, Python.",
+			"Rôle de Scrum Master dans l'équipe data science. Outils : Jira, Slack, Github.",
+		],
+	},
+	{
+		period: "Sept 2020–Avr 2021",
+		role: "Chercheur en modélisation mathématique",
+		org: "Nectar Technologies",
+		location: "Montréal, CA",
+		items: [
+			"Évaluation de techniques de partition des données (temporelles, spatiales, biologiques) provenant de capteurs sensoriels dans les ruches.",
+			"Développement, déploiement et documentation de tableaux de bord.",
+			"Expérimentations ML/DL pour analyser et comprendre les patterns dans les données provenant des capteurs.",
+		],
+	},
+];
+
+const education = [
+	{
+		period: "2019–2021",
+		degree: "Master (M. Ing.), Génie des Technologies de l'information",
+		school: "École de Technologie Supérieure",
+		location: "Montréal, Canada",
+		detail: "Mémoire : Modélisation de la santé des ruches utilisant du multiclass supervised deep learning.",
+	},
+	{
+		period: "2014–2021",
+		degree: "Diplôme d'ingénieur, Systèmes d'information, Big Data & Analytics",
+		school: "École Centrale d'Électronique",
+		location: "Paris, France",
+		detail: null,
+	},
+];
+
+const skills = [
+	{
+		category: "Langages",
+		items: ["Python", "SQL", "C++", "Java", "R", "Matlab"],
+	},
+	{
+		category: "Machine Learning",
+		items: ["Databricks", "Hadoop", "Spark", "TensorFlow", "PyTorch", "Keras", "SciPy"],
+	},
+	{
+		category: "Modélisation",
+		items: ["Statistique", "Probabilité", "Optimisation", "Recherche opérationnelle"],
+	},
+	{
+		category: "Cloud & DevOps",
+		items: ["AWS", "Azure", "Docker", "Kubernetes", "MLFlow", "Airflow"],
+	},
+	{
+		category: "Bases de données",
+		items: ["PostgreSQL", "OracleDatabase", "MySQL", "Redis", "MongoDB"],
+	},
+	{
+		category: "Gestion de projet",
+		items: ["Agile", "Waterfall", "GitHub", "Jira", "Gantt", "LaTeX"],
+	},
+];
+
+const involvement = [
+	{
+		title: "Data scientist bénévole",
+		org: "Data for Good",
+		detail:
+			"Soutien à des associations et acteurs sur des projets d'environnement, d'inclusion sociale, d'éducation ou de citoyenneté. Depuis 2023.",
+	},
+	{
+		title: "Animateur",
+		org: "Fresque du Climat",
+		detail: "Animateur bénévole d'un atelier public de sensibilisation aux enjeux du changement climatique.",
+	},
+	{
+		title: "Sports d'endurance",
+		org: null,
+		detail:
+			"Finisher du Norseman (championnat mondiaux d'extrême triathlon), de multiples ultra-trails et marathons.",
+	},
+	{
+		title: "Étudiant athlète rugby",
+		org: null,
+		detail:
+			"Développement du leadership et obligation de performer sous pression au niveau le plus élevé en Amérique.",
+	},
+	{
+		title: "Culture",
+		org: null,
+		detail:
+			"Expériences professionnelles internationales (Canada, Australie), semestre d'étude en Afrique du Sud (Université Stellenbosch).",
+	},
+];
+---
+
+<PageLayout meta={meta}>
+	<h1 class="title mb-4">CV</h1>
+	<p class="text-muted mb-12 text-sm">
+		Data Scientist avec 4 années d'expérience en développement et mise en production de projets de
+		machine learning et de science de données.
+	</p>
+
+	<!-- Personal info -->
+	<section class="mb-16">
+		<div class="text-sm space-y-1">
+			<p><span class="text-muted">Citoyennetés :</span> Français, Australien, Suisse</p>
+			<p>
+				<span class="text-muted">Langues :</span> Français (maternelle), Anglais (courant — TOEIC 990/990,
+				IELTS 8/9), Espagnol (B2), Allemand (B2)
+			</p>
+		</div>
+	</section>
+
+	<!-- Experience -->
+	<section class="mb-16">
+		<h2 class="title text-accent mb-8 text-xl">Expérience professionnelle</h2>
+		<ul class="space-y-8" role="list">
+			{
+				experience.map((item) => (
+					<li class="border-muted border-l-2 pl-5">
+						<p class="text-muted mb-0.5 text-sm">
+							{item.period} · {item.location}
+						</p>
+						<p class="font-semibold">
+							{item.role} · <span class="font-normal">{item.org}</span>
+						</p>
+						<ul class="mt-2 space-y-1 text-sm list-none">
+							{item.items.map((point) => (
+								<li class="before:text-muted before:mr-2 before:content-['◇']">{point}</li>
+							))}
+						</ul>
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
+	<!-- Education -->
+	<section class="mb-16">
+		<h2 class="title text-accent mb-8 text-xl">Formation</h2>
+		<ul class="space-y-6" role="list">
+			{
+				education.map((item) => (
+					<li class="border-muted border-l-2 pl-5">
+						<p class="text-muted mb-0.5 text-sm">
+							{item.period} · {item.location}
+						</p>
+						<p class="font-semibold">
+							{item.degree} · <span class="font-normal">{item.school}</span>
+						</p>
+						{item.detail && <p class="mt-1 text-sm italic">{item.detail}</p>}
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
+	<!-- Skills -->
+	<section class="mb-16">
+		<h2 class="title text-accent mb-8 text-xl">Compétences</h2>
+		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+			{
+				skills.map((block) => (
+					<div class="border-muted rounded-lg border p-5">
+						<p class="mb-3 font-semibold">{block.category}</p>
+						<ul class="flex flex-wrap gap-2" role="list">
+							{block.items.map((skill) => (
+								<li class="bg-accent/10 text-accent rounded px-2 py-0.5 text-xs font-medium">
+									{skill}
+								</li>
+							))}
+						</ul>
+					</div>
+				))
+			}
+		</div>
+	</section>
+
+	<!-- Involvement -->
+	<section class="mb-16">
+		<h2 class="title text-accent mb-8 text-xl">Implication & intérêts</h2>
+		<ul class="space-y-4" role="list">
+			{
+				involvement.map((item) => (
+					<li class="text-sm">
+						<span class="font-semibold">{item.title}</span>
+						{item.org && <span class="text-muted"> · {item.org}</span>} — {item.detail}
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
+	<div class="text-muted text-sm">
+		<a class="cactus-link" href="/contact/">Me contacter</a> pour une version PDF.
+	</div>
+</PageLayout>

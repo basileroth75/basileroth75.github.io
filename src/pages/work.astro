@@ -13,7 +13,7 @@ const journalism = [
 		title: "Raphaël Glucksmann et Place publique : beaucoup de bruit pour (très) peu d'élus",
 		url: "https://www.politis.fr/articles/2026/03/politique-raphael-glucksmann-et-place-publique-beaucoup-de-bruit-pour-tres-peu-delus/",
 		description:
-			"Malgré une forte visibilité médiatique, Place publique n'a obtenu que 0,3 % des élus de gauche lors des municipales 2026. Malgré une forte visibilité médiatique, Place publique n'a obtenu que 0,3 % des élus de gauche lors des municipales 2026. Malgré une forte visibilité médiatique, Place publique n'a obtenu que 0,3 % des élus de gauche lors des municipales 2026. Malgré une forte visibilité médiatique, Place publique n'a obtenu que 0,3 % des élus de gauche lors des municipales 2026.",
+			"Malgré une forte visibilité médiatique, Place publique n'a obtenu que 0,3 % des élus de gauche lors des municipales 2026.",
 		tags: ["dataviz", "politique"],
 	},
 	{
@@ -99,7 +99,41 @@ const code = [
 ---
 
 <PageLayout meta={meta}>
-	<h1 class="title mb-12">Work</h1>
+	<h1 class="title mb-4">Work</h1>
+	<p class="text-muted mb-16 text-sm">
+		Journalisme de données, recherche et projets open-source.
+	</p>
+
+	<!-- Data Journalism — primary section -->
+	<section class="mb-20">
+		<h2 class="title text-accent mb-2 text-xl">Journalisme de données</h2>
+		<p class="text-muted mb-8 text-sm">Politis</p>
+		<ul class="grid gap-5 sm:grid-cols-2" role="list">
+			{
+				journalism.map((item, i) => (
+					<li class={`border-muted flex flex-col rounded-lg border p-5 ${i === 0 ? "sm:col-span-2" : ""}`}>
+						<p class="text-muted mb-2 text-xs">{item.date}</p>
+						<a
+							class="cactus-link mb-2 font-semibold leading-snug"
+							href={item.url}
+							rel="noreferrer noopener"
+							target="_blank"
+						>
+							{item.title}
+						</a>
+						<p class="text-muted mt-auto pt-3 text-sm">{item.description}</p>
+						<div class="mt-3 flex flex-wrap gap-1.5">
+							{item.tags.map((tag) => (
+								<span class="bg-accent/10 text-accent rounded px-2 py-0.5 text-xs font-medium">
+									{tag}
+								</span>
+							))}
+						</div>
+					</li>
+				))
+			}
+		</ul>
+	</section>
 
 	<!-- Research & Papers -->
 	<section class="mb-16">
@@ -149,36 +183,6 @@ const code = [
 				code.map((item) => (
 					<li class="border-muted border-l-2 pl-5">
 						<p class="text-muted mb-1 text-sm">{item.date} · {item.partner}</p>
-						<a
-							class="cactus-link text-base font-semibold"
-							href={item.url}
-							rel="noreferrer noopener"
-							target="_blank"
-						>
-							{item.title}
-						</a>
-						<p class="mt-1 mb-2 text-sm">{item.description}</p>
-						<div class="flex flex-wrap gap-1.5">
-							{item.tags.map((tag) => (
-								<span class="bg-accent/10 text-accent rounded px-2 py-0.5 text-xs font-medium">
-									{tag}
-								</span>
-							))}
-						</div>
-					</li>
-				))
-			}
-		</ul>
-	</section>
-
-	<!-- Data Journalism -->
-	<section>
-		<h2 class="title text-accent mb-8 text-xl">Journalisme de données — Politis</h2>
-		<ul class="space-y-6" role="list">
-			{
-				journalism.map((item) => (
-					<li class="border-muted border-l-2 pl-5">
-						<p class="text-muted mb-1 text-sm">{item.date} · {item.outlet}</p>
 						<a
 							class="cactus-link text-base font-semibold"
 							href={item.url}

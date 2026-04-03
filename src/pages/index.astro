@@ -1,58 +1,105 @@
 ---
-import { type CollectionEntry } from "astro:content";
-import PostPreview from "@/components/blog/PostPreview.astro";
 import SocialList from "@/components/SocialList.astro";
-import { getAllPosts } from "@/data/post";
 import PageLayout from "@/layouts/Base.astro";
-import { collectionDateSort } from "@/utils/date";
 
-const MAX_POSTS = 10;
-const allPosts = await getAllPosts();
-const allPostsByDate = allPosts.sort(collectionDateSort) as CollectionEntry<"post">[];
-const latestPosts = allPostsByDate.slice(0, MAX_POSTS);
+const meta = {
+	description: "Basile Roth — data scientist et journaliste de données",
+	title: "Home",
+};
 
-const MAX_PINNED_POSTS = 3;
-const pinnedPosts = allPostsByDate
-	.values()
-	.filter((p) => p.data.pinned)
-	.take(MAX_PINNED_POSTS)
-	.toArray();
+const timeline = [
+	{ year: "2025–présent", label: "Senior Data Scientist", detail: "AssessFirst", type: "job" },
+	{ year: "2023–présent", label: "Data scientist bénévole", detail: "Data for Good", type: "benevole" },
+	{ year: "2022–présent", label: "Animateur", detail: "Fresque du Climat", type: "benevole" },
+	{ year: "2022–2024", label: "Senior Data Scientist", detail: "Mila (Y. Bengio)", type: "job" },
+	{ year: "2020–2022", label: "Data Scientist", detail: "Nectar Technologies", type: "job" },
+	{ year: "2019–2021", label: "M. Ing. Data Science", detail: "ÉTS Montréal", type: "edu" },
+	{ year: "2014–2021", label: "Dipl. ingénieur Big Data", detail: "ECE Paris", type: "edu" },
+];
+
+const dotColor: Record<string, string> = {
+	job: "#2bbc8a",
+	edu: "#d482ab",
+	benevole: "#f59e0b",
+};
 ---
 
-<PageLayout meta={{ title: "Home" }}>
+<PageLayout meta={meta}>
 	<section>
-		<h1 class="title mb-12">Basile Roth</h1>
-		<p class="mb-4">Data visualizations and research projects.</p>
-		<SocialList />
+		<h1 class="title mb-6">Basile Roth</h1>
 	</section>
-	{
-		pinnedPosts.length > 0 && (
-			<section class="mt-16">
-				<h2 class="title mb-6 text-xl">Pinned Posts</h2>
-				<ul class="space-y-4" role="list">
-					{pinnedPosts.map((p) => (
-						<li class="grid gap-1 sm:grid-cols-[auto_1fr]">
-							<PostPreview post={p} />
+
+	<div class="prose prose-sm prose-cactus max-w-none mb-16 mt-8">
+		<p>
+			Data scientist avec 5 années d'expérience en science des données, je me suis progressivement
+			tourné vers ce qui m'anime vraiment : rendre les données lisibles, utiles et engagées sur les grands
+			enjeux sociétaux.
+		</p>
+		<p>
+			Aujourd'hui, je travaille à l'intersection de la data, du journalisme et de l'environnement —
+			en produisant des <a class="cactus-link" href="/work/">enquêtes et visualisations</a> pour Politis,
+			en participant à des projets de recherche sur les écosystèmes marins, et en m'impliquant dans des
+			initiatives citoyennes comme <a class="cactus-link" href="https://dataforgood.fr" target="_blank" rel="noreferrer noopener">Data for Good</a>
+			ou la <a class="cactus-link" href="https://fresqueduclimat.org/" target="_blank" rel="noreferrer noopener">Fresque du Climat</a>.
+		</p>
+		<p>
+			Ce site rassemble mes projets, mes articles et mon parcours.
+		</p>
+	</div>
+
+	<!-- Timeline -->
+	<section class="mt-16 mb-16">
+		<h2 class="title text-accent mb-3 text-xl">Parcours</h2>
+
+		<div class="flex gap-5 text-xs mb-8">
+			<span class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#2bbc8a]"></span>Emploi</span>
+			<span class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#d482ab]"></span>Formation</span>
+			<span class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#f59e0b]"></span>Bénévolat</span>
+		</div>
+
+		<!-- Arrow towards the future -->
+		<div class="flex flex-col items-center mb-2">
+			<svg width="12" height="8" viewBox="0 0 12 8" fill="none" class="text-[var(--color-border,#e5e7eb)]">
+				<path d="M6 0L12 8H0L6 0Z" fill="currentColor"/>
+			</svg>
+			<div class="h-8 w-0.5 bg-[var(--color-border,#e5e7eb)]"></div>
+		</div>
+
+		<!-- Center line -->
+		<div class="relative">
+			<div class="absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-[var(--color-border,#e5e7eb)]"></div>
+
+			<ul class="space-y-6" role="list">
+				{timeline.map((item, i) => {
+					const isLeft = i % 2 === 0;
+					const color = dotColor[item.type];
+					return (
+						<li class="relative grid grid-cols-[1fr_auto_1fr] items-start gap-x-4">
+							<!-- Left content -->
+							<div class={`text-right ${isLeft ? "" : "invisible"}`}>
+								<p class="font-semibold text-sm leading-snug">{item.label}</p>
+								<p class="text-muted text-xs mt-0.5">{item.detail}</p>
+								<p class="text-xs mt-0.5" style={`color: ${color}`}>{item.year}</p>
+							</div>
+
+							<!-- Center dot -->
+							<div class="flex flex-col items-center pt-0.5">
+								<span
+									class="h-4 w-4 rounded-full border-2 border-[var(--color-global-bg,white)] shrink-0"
+									style={`background-color: ${color}`}
+								></span>
+							</div>
+
+							<!-- Right content -->
+							<div class={isLeft ? "invisible" : ""}>
+								<p class="font-semibold text-sm leading-snug">{item.label}</p>
+								<p class="text-muted text-xs mt-0.5">{item.detail}</p>
+								<p class="text-xs mt-0.5" style={`color: ${color}`}>{item.year}</p>
+							</div>
 						</li>
-					))}
-				</ul>
-			</section>
-		)
-	}
-	{
-		latestPosts.length > 0 && (
-			<section class="mt-16">
-				<h2 class="title text-accent mb-6 text-xl">
-					<a href="/posts/">Posts</a>
-				</h2>
-				<ul class="space-y-4" role="list">
-					{latestPosts.map((p) => (
-						<li class="grid gap-1 sm:grid-cols-[auto_1fr]">
-							<PostPreview post={p} />
-						</li>
-					))}
-				</ul>
-			</section>
-		)
-	}
+					);
+				})}
+			</ul>
+		</div>
+	</section>
 </PageLayout>
