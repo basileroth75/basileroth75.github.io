@@ -121,41 +121,48 @@ const code = [
 <PageLayout meta={meta}>
 	<h1 class="title mb-4">Work</h1>
 	<p class="text-muted mb-16 text-sm">
-		Journalisme de données, recherche et projets open-source.
+		Projets, publications et compétences.
 	</p>
 
 	<!-- Data Journalism — primary section -->
-	<section class="mb-20">
-		<h2 class="title text-accent mb-2 text-xl">Journalisme de données</h2>
-		<p class="text-muted mb-8 text-sm">Politis</p>
-		<ul class="grid gap-5 sm:grid-cols-2" role="list">
-			{
-				journalism.map((item, i) => (
-					<li class={`border-muted flex flex-col rounded-lg border p-5 ${i === 0 ? "sm:col-span-2" : ""}`}>
-						<p class="text-muted mb-2 text-xs">{item.date}</p>
-						<a
-							class="cactus-link mb-2 font-semibold leading-snug"
-							href={item.url}
-							rel="noreferrer noopener"
-							target="_blank"
-						>
-							{item.title}
-						</a>
-						<p class="text-muted mt-auto pt-3 text-sm">{item.description}</p>
-						<div class="mt-3 flex flex-wrap gap-1.5">
-							{item.tags.map((tag) => (
-								<span class="bg-accent/10 text-accent rounded px-2 py-0.5 text-xs font-medium">
-									{tag}
-								</span>
-							))}
-						</div>
-						<a class="text-muted hover:text-link mt-4 inline-block text-xs underline underline-offset-2" href={item.slug}>
-							Détail technique →
-						</a>
-					</li>
-				))
-			}
-		</ul>
+	<section class="mb-20 rounded-xl overflow-hidden" style="position: relative;">
+		<div class="[filter:blur(2px)]" style="position: absolute; inset: -6px; background-image: url('/logos/politis2.png'); background-size: cover; background-position: center top;"></div>
+		<div style="position: absolute; inset: 0; background: rgba(0,0,0,0.45); pointer-events: none;"></div>
+		<div style="position: relative; padding: 1.5rem 1.5rem 2rem;">
+			<div style="margin-bottom: 1.75rem;">
+				<h2 class="title text-xl" style="color: #fff; margin-bottom: 0.2rem;">Journalisme de données</h2>
+				<p style="color: rgba(255,255,255,0.65); font-size: 0.8rem;">Infographies et enquêtes publiées dans Politis</p>
+			</div>
+			<ul class="grid gap-5 sm:grid-cols-2" role="list">
+				{
+					journalism.map((item, i) => (
+						<li class={`flex flex-col rounded-lg p-5 ${i === 0 ? "sm:col-span-2" : ""}`} style="background: rgba(15,15,15,0.72); border: 1px solid rgba(255,255,255,0.14);">
+							<p style="color: rgba(255,255,255,0.5); font-size: 0.75rem; margin-bottom: 0.5rem;">{item.date}</p>
+							<a
+								class="mb-2 font-semibold leading-snug"
+								href={item.url}
+								rel="noreferrer noopener"
+								target="_blank"
+								style="color: #fff;"
+							>
+								{item.title}
+							</a>
+							<p style="color: rgba(255,255,255,0.65); font-size: 0.875rem; margin-top: auto; padding-top: 0.75rem;">{item.description}</p>
+							<div class="mt-3 flex flex-wrap gap-1.5">
+								{item.tags.map((tag) => (
+									<span class="rounded px-2 py-0.5 text-xs font-medium" style="background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8);">
+										{tag}
+									</span>
+								))}
+							</div>
+							<a class="mt-4 inline-block text-xs underline underline-offset-2" href={item.slug} style="color: rgba(255,255,255,0.45);">
+								Détail technique →
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
 	</section>
 
 	<!-- Research & Papers -->
@@ -279,7 +286,7 @@ const code = [
 				{ name: "PostgreSQL", start: 2020, end: null }, { name: "MongoDB", start: 2020, end: 2024 },
 				{ name: "Redis", start: 2021, end: 2024 },
 			]},
-			{ name: "Datajournalisme", color: "#f59e0b", skills: [
+			{ name: "Analyse de données", color: "#f59e0b", skills: [
 				{ name: "Scraping", start: 2022, end: null }, { name: "APIs & open data", start: 2022, end: null },
 				{ name: "OSINT", start: 2022, end: null }, { name: "Fact-checking", start: 2022, end: null },
 				{ name: "D3.js", start: 2022, end: null }, { name: "Datawrapper", start: 2022, end: null },
@@ -337,8 +344,8 @@ const code = [
 		g.append("g").attr("transform","translate(0,-6)").call(d3.axisTop(xScale).tickValues(years).tickFormat((d:number)=>String(d)).tickSize(3)).call((ax:any)=>ax.select(".domain").remove()).call((ax:any)=>ax.selectAll(".tick line").attr("stroke",bdc())).call((ax:any)=>ax.selectAll(".tick text").attr("fill",mc()).attr("font-size","10px"));
 
 		const todayX=xScale(NOW);
-		g.append("line").attr("x1",todayX).attr("x2",todayX).attr("y1",-40).attr("y2",yOff).attr("stroke",tc()).attr("stroke-width",1.5).attr("stroke-dasharray","4,3").attr("opacity",0.3);
-		g.append("text").attr("x",todayX).attr("y",-43).attr("text-anchor","middle").attr("fill",mc()).attr("font-size","9px").text("aujourd'hui");
+		g.append("line").attr("x1",todayX).attr("x2",todayX).attr("y1",-60).attr("y2",yOff).attr("stroke",tc()).attr("stroke-width",1.5).attr("stroke-dasharray","4,3").attr("opacity",0.3);
+		g.append("text").attr("x",todayX).attr("y",-63).attr("text-anchor","middle").attr("fill",mc()).attr("font-size","9px").text("aujourd'hui");
 
 		rows.forEach((row:any)=>{
 			if(row.type==="cat"){
