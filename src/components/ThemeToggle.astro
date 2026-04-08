@@ -1,59 +1,92 @@
 <theme-toggle class="ms-2 sm:ms-4">
-	<button class="hover:text-accent relative h-9 w-9 cursor-pointer rounded-md p-2" type="button">
-		<span class="sr-only">Dark Theme</span>
-		<svg
-			aria-hidden="true"
-			class="absolute start-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 scale-100 opacity-100 transition-all dark:scale-0 dark:opacity-0"
-			fill="none"
-			focusable="false"
-			id="sun-svg"
-			stroke-width="1.5"
-			viewBox="0 0 24 24"
-			xmlns="http://www.w3.org/2000/svg"
-		>
-			<path
-				d="M12 18C15.3137 18 18 15.3137 18 12C18 8.68629 15.3137 6 12 6C8.68629 6 6 8.68629 6 12C6 15.3137 8.68629 18 12 18Z"
-				stroke="currentColor"
-				stroke-linecap="round"
-				stroke-linejoin="round"></path>
-			<path d="M22 12L23 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-			></path>
-			<path d="M12 2V1" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path>
-			<path d="M12 23V22" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-			></path>
-			<path d="M20 20L19 19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-			></path>
-			<path d="M20 4L19 5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-			></path>
-			<path d="M4 20L5 19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-			></path>
-			<path d="M4 4L5 5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-			></path>
-			<path d="M1 12L2 12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-			></path>
-		</svg>
-		<svg
-			aria-hidden="true"
-			class="absolute start-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 scale-0 opacity-0 transition-all dark:scale-100 dark:opacity-100"
-			fill="none"
-			focusable="false"
-			id="moon-svg"
-			stroke="currentColor"
-			stroke-width="1.5"
-			viewBox="0 0 24 24"
-			xmlns="http://www.w3.org/2000/svg"
-		>
-			<path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
-			<path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"
-			></path>
-			<path d="M17 4a2 2 0 0 0 2 2a2 2 0 0 0 -2 2a2 2 0 0 0 -2 -2a2 2 0 0 0 2 -2"></path>
-			<path d="M19 11h2m-1 -1v2"></path>
-		</svg>
+	<button
+		aria-label="Toggle theme"
+		role="switch"
+		type="button"
+		style="border:0;background:none;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;"
+	>
+		<span class="toggle-track">
+			<!-- Sun -->
+			<svg class="icon sun-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<circle cx="12" cy="12" r="5"></circle>
+				<line x1="12" y1="1" x2="12" y2="3"></line>
+				<line x1="12" y1="21" x2="12" y2="23"></line>
+				<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+				<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+				<line x1="1" y1="12" x2="3" y2="12"></line>
+				<line x1="21" y1="12" x2="23" y2="12"></line>
+				<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+				<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+			</svg>
+			<!-- Moon -->
+			<svg class="icon moon-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+			</svg>
+			<span class="toggle-thumb"></span>
+		</span>
 	</button>
 </theme-toggle>
 
+<style>
+	.toggle-track {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		width: 56px;
+		height: 30px;
+		padding: 0 6px;
+		border-radius: 15px;
+		background-color: var(--color-border, #e5e7eb);
+		border: 1px solid var(--color-border, #e5e5e5);
+		transition: background-color 0.3s ease, border-color 0.3s ease;
+		box-sizing: border-box;
+	}
+
+	button:hover .toggle-track {
+		border-color: var(--color-accent);
+	}
+
+	.toggle-thumb {
+		position: absolute;
+		top: 3px;
+		left: 3px;
+		width: 22px;
+		height: 22px;
+		border-radius: 50%;
+		background-color: #fff;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+		transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.icon {
+		position: relative;
+		z-index: 1;
+		flex-shrink: 0;
+		transition: opacity 0.2s ease;
+		color: var(--color-text-muted, #6b7280);
+	}
+
+	.sun-icon { opacity: 1; }
+	.moon-icon { opacity: 0.4; }
+
+	/* Dark mode */
+	:global([data-theme="dark"]) .toggle-thumb {
+		transform: translateX(26px);
+		background-color: #2a2a2a;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+	}
+
+	:global([data-theme="dark"]) .toggle-track {
+		background-color: #282828;
+		border-color: #444;
+	}
+
+	:global([data-theme="dark"]) .sun-icon { opacity: 0.4; }
+	:global([data-theme="dark"]) .moon-icon { opacity: 1; }
+</style>
+
 <script>
-	// Note that if you fire the theme-change event outside of this component, it will not be reflected in the button's aria-checked attribute. You will need to add an event listener if you want that.
 	import { rootInDarkMode } from "@/utils/domElement";
 
 	class ThemeToggle extends HTMLElement {
@@ -62,26 +95,14 @@
 			const button = this.querySelector<HTMLButtonElement>("button");
 
 			if (button) {
-				// set aria role value
-				button.setAttribute("role", "switch");
 				button.setAttribute("aria-checked", String(rootInDarkMode()));
 
-				// button event
 				button.addEventListener("click", () => {
-					// invert theme
-					let themeChangeEvent = new CustomEvent("theme-change", {
-						detail: {
-							theme: rootInDarkMode() ? "light" : "dark",
-						},
-					});
-					// dispatch event -> ThemeProvider.astro
-					document.dispatchEvent(themeChangeEvent);
-
-					// set the aria-checked attribute
+					document.dispatchEvent(new CustomEvent("theme-change", {
+						detail: { theme: rootInDarkMode() ? "light" : "dark" },
+					}));
 					button.setAttribute("aria-checked", String(rootInDarkMode()));
 				});
-			} else {
-				console.warn("Theme Toggle: No button found");
 			}
 		}
 	}

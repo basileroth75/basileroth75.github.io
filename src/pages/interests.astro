@@ -8,46 +8,42 @@ const meta = {
 
 const interests = [
 	{
+		title: "Environnement",
+		icon: "🌍",
+		description:
+			"Animateur bénévole d'ateliers Fresque du Climat — un outil de sensibilisation aux enjeux du dérèglement climatique. Mon engagement pour la transition écologique et sociale se prolonge dans mes travaux de datajournalisme sur le climat, la biodiversité et l'agriculture.",
+		tags: ["Climat", "Biodiversité", "Pédagogie"],
+		link: { href: "https://fresqueduclimat.org/", label: "fresqueduclimat.org →" },
+	},
+	{
+		title: "Aide aux associations: Data for Good",
+		icon: "📊",
+		description:
+			"Bénévole depuis 2023 au sein de cette association qui mobilise des bénévoles doté.e.s de compétences techniques pour des projets d'intérêt général : environnement, inclusion sociale, éducation, citoyenneté. J'y ai travaillé notamment sur le lobbying environnemental et la couverture médiatique des enjeux environnementaux.",
+		tags: ["Data"],
+		link: { href: "https://dataforgood.fr/", label: "dataforgood.fr →" },
+	},
+	{
 		title: "Sports d'endurance",
 		icon: "🏃",
 		description:
 			"Finisher du Norseman — le championnat mondial d'extrême triathlon en Norvège. J'ai aussi couru de multiples ultra-trails et marathons. L'endurance comme école de patience et de dépassement de soi.",
 		tags: ["Triathlon", "Ultra-trail", "Marathon"],
+		link: { href: "https://podcasts.apple.com/fr/podcast/ep07-%C3%A0-l%C3%A9preuve-des-fjords-le-norseman/id1697355203?i=1000643078559", label: "Podcast : À l'épreuve des fjords →" },
 	},
 	{
 		title: "Rugby",
 		icon: "🏉",
 		description:
-			"Étudiant athlète rugby au plus haut niveau en Amérique du Nord. Le rugby m'a appris le leadership, la gestion de la pression et l'importance du collectif.",
+			"Depuis tout jeune passionné de sports collectifs et plus particulièrement de rugby. Je le pratique encore sur mon temps libre et j'ai eu l'opportunité de jouer en tant qu'étudiant athlète au plus haut niveau en Amérique du Nord. Le rugby m'a appris l'importance du collectif. Éducateur des équipes jeunes au sein de mon club formateur en région parisienne.",
 		tags: ["Compétition", "Leadership", "Équipe"],
 	},
 	{
-		title: "Fresque du Climat",
-		icon: "🌍",
-		description:
-			"Animateur bénévole d'ateliers publics de sensibilisation aux enjeux du changement climatique. Un outil pédagogique puissant pour rendre la science du climat accessible à tous.",
-		tags: ["Bénévolat", "Climat", "Pédagogie"],
-	},
-	{
-		title: "Data for Good",
-		icon: "📊",
-		description:
-			"Bénévole depuis 2023 au sein de cette association qui mobilise des data scientists pour des projets d'intérêt général : environnement, inclusion sociale, éducation, citoyenneté.",
-		tags: ["Bénévolat", "Data", "Impact"],
-	},
-	{
-		title: "Lecture",
+		title: "Lecture, Presse & Culture",
 		icon: "📚",
 		description:
-			"Passionné de non-fiction : sciences, politique, histoire et essais. La lecture comme moyen de rester curieux et de comprendre le monde sous différents angles.",
-		tags: ["Non-fiction", "Sciences", "Politique"],
-	},
-	{
-		title: "Culture & voyages",
-		icon: "✈️",
-		description:
-			"Expériences professionnelles et personnelles au Canada, en Australie et en Afrique du Sud (Université Stellenbosch). Citoyen français, australien et suisse — trois cultures, trois regards sur le monde.",
-		tags: ["International", "Langues", "Découverte"],
+			"Passionné de non-fiction : sciences, politique, histoire et essais. Lecteur régulier de la presse indépendante et engagée. Expériences professionnelles et personnelles au Canada, en Australie et en Afrique du Sud et dans une vaste partie de l'Amérique du Sud — citoyen français, australien et suisse, plusieurs cultures pour un plus vaste regard sur le monde.",
+		tags: ["Non-fiction", "Presse", "International", "Voyages"],
 	},
 ];
 ---
@@ -58,8 +54,8 @@ const interests = [
 
 	<ul class="grid gap-5 sm:grid-cols-2" role="list">
 		{
-			interests.map((item) => (
-				<li class="border-muted flex flex-col rounded-lg border p-5">
+			interests.map((item, i) => (
+				<li class={`border-muted flex flex-col rounded-lg border p-5${i === interests.length - 1 && interests.length % 2 !== 0 ? " sm:col-span-2" : ""}`}>
 					<p class="mb-3 text-2xl">{item.icon}</p>
 					<p class="mb-2 font-semibold">{item.title}</p>
 					<p class="text-muted flex-1 text-sm">{item.description}</p>
@@ -70,6 +66,16 @@ const interests = [
 							</span>
 						))}
 					</div>
+					{item.link && (
+						<a
+							href={item.link.href}
+							target="_blank"
+							rel="noreferrer noopener"
+							class="cactus-link mt-4 text-xs"
+						>
+							{item.link.label}
+						</a>
+					)}
 				</li>
 			))
 		}

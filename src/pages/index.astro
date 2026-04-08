@@ -3,25 +3,19 @@ import SocialList from "@/components/SocialList.astro";
 import PageLayout from "@/layouts/Base.astro";
 
 const meta = {
-	description: "Basile Roth — data scientist et journaliste de données",
+	description: "Basile Roth — Senior Data Scientist, passionné d'enjeux sociétaux et environnementaux",
 	title: "Home",
 };
 
-const timeline = [
-	{ year: "2025–présent", label: "Senior Data Scientist", detail: "AssessFirst", type: "job" },
-	{ year: "2023–présent", label: "Data scientist bénévole", detail: "Data for Good", type: "benevole" },
-	{ year: "2022–présent", label: "Animateur", detail: "Fresque du Climat", type: "benevole" },
-	{ year: "2022–2024", label: "Senior Data Scientist", detail: "Mila (Y. Bengio)", type: "job" },
-	{ year: "2020–2022", label: "Data Scientist", detail: "Nectar Technologies", type: "job" },
-	{ year: "2019–2021", label: "M. Ing. Data Science", detail: "ÉTS Montréal", type: "edu" },
-	{ year: "2014–2021", label: "Dipl. ingénieur Big Data", detail: "ECE Paris", type: "edu" },
+const steps = [
+	{ id: "formation", year: "2014–2021", label: "Formation",        color: "#d482ab" },
+	{ id: "nectar",    year: "2020–2022", label: "Nectar",            color: "#f59e0b" },
+	{ id: "fresque",   year: "depuis 2022", label: "Fresque du Climat", color: "#f59e0b" },
+	{ id: "mila",      year: "2022–2024",  label: "Mila",              color: "#2bbc8a" },
+	{ id: "dfg",       year: "depuis 2023", label: "Data for Good",    color: "#6366f1" },
+	{ id: "politis",   year: "depuis 2024", label: "Journalisme",      color: "#d482ab" },
+	{ id: "today",     year: "depuis 2025", label: "Aujourd'hui",      color: "#2bbc8a" },
 ];
-
-const dotColor: Record<string, string> = {
-	job: "#2bbc8a",
-	edu: "#d482ab",
-	benevole: "#f59e0b",
-};
 ---
 
 <PageLayout meta={meta}>
@@ -31,15 +25,18 @@ const dotColor: Record<string, string> = {
 
 	<div class="prose prose-sm prose-cactus max-w-none mb-16 mt-8">
 		<p>
-			Data scientist avec 5 années d'expérience en science des données, je me suis progressivement
-			tourné vers ce qui m'anime vraiment : rendre les données lisibles, utiles et engagées sur les grands
-			enjeux sociétaux.
+			Ingénieur généraliste de formation, passionné par les mathématiques, je me suis tourné vers
+			l'analyse de données et les statistiques pour en faire mon métier. Aujourd'hui Senior Data
+			Scientist, je cherche à mettre ces outils au service de l'intérêt général.
 		</p>
 		<p>
-			Aujourd'hui, je travaille à l'intersection de la data, du journalisme et de l'environnement —
-			en produisant des <a class="cactus-link" href="/work/">enquêtes et visualisations</a> pour Politis,
-			en participant à des projets de recherche sur les écosystèmes marins, et en m'impliquant dans des
-			initiatives citoyennes comme <a class="cactus-link" href="https://dataforgood.fr" target="_blank" rel="noreferrer noopener">Data for Good</a>
+			Engagé dans les luttes écologiques et sociales, je mets mes compétences au service de ces
+			causes — analyser, visualiser, parfois modéliser, investiguer pour documenter et convaincre.
+		</p>
+		<p>
+			Je réalise bénévolement des <a class="cactus-link" href="/work/">enquêtes et visualisations de données</a>
+			pour <em>Politis</em>, et je m'engage dans des initiatives citoyennes comme
+			<a class="cactus-link" href="https://dataforgood.fr" target="_blank" rel="noreferrer noopener">Data for Good</a>
 			ou la <a class="cactus-link" href="https://fresqueduclimat.org/" target="_blank" rel="noreferrer noopener">Fresque du Climat</a>.
 		</p>
 		<p>
@@ -47,59 +44,449 @@ const dotColor: Record<string, string> = {
 		</p>
 	</div>
 
-	<!-- Timeline -->
-	<section class="mt-16 mb-16">
-		<h2 class="title text-accent mb-3 text-xl">Parcours</h2>
+	<!-- ── Parcours ── -->
+	<section class="mb-24">
+		<h2 class="title text-accent mb-10 text-xl">Parcours</h2>
 
-		<div class="flex gap-5 text-xs mb-8">
-			<span class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#2bbc8a]"></span>Emploi</span>
-			<span class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#d482ab]"></span>Formation</span>
-			<span class="flex items-center gap-1.5"><span class="inline-block h-2.5 w-2.5 rounded-full bg-[#f59e0b]"></span>Bénévolat</span>
-		</div>
+		<div id="story-layout">
 
-		<!-- Arrow towards the future -->
-		<div class="flex flex-col items-center mb-2">
-			<svg width="12" height="8" viewBox="0 0 12 8" fill="none" class="text-[var(--color-border,#e5e7eb)]">
-				<path d="M6 0L12 8H0L6 0Z" fill="currentColor"/>
-			</svg>
-			<div class="h-8 w-0.5 bg-[var(--color-border,#e5e7eb)]"></div>
-		</div>
-
-		<!-- Center line -->
-		<div class="relative">
-			<div class="absolute left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 bg-[var(--color-border,#e5e7eb)]"></div>
-
-			<ul class="space-y-6" role="list">
-				{timeline.map((item, i) => {
-					const isLeft = i % 2 === 0;
-					const color = dotColor[item.type];
-					return (
-						<li class="relative grid grid-cols-[1fr_auto_1fr] items-start gap-x-4">
-							<!-- Left content -->
-							<div class={`text-right ${isLeft ? "" : "invisible"}`}>
-								<p class="font-semibold text-sm leading-snug">{item.label}</p>
-								<p class="text-muted text-xs mt-0.5">{item.detail}</p>
-								<p class="text-xs mt-0.5" style={`color: ${color}`}>{item.year}</p>
+			<aside id="tl-aside">
+				<div id="tl-inner">
+					<div id="tl-line"></div>
+					{steps.map((s) => (
+						<div class="tl-item" data-section={s.id}>
+							<span class="tl-dot" style={`background:${s.color}`}></span>
+							<div class="tl-label">
+								<span class="tl-year">{s.year}</span>
+								<span class="tl-name">{s.label}</span>
 							</div>
+						</div>
+					))}
+				</div>
+			</aside>
 
-							<!-- Center dot -->
-							<div class="flex flex-col items-center pt-0.5">
-								<span
-									class="h-4 w-4 rounded-full border-2 border-[var(--color-global-bg,white)] shrink-0"
-									style={`background-color: ${color}`}
-								></span>
-							</div>
+			<div id="story-content">
 
-							<!-- Right content -->
-							<div class={isLeft ? "invisible" : ""}>
-								<p class="font-semibold text-sm leading-snug">{item.label}</p>
-								<p class="text-muted text-xs mt-0.5">{item.detail}</p>
-								<p class="text-xs mt-0.5" style={`color: ${color}`}>{item.year}</p>
+				<section id="formation" class="story-section">
+					<span class="section-tag">Formation · 2014–2021</span>
+					<h2>De Paris à Montréal</h2>
+					<p>
+						Diplôme d'ingénieur (B.Sc. & M.Sc.) en <strong> Big Data et analyse</strong> à l'École Centrale d'Électronique de Paris, puis Master (M.Eng.)en <strong>Génie des Technologies de l'information</strong> à l'École de Technologie Supérieure de Montréal.
+					</p>
+					<br>
+					<p>
+					 	Mémoire de recherche sur la modélisation de la santé des ruches par deep learning supervisé. 
+					</p>
+					<br>
+					<p>
+						Plusieurs stages réalisés dans différents entreprises, principalement des grands groupes mais aussi à la Ville de Montréal.
+					</p>
+
+				</section>
+
+				<section id="nectar" class="story-section">
+					<div class="tag-logo-row">
+						<span class="section-tag">Nectar Technologies · 2020–2022</span>
+						<img src="/logos/nectar_logo.png" alt="Nectar Technologies" class="section-logo" />
+					</div>
+					<h2>Première expérience professionelle</h2>
+					<p>
+						Chercheur en modélisation environnementale. À partir de données provenant de capteurs dans des ruches ainsi que des données environementales, j'ai pu concevoir des modèles de prévision de santé des ruches et aider les apiculteurs à prendre de meilleures décisions de gestion.
+					</p>
+					<br>
+					<p>
+						Découverte du greenwashing.
+					</p>
+					<div class="nectar-bg"></div>
+				</section>
+
+				<section id="fresque" class="story-section">
+					<div class="tag-logo-row">
+						<span class="section-tag">Fresque du Climat · depuis 2022</span>
+						<img src="/logos/fdc.png" alt="Fresque du Climat" class="section-logo" />
+					</div>
+					<h2>Quand les faits racontent l'histoire climatique</h2>
+					<p>
+						Facilitateur bénévole d'ateliers de sensibilisation aux enjeux du dérèglement climatique. Animation d'ateliers dans des structures associatives et au grand public. Compréhension des enjeux mais surtout des différents points de vue sur le sujet en fonction des origines des participants.
+					</p>
+					<br>
+					<p>
+						Compréhension des enjeux mais surtout des différents points de vue sur le sujet en fonction des origines sociales.
+					</p>
+
+
+					<div style="margin-top:1.5rem;border:1px solid var(--color-border,#e5e7eb);border-radius:0.5rem;overflow:hidden;padding:1rem">
+						<iframe title="Né  en 363 ppm de CO2" aria-label="Line chart" id="datawrapper-chart-U8fo9" src="https://datawrapper.dwcdn.net/U8fo9/1/" scrolling="no" frameborder="0" style="width:0;min-width:100%!important;display:block" height="359" data-external="1"></iframe>
+					</div>
+					<script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+
+				</section>
+
+				<section id="mila" class="story-section">
+					<div class="tag-logo-row">
+						<span class="section-tag">Mila · 2022–2024</span>
+						<img src="/logos/mila.png" alt="Mila" class="section-logo" />
+					</div>
+					<h2>Chercheur en apprentissage machine appliqué</h2>
+					<p>
+						Senior Data Scientist à l'Institut Québécois d'Intelligence Artificielle. Institut créé et dirigé par Y. Bengio, père de l'apprentissage profond et des réseaux de neurones.
+					</p>
+					<br>
+					<p>
+						Proposition, conception, développement et évaluation de solutions deep learning pour des clients dans des projets de recherche appliquée.
+					</p>
+					<br>
+					<p>
+						Modélisation deep learning appliquée à la santé, l'éducation et l'environnement. Publication d'articles scientifiques, développement d'outils open-source, et sensibilisation à un usage éthique de l'IA.
+					</p>
+					<a href="https://seismica.library.mcgill.ca/article/view/1153/1640" target="_blank" rel="noreferrer noopener" class="cactus-link text-sm mt-4 inline-block">
+						Publication : Spatiotemporal Variability of Fin Whale and Blue Whale Calls · Seismica 2024 →
+					</a>
+					<div class="viz-box" id="viz-mila"></div>
+				</section>
+
+				<section id="dfg" class="story-section">
+					<div class="tag-logo-row">
+						<span class="section-tag">Data for Good · depuis 2023</span>
+						<img src="/logos/dfg.png" alt="Data for Good" class="section-logo" />
+					</div>
+					<h2>La data d'intérêt général</h2>
+					<p>
+						Bénévole chez Data for Good : projets data au service d'associations sur l'environnement, l'inclusion sociale, l'éducation et la citoyenneté.
+					</p>
+					<div id="viz-dfg" class="viz-box viz-html">
+						<div class="project-card">
+							<span class="project-tag" style="color:#6366f1">Greenlobby · 2025</span>
+							<p class="project-title">Analyse du lobbying en France</p>
+							<p class="project-desc">Anatomie des lobbys, impacts économiques, contre-lobby d'intérêt général. 37% des amendements de la loi Duplomb copiés des demandes de la FNSEA.</p>
+							<div class="tag-row">
+								{["Python","Scraping","NLP"].map(t => <span class="chip" style="color:#6366f1;background:rgba(99,102,241,0.1)">{t}</span>)}
 							</div>
-						</li>
-					);
-				})}
-			</ul>
+						</div>
+						<div class="project-card">
+							<span class="project-tag" style="color:#6366f1">OMÉ · 2025</span>
+							<p class="project-title">Observatoire des Médias sur l'Écologie</p>
+							<p class="project-desc">Analyse de la couverture médiatique environnementale — +83% durant l'UNOC3 en 2025.</p>
+							<div class="tag-row">
+								{["Python","API","Dataviz"].map(t => <span class="chip" style="color:#6366f1;background:rgba(99,102,241,0.1)">{t}</span>)}
+							</div>
+						</div>
+					</div>
+					<a href="/work/" class="cactus-link text-sm mt-4 inline-block">Voir tous les projets →</a>
+				</section>
+
+				<section id="politis" class="story-section">
+					<div class="tag-logo-row">
+						<span class="section-tag">Journalisme de données · depuis 2024</span>
+						<img src="/logos/politis.png" alt="Politis" class="section-logo" />
+					</div>
+					<h2>Data analyst & data journaliste bénévole</h2>
+					<p>
+						Enquêtes et visualisations de données pour <strong>Politis</strong>: parité politique, lobbying agricole, logements sociaux, représentation électorale.
+					</p>
+					<div id="viz-politis" class="viz-html" style="margin-top:1.5rem">
+						<div class="stats-grid">
+							<div class="stat-card"><div class="stat-num" style="color:#2bbc8a">37%</div><div class="stat-label">Amendements loi Duplomb copiés des demandes de la FNSEA</div></div>
+							<div class="stat-card"><div class="stat-num" style="color:#d482ab">24%</div><div class="stat-label">Femmes têtes de liste aux municipales 2026</div></div>
+							<div class="stat-card"><div class="stat-num" style="color:#f59e0b">334</div><div class="stat-label">Communes refusant les quotas de logements sociaux (SRU)</div></div>
+							<div class="stat-card"><div class="stat-num" style="color:#6366f1">0,3%</div><div class="stat-label">Des élus Place publique malgré sa visibilité médiatique</div></div>
+						</div>
+					</div>
+					<a href="/work/" class="cactus-link text-sm mt-6 inline-block">Voir mes travaux →</a>
+				</section>
+
+				<section id="today" class="story-section">
+					<span class="section-tag">AssessFirst · depuis 2025</span>
+					<h2>Retour en France, data scientist</h2>
+					<p>
+						De retour à Paris, je travaille comme Data Scientist chez <strong>AssessFirst</strong>. Au quotidien : modèles de transcription, pipelines multimodaux, et tableaux de bord pour mettre la donnée entre les mains des équipes.
+					</p>
+					<p style="margin-top:0.75rem">
+						En parallèle, je continue mon engagement bénévole — enquêtes de données pour <strong>Politis</strong>, projets d'intérêt général avec <strong>Data for Good</strong>, et ateliers <strong>Fresque du Climat</strong>.
+					</p>
+				</section>
+
+			</div>
 		</div>
 	</section>
+
 </PageLayout>
+
+<style>
+	/* ── Story layout ── */
+	#story-layout {
+		display: flex;
+		gap: 3rem;
+		align-items: flex-start;
+	}
+
+	#tl-aside {
+		position: sticky;
+		top: 3.5rem;
+		width: 210px;
+		flex-shrink: 0;
+	}
+
+	#tl-inner {
+		position: relative;
+		padding-left: 30px;
+	}
+
+	#tl-line {
+		position: absolute;
+		left: 7px;
+		top: 6px;
+		bottom: 6px;
+		width: 2px;
+		background: var(--color-border, #e5e7eb);
+	}
+
+	.tl-item {
+		position: relative;
+		margin-bottom: 1.75rem;
+		transition: opacity 0.25s;
+		opacity: 0.35;
+	}
+	.tl-item.active { opacity: 1; }
+
+	.tl-dot {
+		position: absolute;
+		left: -30px;
+		top: 4px;
+		width: 14px;
+		height: 14px;
+		border-radius: 50%;
+		border: 2.5px solid var(--color-global-bg, white);
+		transition: transform 0.25s;
+	}
+	.tl-item.active .tl-dot { transform: scale(1.3); }
+
+	.tl-label { display: flex; flex-direction: column; gap: 2px; }
+	.tl-year  { font-size: 0.7rem; color: var(--color-text-muted, #9ca3af); }
+	.tl-name  { font-size: 0.8rem; font-weight: 600; }
+
+	#story-content { flex: 1; min-width: 0; padding-bottom: 2rem; }
+
+	.story-section {
+		padding-bottom: 5rem;
+		border-bottom: 1px solid var(--color-border, #e5e7eb);
+		margin-bottom: 5rem;
+	}
+	.story-section:last-child { border-bottom: none; }
+
+	.section-tag {
+		display: inline-block;
+		font-size: 0.8rem;
+		font-weight: 700;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--color-accent);
+		margin-bottom: 0.4rem;
+	}
+	.story-section h2 { font-size: 1rem; font-weight: 700; margin: 0.2rem 0 0.75rem; }
+	.story-section p  { font-size: 0.875rem; line-height: 1.7; }
+
+	.mila-list {
+		list-style: none;
+		padding: 0;
+		margin: 0.6rem 0 0;
+		font-size: 0.875rem;
+		line-height: 1.7;
+	}
+	.mila-list li::before { content: "⋄ "; color: var(--color-accent); font-weight: 700; }
+
+	.tag-logo-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		margin-bottom: 0.4rem;
+	}
+	.tag-logo-row .section-tag { margin-bottom: 0; }
+	.section-logo {
+		flex-shrink: 0;
+		max-height: 28px;
+		max-width: 120px;
+		object-fit: contain;
+		opacity: 0.85;
+	}
+	#mila .section-logo, #dfg .section-logo {
+		max-height: 52px;
+		max-width: 180px;
+	}
+
+	.viz-box {
+		width: 100%;
+		height: 280px;
+		margin-top: 1.5rem;
+		border-radius: 0.5rem;
+		overflow: hidden;
+		border: 1px solid var(--color-border, #e5e7eb);
+	}
+	.viz-html { border: none; height: auto; overflow: visible; }
+
+	.nectar-bg {
+		margin-top: 1.5rem;
+		width: 100%;
+		height: 220px;
+		border-radius: 0.5rem;
+		border: 1px solid var(--color-border, #e5e7eb);
+		background-image: url('/logos/nectar.png');
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+		background-color: var(--color-global-bg);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.project-card {
+		border: 1px solid var(--color-border, #e5e7eb);
+		border-radius: 8px;
+		padding: 1rem;
+		margin-bottom: 0.75rem;
+	}
+	.project-tag   { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+	.project-title { font-size: 0.875rem; font-weight: 600; margin: 0.25rem 0 0.35rem; }
+	.project-desc  { font-size: 0.8rem; line-height: 1.55; opacity: 0.8; margin: 0; }
+	.tag-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 0.6rem; }
+	.chip    { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+
+	.stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+	.stat-card  {
+		border: 1px solid var(--color-border, #e5e7eb);
+		border-radius: 8px; padding: 1rem; text-align: center;
+	}
+	.stat-num   { font-size: 2.4rem; font-weight: 900; line-height: 1; margin-bottom: 0.35rem; }
+	.stat-label { font-size: 0.72rem; line-height: 1.45; opacity: 0.7; }
+
+	@media (max-width: 640px) {
+		#story-layout { flex-direction: column; }
+		#tl-aside     { display: none; }
+		.stats-grid   { grid-template-columns: 1fr; }
+	}
+</style>
+
+<script>
+	// @ts-ignore
+	const d3 = await import("https://cdn.jsdelivr.net/npm/d3@7/+esm");
+
+	const isDark = () => document.documentElement.dataset.theme === "dark";
+	const tc  = () => isDark() ? "#e5e7eb" : "#111827";
+	const mc  = () => isDark() ? "#6b7280" : "#9ca3af";
+	const bc  = () => isDark() ? "#111827" : "#ffffff";
+	const bdc = () => isDark() ? "#374151" : "#e5e7eb";
+
+	function makeSvg(id: string) {
+		const el = document.getElementById(id);
+		if (!el) return null;
+		el.innerHTML = "";
+		const { width: w, height: h } = el.getBoundingClientRect();
+		return { svg: d3.select(el).append("svg").attr("width", w).attr("height", h), w, h, el };
+	}
+
+	// ── Fresque CO₂ ───────────────────────────────────────────────────────────
+	function drawFresque() {
+		const res = makeSvg("viz-fresque"); if (!res) return;
+		const { svg, w, h } = res;
+		const m={top:50,right:20,bottom:40,left:46}, iw=w-m.left-m.right, ih=h-m.top-m.bottom;
+		const g=svg.append("g").attr("transform",`translate(${m.left},${m.top})`);
+		const color="#f59e0b";
+		const data=[{y:1958,v:315},{y:1960,v:317},{y:1965,v:320},{y:1970,v:326},{y:1975,v:331},{y:1980,v:338},{y:1985,v:345},{y:1990,v:354},{y:1995,v:361},{y:2000,v:369},{y:2005,v:379},{y:2010,v:390},{y:2015,v:401},{y:2018,v:408},{y:2020,v:413},{y:2022,v:418},{y:2024,v:423}];
+		const x=d3.scaleLinear().domain([1958,2024]).range([0,iw]);
+		const y=d3.scaleLinear().domain([310,430]).range([ih,0]);
+		y.ticks(4).forEach((t:number)=>g.append("line").attr("x1",0).attr("x2",iw).attr("y1",y(t)).attr("y2",y(t)).attr("stroke",bdc()).attr("stroke-width",0.5));
+		g.append("g").attr("transform",`translate(0,${ih})`).call(d3.axisBottom(x).ticks(6).tickFormat(d3.format("d") as any)).selectAll("text").attr("fill",mc()).attr("font-size","10px");
+		g.append("g").call(d3.axisLeft(y).ticks(4)).selectAll("text").attr("fill",mc()).attr("font-size","10px");
+		g.selectAll(".domain,.tick line").attr("stroke",bdc());
+		g.append("text").attr("transform","rotate(-90)").attr("x",-ih/2).attr("y",-34).attr("text-anchor","middle").attr("font-size","9px").attr("fill",mc()).text("CO₂ (ppm)");
+		g.append("path").datum(data).attr("d",d3.area<any>().x((d:any)=>x(d.y)).y0(ih).y1((d:any)=>y(d.v)).curve(d3.curveCatmullRom)).attr("fill",color).attr("opacity",0.1);
+		const path=g.append("path").datum(data).attr("d",d3.line<any>().x((d:any)=>x(d.y)).y((d:any)=>y(d.v)).curve(d3.curveCatmullRom)).attr("fill","none").attr("stroke",color).attr("stroke-width",2.5);
+		const len=(path.node() as SVGPathElement).getTotalLength();
+		path.attr("stroke-dasharray",len).attr("stroke-dashoffset",len).transition().duration(2000).ease(d3.easeCubicInOut).attr("stroke-dashoffset",0);
+		// Birth line 1997
+		const bx=x(1997), bppm=y(363);
+		g.append("line").attr("x1",bx).attr("x2",bx).attr("y1",0).attr("y2",ih).attr("stroke","#60a5fa").attr("stroke-width",1).attr("stroke-dasharray","4 3").attr("opacity",0.7);
+		g.append("circle").attr("cx",bx).attr("cy",bppm).attr("r",4).attr("fill","#60a5fa");
+		g.append("text").attr("x",bx+5).attr("y",bppm-8).attr("font-size","9px").attr("fill","#60a5fa").text("Ma naissance · 363 ppm");
+
+		// Fresque annotation
+		const ax=x(2022),ay=y(418);
+		g.append("line").attr("x1",ax).attr("x2",ax).attr("y1",ay).attr("y2",ih).attr("stroke",color).attr("stroke-width",1).attr("stroke-dasharray","4 3").attr("opacity",0.6);
+		g.append("circle").attr("cx",ax).attr("cy",ay).attr("r",5).attr("fill",color).attr("opacity",0).transition().delay(1600).attr("opacity",1);
+		g.append("text").attr("x",ax-6).attr("y",ay-12).attr("text-anchor","end").attr("font-size","9px").attr("fill",color).attr("opacity",0).text("Fresque du Climat · 2022").transition().delay(1600).attr("opacity",1);
+		svg.append("text").attr("x",w/2).attr("y",18).attr("text-anchor","middle").attr("font-size","12px").attr("font-weight","600").attr("fill",tc()).text("Concentration atmosphérique en CO₂");
+		svg.append("text").attr("x",w/2).attr("y",32).attr("text-anchor","middle").attr("font-size","10px").attr("fill",mc()).text("Courbe de Keeling · 1958–2024");
+	}
+
+	// ── Mila force graph ──────────────────────────────────────────────────────
+	function drawMila() {
+		const res = makeSvg("viz-mila"); if (!res) return;
+		const { svg, w, h } = res;
+		const cx = w/2, cy = h/2;
+		const logoSize = 56;
+		const nodes:any[]=[
+			{id:"center",group:"center",r:logoSize/2,fx:cx,fy:cy},
+			{id:"Transformers",group:"ml"},{id:"Fine-tuning",group:"ml"},{id:"Multimodal",group:"ml"},
+			{id:"Santé",group:"domain"},{id:"Éducation",group:"domain"},{id:"Environnement",group:"domain"},{id:"Énergie",group:"domain"},
+			{id:"PyTorch",group:"tool"},{id:"Open-source",group:"tool"}
+		];
+		const links:any[]=["Transformers","Fine-tuning","Multimodal","Santé","Éducation","Environnement","Énergie","PyTorch","Open-source"].map(t=>({source:"center",target:t}));
+		links.push({source:"Fine-tuning",target:"Transformers"},{source:"Transformers",target:"Multimodal"},{source:"Environnement",target:"Énergie"});
+		const gc:Record<string,string>={center:"transparent",ml:"#6366f1",domain:"#f59e0b",tool:"#d482ab"};
+		const sim=d3.forceSimulation(nodes)
+			.force("link",d3.forceLink(links).id((d:any)=>d.id).distance(90))
+			.force("charge",d3.forceManyBody().strength(-200))
+			.force("center",d3.forceCenter(cx,cy))
+			.force("collision",d3.forceCollide().radius((d:any)=>(d.r||10)+24));
+		const link=svg.append("g").selectAll("line").data(links).join("line").attr("stroke",bdc()).attr("stroke-width",1).attr("opacity",0.4);
+		const node=svg.append("g").selectAll("g").data(nodes).join("g");
+		// non-center nodes: circle + label
+		node.filter((d:any)=>d.group!=="center")
+			.append("circle").attr("r",9).attr("fill",(d:any)=>gc[d.group]).attr("opacity",0.88).attr("stroke",bc()).attr("stroke-width",2);
+		node.filter((d:any)=>d.group!=="center")
+			.append("text").attr("text-anchor","middle").attr("dy","0.35em")
+			.attr("font-size","8px").attr("fill",tc()).attr("pointer-events","none").text((d:any)=>d.id);
+		// center node: logo image positioned relative to the group's origin
+		node.filter((d:any)=>d.group==="center")
+			.append("image")
+			.attr("href","/logos/mila.png")
+			.attr("width",logoSize).attr("height",logoSize)
+			.attr("x",-logoSize/2).attr("y",-logoSize/2)
+			.attr("preserveAspectRatio","xMidYMid meet")
+			.style("pointer-events","none");
+		sim.on("tick",()=>{
+			link.attr("x1",(d:any)=>d.source.x).attr("y1",(d:any)=>d.source.y).attr("x2",(d:any)=>d.target.x).attr("y2",(d:any)=>d.target.y);
+			node.attr("transform",(d:any)=>`translate(${d.x},${d.y})`);
+		});
+		setTimeout(()=>sim.stop(),4000);
+	}
+
+	// ── Draw all & redraw on theme/resize ─────────────────────────────────────
+	function drawAll() {
+		drawMila();
+	}
+
+	requestAnimationFrame(drawAll);
+	document.addEventListener("theme-change", () => requestAnimationFrame(drawAll));
+	window.addEventListener("resize", () => requestAnimationFrame(drawAll));
+
+	// ── Timeline highlight ────────────────────────────────────────────────────
+	const tlItems = document.querySelectorAll(".tl-item");
+	const sections = Array.from(document.querySelectorAll(".story-section")) as HTMLElement[];
+
+	function updateTimeline() {
+		const triggerY = window.scrollY + window.innerHeight * 0.4;
+		let active = sections[0];
+		for (const s of sections) {
+			if (s.offsetTop <= triggerY) active = s;
+		}
+		tlItems.forEach(item =>
+			item.classList.toggle("active", (item as HTMLElement).dataset.section === active.id)
+		);
+	}
+
+	window.addEventListener("scroll", updateTimeline, { passive: true });
+	updateTimeline();
+</script>

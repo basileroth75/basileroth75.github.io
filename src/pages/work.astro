@@ -12,6 +12,7 @@ const journalism = [
 		outlet: "Politis",
 		title: "Raphaël Glucksmann et Place publique : beaucoup de bruit pour (très) peu d'élus",
 		url: "https://www.politis.fr/articles/2026/03/politique-raphael-glucksmann-et-place-publique-beaucoup-de-bruit-pour-tres-peu-delus/",
+		slug: "/work/glucksmann-place-publique/",
 		description:
 			"Malgré une forte visibilité médiatique, Place publique n'a obtenu que 0,3 % des élus de gauche lors des municipales 2026.",
 		tags: ["dataviz", "politique"],
@@ -21,6 +22,7 @@ const journalism = [
 		outlet: "Politis",
 		title: "Municipales : pour la Macronie, le grand effacement",
 		url: "https://www.politis.fr/articles/2026/03/analyse-infographie-municipales-pour-la-macronie-le-grand-effacement/",
+		slug: "/work/municipales-macronie/",
 		description:
 			"Renaissance ne présente que sept listes aux municipales 2026, contre 247 en 2020, se dissolvant dans des alliances pour masquer son effacement.",
 		tags: ["dataviz", "politique"],
@@ -30,6 +32,7 @@ const journalism = [
 		outlet: "Politis",
 		title: "Municipales : en tête de liste, les femmes très largement sous-représentées, surtout à droite",
 		url: "https://www.politis.fr/articles/2026/03/analyse-infographie-municipales-en-tete-de-liste-les-femmes-tres-largement-sous-representees-surtout-a-droite/",
+		slug: "/work/municipales-femmes/",
 		description:
 			"Seules 24,4 % des têtes de liste sont des femmes, malgré les obligations de parité, avec des écarts très marqués selon les blocs politiques.",
 		tags: ["dataviz", "politique", "parité"],
@@ -39,6 +42,7 @@ const journalism = [
 		outlet: "Politis",
 		title: "Municipales : découvrez si votre commune respecte les quotas de logements sociaux",
 		url: "https://www.politis.fr/articles/2026/02/municipales-decouvrez-si-votre-commune-respecte-les-quotas-de-logements-sociaux/",
+		slug: "/work/municipales-logements-sociaux/",
 		description:
 			"Une carte interactive pour vérifier si votre commune respecte la loi SRU — 334 communes refusent de s'y conformer.",
 		tags: ["dataviz", "cartographie"],
@@ -48,6 +52,7 @@ const journalism = [
 		outlet: "Politis",
 		title: "RN et Bayrou : une alliance par les votes",
 		url: "https://www.politis.fr/articles/2025/07/rn-et-bayrou-une-alliance-par-les-votes/",
+		slug: "/work/rn-bayrou/",
 		description:
 			"Analyse des votes parlementaires révélant que le RN soutient régulièrement le gouvernement Bayrou, contredisant son image d'opposition.",
 		tags: ["dataviz", "politique", "scraping"],
@@ -57,6 +62,7 @@ const journalism = [
 		outlet: "Politis",
 		title: "Loi Duplomb : ces députés bons petits soldats de la FNSEA",
 		url: "https://www.politis.fr/articles/2025/05/loi-duplomb-ces-deputes-bons-petits-soldats-de-la-fnsea/",
+		slug: "/work/loi-duplomb/",
 		description:
 			"Enquête exclusive : 37 % des amendements déposés par des parlementaires non-NFP sur ce projet de loi reprennent mot pour mot des demandes de la FNSEA.",
 		tags: ["scraping", "politique", "data"],
@@ -65,9 +71,21 @@ const journalism = [
 
 const research = [
 	{
+		date: "17 juin 2025",
+		title: "L'UNOC3 rehausse la couverture médiatique des enjeux environnementaux à un niveau inédit depuis 2 ans",
+		url: "https://observatoiremediaecologie.fr/publication/lunoc3-rehausse-la-couverture-mediatique-des-enjeux-environnementaux-a-un-niveau-inedit-depuis-2-ans/",
+		slug: "/work/unoc3-couverture-mediatique/",
+		pdf: null,
+		partner: "Observatoire des Médias sur l'Écologie (OMÉ) × Data for Good",
+		description:
+			"Durant l'UNOC3 (juin 2025), les médias audiovisuels français ont atteint 6,8 % de couverture environnementale — une hausse de 83 % par rapport à la moyenne annuelle 2024. Analyse de la couverture médiatique des enjeux océaniques lors de la conférence de l'ONU.",
+		tags: ["data", "environnement", "médias"],
+	},
+	{
 		date: "Juin 2025",
 		title: "Greenlobby — Comprendre et contrer le lobbying en France",
 		url: "https://website.services.dataforgood.fr/projets/green-lobby",
+		slug: "/work/greenlobby/",
 		pdf: "https://greenlobby.org/wp-content/uploads/2025/06/Infographie-Lobby-dinteret-general-Greenlobby.pdf",
 		partner: "Data for Good × Greenlobby",
 		description:
@@ -78,6 +96,7 @@ const research = [
 		date: "16 septembre 2024",
 		title: "Spatiotemporal Variability of Fin Whale and Blue Whale Calls Detected by Land Seismometers Along the Lower St. Lawrence Seaway",
 		url: "https://seismica.library.mcgill.ca/article/view/1153/1640",
+		slug: "/work/whale-calls-seismometers/",
 		partner: "Seismica · Vol. 3, No. 2",
 		description:
 			"Utilisation de sismomètres terrestres pour détecter les vocalisations de baleines à nageoires et bleues dans le Saint-Laurent (2020–2022) — 14 076 détections de rorquals communs et 3 739 de baleines bleues.",
@@ -90,6 +109,7 @@ const code = [
 		date: "17 juin 2020",
 		title: "A Social Distancing Detector using TensorFlow, Python and OpenCV",
 		url: "https://medium.com/data-science/a-social-distancing-detector-using-a-tensorflow-object-detection-model-python-and-opencv-4450a431238",
+		slug: "/work/social-distancing-detector/",
 		partner: "Medium · Towards Data Science",
 		description:
 			"Détecteur de distanciation sociale combinant deep learning et vision par ordinateur : détection de personnes par TensorFlow et transformation de perspective pour mesurer les distances.",
@@ -129,6 +149,9 @@ const code = [
 								</span>
 							))}
 						</div>
+						<a class="text-muted hover:text-link mt-4 inline-block text-xs underline underline-offset-2" href={item.slug}>
+							Détail technique →
+						</a>
 					</li>
 				))
 			}
@@ -159,20 +182,32 @@ const code = [
 								</span>
 							))}
 						</div>
-						{item.pdf && (
-							<a
-								class="text-muted hover:text-link mt-2 inline-block text-xs underline underline-offset-2"
-								href={item.pdf}
-								rel="noreferrer noopener"
-								target="_blank"
-							>
-								Télécharger le rapport (PDF)
+						<div class="mt-2 flex gap-4">
+							{item.pdf && (
+								<a
+									class="text-muted hover:text-link text-xs underline underline-offset-2"
+									href={item.pdf}
+									rel="noreferrer noopener"
+									target="_blank"
+								>
+									Télécharger le rapport (PDF)
+								</a>
+							)}
+							<a class="text-muted hover:text-link text-xs underline underline-offset-2" href={item.slug}>
+								Détail technique →
 							</a>
-						)}
+						</div>
 					</li>
 				))
 			}
 		</ul>
+	</section>
+
+	<!-- Compétences -->
+	<section class="mb-16">
+		<h2 class="title text-accent mb-2 text-xl">Compétences</h2>
+		<p class="text-muted mb-6 text-sm">Depuis quand j'utilise chaque outil — les barres pleines indiquent des compétences actives.</p>
+		<div id="skills-timeline" class="w-full overflow-x-auto"></div>
 	</section>
 
 	<!-- Code & Projects -->
@@ -199,9 +234,132 @@ const code = [
 								</span>
 							))}
 						</div>
+						<a class="text-muted hover:text-link mt-2 inline-block text-xs underline underline-offset-2" href={item.slug}>
+							Détail technique →
+						</a>
 					</li>
 				))
 			}
 		</ul>
 	</section>
 </PageLayout>
+
+<script>
+	// @ts-ignore
+	const d3 = await import("https://cdn.jsdelivr.net/npm/d3@7/+esm");
+
+	const isDark = () => document.documentElement.dataset.theme === "dark";
+	const tc  = () => isDark() ? "#e5e7eb" : "#111827";
+	const mc  = () => isDark() ? "#6b7280" : "#9ca3af";
+	const bdc = () => isDark() ? "#374151" : "#e5e7eb";
+
+	function drawSkills() {
+		const container = document.getElementById("skills-timeline");
+		if (!container) return;
+		container.innerHTML = "";
+
+		const categories = [
+			{ name: "Langages", color: "#d482ab", skills: [
+				{ name: "C++", start: 2014, end: 2021 }, { name: "Matlab", start: 2014, end: 2020 },
+				{ name: "SQL", start: 2015, end: null }, { name: "R", start: 2016, end: null },
+				{ name: "Python", start: 2018, end: null }, { name: "JavaScript", start: 2022, end: null },
+			]},
+			{ name: "Machine Learning", color: "#2bbc8a", skills: [
+				{ name: "Hadoop", start: 2018, end: 2022 }, { name: "SciPy / NumPy", start: 2019, end: null },
+				{ name: "TensorFlow / Keras", start: 2019, end: 2024 }, { name: "Spark", start: 2019, end: null },
+				{ name: "PyTorch", start: 2020, end: null }, { name: "Databricks", start: 2022, end: null },
+			]},
+			{ name: "Cloud & DevOps", color: "#60a5fa", skills: [
+				{ name: "AWS", start: 2020, end: 2022 }, { name: "Docker", start: 2020, end: null },
+				{ name: "MLFlow", start: 2020, end: null }, { name: "Airflow", start: 2021, end: null },
+				{ name: "Kubernetes", start: 2021, end: 2024 }, { name: "Azure", start: 2022, end: null },
+			]},
+			{ name: "Bases de données", color: "#f97316", skills: [
+				{ name: "MySQL", start: 2015, end: 2021 }, { name: "OracleDB", start: 2015, end: 2021 },
+				{ name: "PostgreSQL", start: 2020, end: null }, { name: "MongoDB", start: 2020, end: 2024 },
+				{ name: "Redis", start: 2021, end: 2024 },
+			]},
+			{ name: "Datajournalisme", color: "#f59e0b", skills: [
+				{ name: "Scraping", start: 2022, end: null }, { name: "APIs & open data", start: 2022, end: null },
+				{ name: "OSINT", start: 2022, end: null }, { name: "Fact-checking", start: 2022, end: null },
+				{ name: "D3.js", start: 2022, end: null }, { name: "Datawrapper", start: 2022, end: null },
+				{ name: "QGIS", start: 2023, end: null }, { name: "Scrollytelling", start: 2023, end: null },
+			]},
+			{ name: "Gestion de projet", color: "#a78bfa", skills: [
+				{ name: "LaTeX", start: 2015, end: 2021 }, { name: "GitHub", start: 2016, end: null },
+				{ name: "Gantt / Waterfall", start: 2017, end: 2022 }, { name: "Jira / Agile", start: 2020, end: null },
+			]},
+		];
+
+		const NOW = 2026 + 3.5 / 12;
+		const X_MIN = 2013.5, X_MAX = 2027.2;
+		const ROW_H = 22, CAT_H = 28, CAT_GAP = 10, BAR_H = 10, LABEL_W = 152;
+		const margin = { top: 72, right: 28, bottom: 28, left: LABEL_W };
+		const totalW = Math.max(container.clientWidth, 500);
+		const chartW = totalW - margin.left - margin.right;
+
+		let yOff = 0;
+		const rows: any[] = [];
+		categories.forEach((cat, ci) => {
+			if (ci > 0) yOff += CAT_GAP;
+			rows.push({ type: "cat", name: cat.name, color: cat.color, y: yOff, h: CAT_H });
+			yOff += CAT_H;
+			cat.skills.forEach((s) => {
+				rows.push({ type: "skill", name: s.name, start: s.start, end: s.end, color: cat.color, active: !s.end, y: yOff, h: ROW_H });
+				yOff += ROW_H;
+			});
+		});
+		const totalH = margin.top + yOff + margin.bottom;
+		const xScale = d3.scaleLinear().domain([X_MIN, X_MAX]).range([0, chartW]);
+		const svg = d3.select(container).append("svg").attr("width", totalW).attr("height", totalH);
+
+		rows.filter((r:any)=>r.type==="skill").forEach((r:any,i:number)=>{
+			if(i%2===0) svg.append("rect").attr("x",0).attr("y",margin.top+r.y).attr("width",totalW).attr("height",r.h).attr("fill",isDark()?"rgba(255,255,255,0.018)":"rgba(0,0,0,0.018)");
+		});
+
+		const phaseRows = [
+			[{label:"ECE Paris",start:2014,end:2019,color:"#d482ab"},{label:"ETS Montréal",start:2019,end:2022,color:"#7c82d4"}],
+			[{label:"Nectar",start:2020,end:2022.5,color:"#2bbc8a"},{label:"Mila",start:2022.5,end:2024.5,color:"#f59e0b"},{label:"AssessFirst",start:2025,end:NOW,color:"#2bbc8a"}],
+		];
+		const PHASE_H=16;
+		const phaseG=svg.append("g").attr("transform",`translate(${margin.left},5)`);
+		phaseRows.forEach((row,ri)=>{
+			row.forEach((p:any)=>{
+				const px=xScale(p.start), pw=Math.max(xScale(Math.min(p.end,NOW))-px,0), py=ri*(PHASE_H+4);
+				phaseG.append("rect").attr("x",px).attr("y",py).attr("width",pw).attr("height",PHASE_H).attr("rx",3).attr("fill",p.color).attr("opacity",0.18);
+				if(pw>18) phaseG.append("text").attr("x",px+pw/2).attr("y",py+PHASE_H/2+4.5).attr("text-anchor","middle").attr("fill",p.color).attr("font-size","9.5px").attr("font-weight","600").text(p.label);
+			});
+		});
+
+		const g=svg.append("g").attr("transform",`translate(${margin.left},${margin.top})`);
+		const years=d3.range(2014,2027);
+		g.selectAll(".yr").data(years).join("line").attr("x1",(d:number)=>xScale(d)).attr("x2",(d:number)=>xScale(d)).attr("y1",0).attr("y2",yOff).attr("stroke",bdc()).attr("stroke-width",0.5);
+		g.append("g").attr("transform","translate(0,-6)").call(d3.axisTop(xScale).tickValues(years).tickFormat((d:number)=>String(d)).tickSize(3)).call((ax:any)=>ax.select(".domain").remove()).call((ax:any)=>ax.selectAll(".tick line").attr("stroke",bdc())).call((ax:any)=>ax.selectAll(".tick text").attr("fill",mc()).attr("font-size","10px"));
+
+		const todayX=xScale(NOW);
+		g.append("line").attr("x1",todayX).attr("x2",todayX).attr("y1",-40).attr("y2",yOff).attr("stroke",tc()).attr("stroke-width",1.5).attr("stroke-dasharray","4,3").attr("opacity",0.3);
+		g.append("text").attr("x",todayX).attr("y",-43).attr("text-anchor","middle").attr("fill",mc()).attr("font-size","9px").text("aujourd'hui");
+
+		rows.forEach((row:any)=>{
+			if(row.type==="cat"){
+				g.append("text").attr("x",-LABEL_W+4).attr("y",row.y+19).attr("fill",row.color).attr("font-size","11px").attr("font-weight","700").text(row.name);
+				g.append("line").attr("x1",-LABEL_W+4).attr("x2",chartW).attr("y1",row.y+CAT_H-1).attr("y2",row.y+CAT_H-1).attr("stroke",row.color).attr("stroke-width",0.4).attr("opacity",0.35);
+			} else {
+				g.append("text").attr("x",-6).attr("y",row.y+row.h/2+4).attr("text-anchor","end").attr("fill",tc()).attr("font-size","10.5px").text(row.name);
+				const bx=xScale(row.start), bEnd=row.active?NOW:row.end, bw=Math.max(xScale(bEnd)-bx,4), by=row.y+(row.h-BAR_H)/2;
+				g.append("rect").attr("x",bx).attr("y",by).attr("width",bw).attr("height",BAR_H).attr("rx",BAR_H/2).attr("fill",row.color).attr("opacity",row.active?0.88:0.35);
+				if(row.active){const ax2=bx+bw+2,ay=by+BAR_H/2;g.append("polygon").attr("points",`${ax2},${ay-4} ${ax2+6},${ay} ${ax2},${ay+4}`).attr("fill",row.color).attr("opacity",0.88);}
+			}
+		});
+
+		const legG=svg.append("g").attr("transform",`translate(${margin.left},${totalH-margin.bottom+8})`);
+		legG.append("rect").attr("x",0).attr("y",0).attr("width",24).attr("height",8).attr("rx",4).attr("fill",mc()).attr("opacity",0.88);
+		legG.append("text").attr("x",30).attr("y",8).attr("fill",mc()).attr("font-size","10px").text("Compétence active");
+		legG.append("rect").attr("x",145).attr("y",0).attr("width",24).attr("height",8).attr("rx",4).attr("fill",mc()).attr("opacity",0.35);
+		legG.append("text").attr("x",175).attr("y",8).attr("fill",mc()).attr("font-size","10px").text("Non utilisée activement");
+	}
+
+	requestAnimationFrame(drawSkills);
+	document.addEventListener("theme-change", () => requestAnimationFrame(drawSkills));
+	window.addEventListener("resize", () => requestAnimationFrame(drawSkills));
+</script>
