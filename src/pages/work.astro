@@ -12,95 +12,96 @@ const journalism = [
 		outlet: "Politis",
 		title: "Raphaël Glucksmann et Place publique : beaucoup de bruit pour (très) peu d'élus",
 		url: "https://www.politis.fr/articles/2026/03/politique-raphael-glucksmann-et-place-publique-beaucoup-de-bruit-pour-tres-peu-delus/",
-		slug: "/work/glucksmann-place-publique/",
 		description:
 			"Malgré une forte visibilité médiatique, Place publique n'a obtenu que 0,3 % des élus de gauche lors des municipales 2026.",
-		tags: ["dataviz", "politique"],
+		tags: ["scraping"],
+		techno: ["python", "d3.js", "beautifulsoup4","API datagouv"],
 	},
 	{
 		date: "5 mars 2026",
 		outlet: "Politis",
 		title: "Municipales : pour la Macronie, le grand effacement",
 		url: "https://www.politis.fr/articles/2026/03/analyse-infographie-municipales-pour-la-macronie-le-grand-effacement/",
-		slug: "/work/municipales-macronie/",
 		description:
 			"Renaissance ne présente que sept listes aux municipales 2026, contre 247 en 2020, se dissolvant dans des alliances pour masquer son effacement.",
-		tags: ["dataviz", "politique"],
+		tags: ["infographie"],
+		techno: ["python", "d3.js","API datagouv"],
 	},
 	{
 		date: "5 mars 2026",
 		outlet: "Politis",
 		title: "Municipales : en tête de liste, les femmes très largement sous-représentées, surtout à droite",
 		url: "https://www.politis.fr/articles/2026/03/analyse-infographie-municipales-en-tete-de-liste-les-femmes-tres-largement-sous-representees-surtout-a-droite/",
-		slug: "/work/municipales-femmes/",
 		description:
 			"Seules 24,4 % des têtes de liste sont des femmes, malgré les obligations de parité, avec des écarts très marqués selon les blocs politiques.",
-		tags: ["dataviz", "politique", "parité"],
+		tags: ["infographie"],
+		techno: ["python", "d3.js","API datagouv"],
 	},
 	{
 		date: "12 février 2026",
 		outlet: "Politis",
 		title: "Municipales : découvrez si votre commune respecte les quotas de logements sociaux",
 		url: "https://www.politis.fr/articles/2026/02/municipales-decouvrez-si-votre-commune-respecte-les-quotas-de-logements-sociaux/",
-		slug: "/work/municipales-logements-sociaux/",
 		description:
 			"Une carte interactive pour vérifier si votre commune respecte la loi SRU — 334 communes refusent de s'y conformer.",
-		tags: ["dataviz", "cartographie"],
+		tags: ["cartographie"],
+		techno: ["python", "QGIS","SQL","d3.js","API datagouv"],
 	},
 	{
 		date: "1er juillet 2025",
 		outlet: "Politis",
 		title: "RN et Bayrou : une alliance par les votes",
 		url: "https://www.politis.fr/articles/2025/07/rn-et-bayrou-une-alliance-par-les-votes/",
-		slug: "/work/rn-bayrou/",
 		description:
 			"Analyse des votes parlementaires révélant que le RN soutient régulièrement le gouvernement Bayrou, contredisant son image d'opposition.",
-		tags: ["dataviz", "politique", "scraping"],
+		tags: ["scraping"],
+		techno: ["python",  "data.assemblee-nationale"],
 	},
 	{
 		date: "26 mai 2025",
 		outlet: "Politis",
 		title: "Loi Duplomb : ces députés bons petits soldats de la FNSEA",
 		url: "https://www.politis.fr/articles/2025/05/loi-duplomb-ces-deputes-bons-petits-soldats-de-la-fnsea/",
-		slug: "/work/loi-duplomb/",
 		description:
 			"Enquête exclusive : 37 % des amendements déposés par des parlementaires non-NFP sur ce projet de loi reprennent mot pour mot des demandes de la FNSEA.",
-		tags: ["scraping", "politique", "data"],
+		tags: [ "analyse"],
+		techno: ["python", "huggingface", "Sentence Transformers", "data.assemblee-nationale"],
 	},
 ];
 
 const research = [
 	{
 		date: "17 juin 2025",
-		title: "L'UNOC3 rehausse la couverture médiatique des enjeux environnementaux à un niveau inédit depuis 2 ans",
+		title: "Analyse de la couverture médiatique de la crise climatique dans les médias français.",
 		url: "https://observatoiremediaecologie.fr/publication/lunoc3-rehausse-la-couverture-mediatique-des-enjeux-environnementaux-a-un-niveau-inedit-depuis-2-ans/",
-		slug: "/work/unoc3-couverture-mediatique/",
 		pdf: null,
 		partner: "Observatoire des Médias sur l'Écologie (OMÉ) × Data for Good",
 		description:
-			"Durant l'UNOC3 (juin 2025), les médias audiovisuels français ont atteint 6,8 % de couverture environnementale — une hausse de 83 % par rapport à la moyenne annuelle 2024. Analyse de la couverture médiatique des enjeux océaniques lors de la conférence de l'ONU.",
-		tags: ["data", "environnement", "médias"],
+			"Enquête réalisée via Data For Good pour l'OMÉ. À partir du contenu des des médias audiovisuels (télévision + radio) transcrits, j'ai construit des tableaux de bord sur Metabase (outil open source) pour documenter les résultats.",
+		tags: ["inforgraphie", "scraping", "médias"],
+		techno: ["Python", "SQL", "Metabase", "Open data"],
 	},
 	{
 		date: "Juin 2025",
-		title: "Greenlobby — Comprendre et contrer le lobbying en France",
+		title: "Enquête avec Greenlobby sur la présence des lobbys dans les projets de lois portés à l'Assemblée et au Sénat.",
 		url: "https://website.services.dataforgood.fr/projets/green-lobby",
-		slug: "/work/greenlobby/",
 		pdf: "https://greenlobby.org/wp-content/uploads/2025/06/Infographie-Lobby-dinteret-general-Greenlobby.pdf",
 		partner: "Data for Good × Greenlobby",
 		description:
-			"Premier rapport Greenlobby : anatomie des lobbys conventionnels (pantouflage, fabrique de la loi), impacts économiques, et méthode pour construire un contre-lobby d'intérêt général.",
-		tags: ["data", "politique", "scraping"],
+			"Détection des amendements parlementaires alignés avec les positions de lobbies sur trois grandes lois (LOA, AGEC, Industrie Verte) sur différentes législatures.",
+		tags: ["dataanalyse", "opendata", "scraping"],
+		techno: ["Python", "LLM", "Sentence Transformers", "HuggingFace", "Open data"],
 	},
 	{
 		date: "16 septembre 2024",
 		title: "Spatiotemporal Variability of Fin Whale and Blue Whale Calls Detected by Land Seismometers Along the Lower St. Lawrence Seaway",
 		url: "https://seismica.library.mcgill.ca/article/view/1153/1640",
-		slug: "/work/whale-calls-seismometers/",
+		pdf: null,
 		partner: "Seismica · Vol. 3, No. 2",
 		description:
 			"Utilisation de sismomètres terrestres pour détecter les vocalisations de baleines à nageoires et bleues dans le Saint-Laurent (2020–2022) — 14 076 détections de rorquals communs et 3 739 de baleines bleues.",
-		tags: ["data", "environnement", "machine learning"],
+		tags: ["dataanalyse", "environnement", "machinelearning"],
+		techno: ["Python", "PyTorch", "SciPy", "NumPy"],
 	},
 ];
 
@@ -109,11 +110,11 @@ const code = [
 		date: "17 juin 2020",
 		title: "A Social Distancing Detector using TensorFlow, Python and OpenCV",
 		url: "https://medium.com/data-science/a-social-distancing-detector-using-a-tensorflow-object-detection-model-python-and-opencv-4450a431238",
-		slug: "/work/social-distancing-detector/",
 		partner: "Medium · Towards Data Science",
 		description:
 			"Détecteur de distanciation sociale combinant deep learning et vision par ordinateur : détection de personnes par TensorFlow et transformation de perspective pour mesurer les distances.",
 		tags: ["machine learning", "computer vision", "python"],
+		techno: ["Python", "TensorFlow", "OpenCV"],
 	},
 ];
 ---
@@ -155,9 +156,13 @@ const code = [
 									</span>
 								))}
 							</div>
-							<a class="mt-4 inline-block text-xs underline underline-offset-2" href={item.slug} style="color: rgba(255,255,255,0.45);">
-								Détail technique →
-							</a>
+							<div class="mt-3 flex flex-wrap gap-1.5">
+								{item.techno.map((t) => (
+									<span class="rounded px-2 py-0.5 text-xs font-mono font-medium" style="background: rgba(96,165,250,0.15); color: rgba(147,197,253,0.9); border: 1px solid rgba(96,165,250,0.25);">
+										{t}
+									</span>
+								))}
+							</div>
 						</li>
 					))
 				}
@@ -182,28 +187,30 @@ const code = [
 							{item.title}
 						</a>
 						<p class="mt-1 mb-2 text-sm">{item.description}</p>
-						<div class="flex flex-wrap gap-1.5">
+						<div class="flex flex-wrap gap-1.5 mb-2">
 							{item.tags.map((tag) => (
 								<span class="bg-accent/10 text-accent rounded px-2 py-0.5 text-xs font-medium">
 									{tag}
 								</span>
 							))}
 						</div>
-						<div class="mt-2 flex gap-4">
-							{item.pdf && (
-								<a
-									class="text-muted hover:text-link text-xs underline underline-offset-2"
-									href={item.pdf}
-									rel="noreferrer noopener"
-									target="_blank"
-								>
-									Télécharger le rapport (PDF)
-								</a>
-							)}
-							<a class="text-muted hover:text-link text-xs underline underline-offset-2" href={item.slug}>
-								Détail technique →
-							</a>
+						<div class="flex flex-wrap gap-1.5 mb-2">
+							{item.techno.map((t) => (
+								<span class="rounded px-2 py-0.5 text-xs font-mono font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+									{t}
+								</span>
+							))}
 						</div>
+						{item.pdf && (
+							<a
+								class="text-muted hover:text-link text-xs underline underline-offset-2"
+								href={item.pdf}
+								rel="noreferrer noopener"
+								target="_blank"
+							>
+								Télécharger le rapport (PDF)
+							</a>
+						)}
 					</li>
 				))
 			}
@@ -234,16 +241,20 @@ const code = [
 							{item.title}
 						</a>
 						<p class="mt-1 mb-2 text-sm">{item.description}</p>
-						<div class="flex flex-wrap gap-1.5">
+						<div class="flex flex-wrap gap-1.5 mb-2">
 							{item.tags.map((tag) => (
 								<span class="bg-accent/10 text-accent rounded px-2 py-0.5 text-xs font-medium">
 									{tag}
 								</span>
 							))}
 						</div>
-						<a class="text-muted hover:text-link mt-2 inline-block text-xs underline underline-offset-2" href={item.slug}>
-							Détail technique →
-						</a>
+						<div class="flex flex-wrap gap-1.5">
+							{item.techno.map((t) => (
+								<span class="rounded px-2 py-0.5 text-xs font-mono font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+									{t}
+								</span>
+							))}
+						</div>
 					</li>
 				))
 			}
