@@ -78,8 +78,8 @@ const research = [
 		partner: "Observatoire des Médias sur l'Écologie (OMÉ) × Data for Good",
 		description:
 			"Enquête réalisée via Data For Good pour l'OMÉ. À partir du contenu des des médias audiovisuels (télévision + radio) transcrits, j'ai construit des tableaux de bord sur Metabase (outil open source) pour documenter les résultats.",
-		tags: ["inforgraphie", "scraping", "médias"],
-		techno: ["Python", "SQL", "Metabase", "Open data"],
+		tags: ["infographie", "scraping", "transcription"],
+		techno: ["python", "SQL", "Metabase", "whisper"],
 	},
 	{
 		date: "Juin 2025",
@@ -89,19 +89,19 @@ const research = [
 		partner: "Data for Good × Greenlobby",
 		description:
 			"Détection des amendements parlementaires alignés avec les positions de lobbies sur trois grandes lois (LOA, AGEC, Industrie Verte) sur différentes législatures.",
-		tags: ["dataanalyse", "opendata", "scraping"],
-		techno: ["Python", "LLM", "Sentence Transformers", "HuggingFace", "Open data"],
+		tags: ["analyse","modélisation", "scraping"],
+		techno: ["python", "Sentence Transformers", "huggingFace", "data.senat","data.assemblee-nationale"],
 	},
 	{
 		date: "16 septembre 2024",
 		title: "Spatiotemporal Variability of Fin Whale and Blue Whale Calls Detected by Land Seismometers Along the Lower St. Lawrence Seaway",
 		url: "https://seismica.library.mcgill.ca/article/view/1153/1640",
 		pdf: null,
-		partner: "Seismica · Vol. 3, No. 2",
+		partner: "Mila x McGill",
 		description:
-			"Utilisation de sismomètres terrestres pour détecter les vocalisations de baleines à nageoires et bleues dans le Saint-Laurent (2020–2022) — 14 076 détections de rorquals communs et 3 739 de baleines bleues.",
-		tags: ["dataanalyse", "environnement", "machinelearning"],
-		techno: ["Python", "PyTorch", "SciPy", "NumPy"],
+			"Détection automatique des vocalisations de baleines à nageoires et bleues dans les données sismiques du Saint-Laurent, à l'aide de réseaux LSTM entraînés sur des spectrogrammes — classification de présence et localisation temporelle des appels.",
+		tags: ["analyse","modélisation",],
+		techno: ["python", "PyTorch", "LSTM","SQL", "QGIS"],
 	},
 ];
 
@@ -131,7 +131,7 @@ const code = [
 		<div style="position: absolute; inset: 0; background: rgba(0,0,0,0.45); pointer-events: none;"></div>
 		<div style="position: relative; padding: 1.5rem 1.5rem 2rem;">
 			<div style="margin-bottom: 1.75rem;">
-				<h2 class="title text-xl" style="color: #fff; margin-bottom: 0.2rem;">Journalisme de données</h2>
+				<h2 class="title text-xl" style="color: #fff; margin-bottom: 0.2rem;">Infographie, scraping et journalisme de données</h2>
 				<p style="color: rgba(255,255,255,0.65); font-size: 0.8rem;">Infographies et enquêtes publiées dans Politis</p>
 			</div>
 			<ul class="grid gap-5 sm:grid-cols-2" role="list">
@@ -151,7 +151,7 @@ const code = [
 							<p style="color: rgba(255,255,255,0.65); font-size: 0.875rem; margin-top: auto; padding-top: 0.75rem;">{item.description}</p>
 							<div class="mt-3 flex flex-wrap gap-1.5">
 								{item.tags.map((tag) => (
-									<span class="rounded px-2 py-0.5 text-xs font-medium" style="background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8);">
+									<span class="rounded px-2 py-0.5 text-xs font-medium" style="background: rgba(239,68,68,0.18); color: rgba(252,165,165,0.9); border: 1px solid rgba(239,68,68,0.3);">
 										{tag}
 									</span>
 								))}
