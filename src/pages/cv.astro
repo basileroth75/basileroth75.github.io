@@ -44,7 +44,7 @@ const interests = [
 		<h1 class="title">CV</h1>
 		<a
 			class="border-muted hover:border-accent hover:text-accent rounded border px-4 py-2 text-sm font-medium transition-colors"
-			href="/CV_Basile_Roth_FR.pdf"
+			href="/CV_Basile_Roth.pdf"
 			download
 		>
 			Télécharger (PDF)
@@ -59,7 +59,7 @@ const interests = [
 				<p class="text-muted text-sm">Impossible d'afficher le PDF.</p>
 				<a
 					class="border-muted hover:border-accent hover:text-accent rounded border px-4 py-2 text-sm font-medium transition-colors"
-					href="/CV_Basile_Roth_FR.pdf"
+					href="//CV_Basile_Roth.pdf"
 					target="_blank"
 				>
 					Ouvrir le PDF →
@@ -111,7 +111,7 @@ const interests = [
 				pdfjsLib.GlobalWorkerOptions.workerSrc =
 					"https://cdn.jsdelivr.net/npm/pdfjs-dist@4.9.155/build/pdf.worker.min.mjs";
 
-				const pdf = await pdfjsLib.getDocument("/CV_Basile_Roth_FR.pdf").promise;
+				const pdf = await pdfjsLib.getDocument("/CV_Basile_Roth.pdf").promise;
 				const container = document.getElementById("pdf-pages")!;
 
 				for (let i = 1; i <= pdf.numPages; i++) {
