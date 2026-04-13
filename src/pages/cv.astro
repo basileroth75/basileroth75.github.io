@@ -3,8 +3,40 @@ import PageLayout from "@/layouts/Base.astro";
 
 const meta = {
 	description: "CV de Basile Roth — Senior Data Scientist",
-	title: "CV",
+	title: "CV & Intérêts",
 };
+
+const interests = [
+	{
+		title: "Sports d'endurance",
+		icon: "🏃",
+		description:
+			"Finisher du Norseman — le championnat mondial d'extrême triathlon en Norvège. Sur plusieurs années, j'ai longuement étudié la littérature scientifique sur la physiologie, l'entrainement J'ai aussi couru de multiples ultra-trails et marathons.",
+		tags: ["Endurance", "Physiologie", "Analyse"],
+		link: { href: "https://podcasts.apple.com/fr/podcast/ep07-%C3%A0-l%C3%A9preuve-des-fjords-le-norseman/id1697355203?i=1000643078559", label: "Podcast : À l'épreuve des fjords →" },
+	},
+	{
+		title: "Rugby",
+		icon: "🏉",
+		description:
+			"Depuis tout jeune passionné de sports collectifs et plus particulièrement de rugby. Je le pratique encore sur mon temps libre et j'ai eu l'opportunité de jouer en tant qu'étudiant athlète au plus haut niveau en Amérique du Nord. Le rugby m'a appris l'importance du collectif. Éducateur des équipes jeunes au sein de mon club formateur en région parisienne.",
+		tags: ["Équipe","Cohésion"],
+	},
+	{
+		title: "Lecture, Presse & Culture",
+		icon: "📚",
+		description:
+			"Passionné de non-fiction : sciences, politique, histoire et essais. Lecteur régulier de la presse indépendante et engagée. Expériences professionnelles et personnelles au Canada, en Australie et en Afrique du Sud et dans une vaste partie de l'Amérique du Sud — citoyen français, australien et suisse.",
+		tags: ["Presse", "International","Écriture"],
+	},
+	{
+		title: "Travail manuel et réparation",
+		icon: "🔧",
+		description:
+			"Passionné par la réparation et la création — réparation de vélos, couture, et diverses pratiques de bricolage. J'aime construire et réparer avec mes mains pour me détendre.",
+		tags: ["Vélo", "Réparation","Couture"],
+	},
+];
 ---
 
 <PageLayout meta={meta}>
@@ -34,6 +66,41 @@ const meta = {
 				</a>
 			</div>
 		</div>
+	</div>
+
+	<!-- Interests section -->
+	<div class="mt-16">
+		<h2 class="title mb-4">Intérêts</h2>
+		<p class="text-muted mb-16 text-sm">Ce qui m'anime en dehors du travail.</p>
+
+		<ul class="grid gap-5 sm:grid-cols-2" role="list">
+			{
+				interests.map((item, i) => (
+					<li class={`border-muted flex flex-col rounded-lg border p-5${i === interests.length - 1 && interests.length % 2 !== 0 ? " sm:col-span-2" : ""}`}>
+						<p class="mb-3 text-2xl">{item.icon}</p>
+						<p class="mb-2 font-semibold">{item.title}</p>
+						<p class="text-muted flex-1 text-sm">{item.description}</p>
+						<div class="mt-4 flex flex-wrap gap-1.5">
+							{item.tags.map((tag) => (
+								<span class="bg-accent/10 text-accent rounded px-2 py-0.5 text-xs font-medium">
+									{tag}
+								</span>
+							))}
+						</div>
+						{item.link && (
+							<a
+								href={item.link.href}
+								target="_blank"
+								rel="noreferrer noopener"
+								class="cactus-link mt-4 text-xs"
+							>
+								{item.link.label}
+							</a>
+						)}
+					</li>
+				))
+			}
+		</ul>
 	</div>
 
 	<script>

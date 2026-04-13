@@ -28,17 +28,9 @@ export const menuLinks: { path: string; title: string }[] = [
 		path: "/work/",
 		title: "Work",
 	},
-{
-		path: "/interests/",
-		title: "Interests",
-	},
 	{
 		path: "/cv/",
-		title: "CV",
-	},
-	{
-		path: "/contact/",
-		title: "Contact",
+		title: "CV & Intérêts",
 	},
 ];
 
