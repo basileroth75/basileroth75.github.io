@@ -3,7 +3,7 @@ import PageLayout from "@/layouts/Base.astro";
 
 const meta = {
 	description: "Articles, research and data projects by Basile Roth",
-	title: "Work",
+	title: "Portofolio & Compétences",
 };
 
 const journalism = [
@@ -71,6 +71,21 @@ const journalism = [
 
 const research = [
 	{
+		date: "16 septembre 2024",
+		title: "Spatiotemporal Variability of Fin Whale and Blue Whale Calls Detected by Land Seismometers Along the Lower St. Lawrence Seaway",
+		url: "https://seismica.library.mcgill.ca/article/view/1153/1640",
+		pdf: null,
+		partner: "Mila x McGill",
+		description:
+			"Détection automatique des vocalisations de baleines à nageoires et bleues dans les données sismiques du Saint-Laurent, à l'aide de réseaux LSTM entraînés sur des spectrogrammes — classification de présence et localisation temporelle des appels.",
+		tags: ["analyse","modélisation",],
+		techno: ["python", "PyTorch", "LSTM","SQL", "QGIS"],
+	}
+];
+
+
+const dfg = [
+	{
 		date: "17 juin 2025",
 		title: "Analyse de la couverture médiatique de la crise climatique dans les médias français.",
 		url: "https://observatoiremediaecologie.fr/publication/lunoc3-rehausse-la-couverture-mediatique-des-enjeux-environnementaux-a-un-niveau-inedit-depuis-2-ans/",
@@ -91,18 +106,7 @@ const research = [
 			"Détection des amendements parlementaires alignés avec les positions de lobbies sur trois grandes lois (LOA, AGEC, Industrie Verte) sur différentes législatures.",
 		tags: ["analyse","modélisation", "scraping"],
 		techno: ["python", "Sentence Transformers", "huggingFace", "data.senat","data.assemblee-nationale"],
-	},
-	{
-		date: "16 septembre 2024",
-		title: "Spatiotemporal Variability of Fin Whale and Blue Whale Calls Detected by Land Seismometers Along the Lower St. Lawrence Seaway",
-		url: "https://seismica.library.mcgill.ca/article/view/1153/1640",
-		pdf: null,
-		partner: "Mila x McGill",
-		description:
-			"Détection automatique des vocalisations de baleines à nageoires et bleues dans les données sismiques du Saint-Laurent, à l'aide de réseaux LSTM entraînés sur des spectrogrammes — classification de présence et localisation temporelle des appels.",
-		tags: ["analyse","modélisation",],
-		techno: ["python", "PyTorch", "LSTM","SQL", "QGIS"],
-	},
+	}
 ];
 
 const code = [
@@ -130,20 +134,17 @@ const code = [
 ---
 
 <PageLayout meta={meta}>
-	<h1 class="title mb-4">Work</h1>
+	<h1 class="title mb-4">Portofolio</h1>
 	<p class="text-muted mb-16 text-sm">
 		Projets, publications et compétences.
 	</p>
 
+	<h2 class="title text-accent mb-8 text-xl">Infographie, scraping et journalisme de données pour Politis</h2>
 	<!-- Data Journalism — primary section -->
 	<section class="mb-20 rounded-xl overflow-hidden" style="position: relative;">
 		<div class="[filter:blur(2px)]" style="position: absolute; inset: -6px; background-image: url('/logos/politis2.png'); background-size: cover; background-position: center top;"></div>
 		<div style="position: absolute; inset: 0; background: rgba(0,0,0,0.45); pointer-events: none;"></div>
 		<div style="position: relative; padding: 1.5rem 1.5rem 2rem;">
-			<div style="margin-bottom: 1.75rem;">
-				<h2 class="title text-xl" style="color: #fff; margin-bottom: 0.2rem;">Infographie, scraping et journalisme de données</h2>
-				<p style="color: rgba(255,255,255,0.65); font-size: 0.8rem;">Infographies et enquêtes publiées dans Politis</p>
-			</div>
 			<ul class="grid gap-5 sm:grid-cols-2" role="list">
 				{
 					journalism.map((item, i) => (
@@ -182,10 +183,10 @@ const code = [
 
 	<!-- Research & Papers -->
 	<section class="mb-16">
-		<h2 class="title text-accent mb-8 text-xl">Recherche & rapports</h2>
+		<h2 class="title text-accent mb-8 text-xl">Réalisations via Data For Good</h2>
 		<ul class="space-y-6" role="list">
 			{
-				research.map((item) => (
+				dfg.map((item) => (
 					<li class="border-muted border-l-2 pl-5">
 						<p class="text-muted mb-1 text-sm">{item.date} · {item.partner}</p>
 						<a
@@ -236,7 +237,7 @@ const code = [
 
 	<!-- Code & Projects -->
 	<section class="mb-16">
-		<h2 class="title text-accent mb-8 text-xl">Code & projets</h2>
+		<h2 class="title text-accent mb-8 text-xl">Projets personnels</h2>
 		<ul class="space-y-6" role="list">
 			{
 				code.map((item) => (
@@ -270,7 +271,58 @@ const code = [
 			}
 		</ul>
 	</section>
+
+
+	<!-- Research & Papers -->
+	<section class="mb-16">
+		<h2 class="title text-accent mb-8 text-xl">Publication scientifique</h2>
+		<ul class="space-y-6" role="list">
+			{
+				research.map((item) => (
+					<li class="border-muted border-l-2 pl-5">
+						<p class="text-muted mb-1 text-sm">{item.date} · {item.partner}</p>
+						<a
+							class="cactus-link text-base font-semibold"
+							href={item.url}
+							rel="noreferrer noopener"
+							target="_blank"
+						>
+							{item.title}
+						</a>
+						<p class="mt-1 mb-2 text-sm">{item.description}</p>
+						<div class="flex flex-wrap gap-1.5 mb-2">
+							{item.tags.map((tag) => (
+								<span class="bg-accent/10 text-accent rounded px-2 py-0.5 text-xs font-medium">
+									{tag}
+								</span>
+							))}
+						</div>
+						<div class="flex flex-wrap gap-1.5 mb-2">
+							{item.techno.map((t) => (
+								<span class="rounded px-2 py-0.5 text-xs font-mono font-medium bg-blue-500/10 text-blue-400 border border-blue-500/20">
+									{t}
+								</span>
+							))}
+						</div>
+						{item.pdf && (
+							<a
+								class="text-muted hover:text-link text-xs underline underline-offset-2"
+								href={item.pdf}
+								rel="noreferrer noopener"
+								target="_blank"
+							>
+								Télécharger le rapport (PDF)
+							</a>
+						)}
+					</li>
+				))
+			}
+		</ul>
+	</section>
+
 </PageLayout>
+
+
 
 <script>
 	// @ts-ignore
@@ -287,39 +339,54 @@ const code = [
 		container.innerHTML = "";
 
 		const categories = [
-			{ name: "Langages", color: "#d482ab", skills: [
-				{ name: "C++", start: 2014, end: 2021 }, { name: "Matlab", start: 2014, end: 2020 },
-				{ name: "SQL", start: 2015, end: null }, { name: "R", start: 2016, end: null },
-				{ name: "Python", start: 2018, end: null }, { name: "JavaScript", start: 2022, end: null },
+				{ name: "Langages", color: "#d482ab", skills: [
+				{ name: "Python", start: 2014, end: null },
+				{ name: "SQL", start: 2015, end: null },
+				{ name: "Bash", start: 2019, end: null },
+				{ name: "JavaScript", start: 2018, end: null },
+				{ name: "HTML / CSS", start: 2017, end: null }, 
+
+				{ name: "C++", start: 2014, end: 2024 },
+				{ name: "R", start: 2016, end: 2020 },
+
 			]},
-			{ name: "Machine Learning", color: "#2bbc8a", skills: [
-				{ name: "Hadoop", start: 2018, end: 2022 }, { name: "SciPy / NumPy", start: 2019, end: null },
-				{ name: "TensorFlow / Keras", start: 2019, end: 2024 }, { name: "Spark", start: 2019, end: null },
-				{ name: "PyTorch", start: 2020, end: null }, { name: "Databricks", start: 2022, end: null },
+			{ name: "Collecte et exploration de données", color: "#f59e0b", skills: [
+				{ name: "Pandas / NumPy", start: 2014, end: null },
+				{ name: "Scraping", start: 2019, end: null }, 
+				{ name: "QGIS", start: 2023, end: null }, 
+				{ name: "APIs & Open Data", start: 2020, end: null },
+				{ name: "Regex / Nettoyage", start: 2022, end: null },
 			]},
-			{ name: "Cloud & DevOps", color: "#60a5fa", skills: [
-				{ name: "AWS", start: 2020, end: 2022 }, { name: "Docker", start: 2020, end: null },
-				{ name: "MLFlow", start: 2020, end: null }, { name: "Airflow", start: 2021, end: null },
-				{ name: "Kubernetes", start: 2021, end: 2024 }, { name: "Azure", start: 2022, end: null },
+			{ name: "Visualisation", color: "#539056", skills: [
+				{ name: "Plotly", start: 2019, end: null },
+				{ name: "D3.js", start: 2023, end: null }, 
+				{ name: "Tableau / Power BI", start: 2018, end: null },
+				{ name: "Mapbox / Leaflet", start: 2023, end: null },
+				{ name: "Datawrapper", start: 2025, end: null },
+
+			]},
+			{ name: "Machine Learning & NLP", color: "#2bbc8a", skills: [
+				{ name: "Scikit-learn", start: 2019, end: null },
+				{ name: "TensorFlow / Keras", start: 2019, end: 2024 }, 
+				{ name: "PyTorch", start: 2019, end: null }, 
+				{ name: "Databricks", start: 2022, end: null },
+				{ name: "NLP / Text Mining", start: 2022, end: null },
 			]},
 			{ name: "Bases de données", color: "#f97316", skills: [
-				{ name: "MySQL", start: 2015, end: 2021 }, { name: "OracleDB", start: 2015, end: 2021 },
-				{ name: "PostgreSQL", start: 2020, end: null }, { name: "MongoDB", start: 2020, end: 2024 },
+				{ name: "MySQL", start: 2015, end: 2021 }, 
+				{ name: "OracleDB", start: 2015, end: 2021 },
+				{ name: "PostgreSQL", start: 2020, end: null },
+				{ name: "MongoDB", start: 2020, end: 2024 },
 				{ name: "Redis", start: 2021, end: 2024 },
 			]},
-			{ name: "Analyse de données", color: "#f59e0b", skills: [
-				{ name: "Scraping", start: 2022, end: null }, { name: "APIs & open data", start: 2022, end: null },
-				{ name: "OSINT", start: 2022, end: null }, { name: "Fact-checking", start: 2022, end: null },
-				{ name: "D3.js", start: 2022, end: null }, { name: "Datawrapper", start: 2022, end: null },
-				{ name: "QGIS", start: 2023, end: null }, { name: "Scrollytelling", start: 2023, end: null },
-			]},
-			{ name: "Gestion de projet", color: "#a78bfa", skills: [
-				{ name: "LaTeX", start: 2015, end: 2021 }, { name: "GitHub", start: 2016, end: null },
-				{ name: "Gantt / Waterfall", start: 2017, end: 2022 }, { name: "Jira / Agile", start: 2020, end: null },
+			{ name: "Cloud & DevOps", color: "#60a5fa", skills: [
+				{ name: "Docker", start: 2017, end: null },
+				{ name: "MLFlow", start: 2020, end: null }, 
+				{ name: "Airflow", start: 2021, end: null },
 			]},
 		];
 
-		const NOW = 2026 + 3.5 / 12;
+		const NOW = 2026 + 5 / 12;
 		const X_MIN = 2013.5, X_MAX = 2027.2;
 		const ROW_H = 22, CAT_H = 28, CAT_GAP = 10, BAR_H = 10, LABEL_W = 152;
 		const margin = { top: 72, right: 28, bottom: 28, left: LABEL_W };
@@ -346,8 +413,8 @@ const code = [
 		});
 
 		const phaseRows = [
-			[{label:"ECE Paris",start:2014,end:2019,color:"#d482ab"},{label:"ETS Montréal",start:2019,end:2022,color:"#7c82d4"}],
-			[{label:"Nectar",start:2020,end:2022.5,color:"#2bbc8a"},{label:"Mila",start:2022.5,end:2024.5,color:"#f59e0b"},{label:"AssessFirst",start:2025,end:NOW,color:"#2bbc8a"}],
+			[{label:"ECE Paris",start:2014,end:2019,color:"#d482ab"},{label:"ETS Montréal",start:2019,end:2021,color:"#7c82d4"}],
+			[{label:"Nectar",start:2020,end:2022.5,color:"#2bbc8a"},{label:"Mila",start:2022.5,end:2024.5,color:"#f59e0b"},{label:"AssessFirst",start:2024.5,end:NOW,color:"#2bbc8a"}],
 		];
 		const PHASE_H=16;
 		const phaseG=svg.append("g").attr("transform",`translate(${margin.left},5)`);
