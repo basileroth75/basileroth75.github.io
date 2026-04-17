@@ -26,7 +26,7 @@ export const menuLinks: { path: string; title: string }[] = [
 	},
 	{
 		path: "/work/",
-		title: "Work",
+		title: "Portfolio & Compétences",
 	},
 	{
 		path: "/cv/",
