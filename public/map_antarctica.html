@@ -76,15 +76,15 @@
             position: absolute; top: 0;
             backdrop-filter: none; -webkit-backdrop-filter: none;
             color: var(--textColor); border: 0;
-            padding: 1rem; border-radius: 0;
+            padding: 1.5rem; border-radius: 0;
             box-shadow: none;
-            font-size: 12px; z-index: 1000;
-            width: 450px; max-width: 100vw; height: 100%; max-height: 100vh; overflow-y: scroll;
+            font-size: 14px; z-index: 1000;
+            width: 480px; max-width: 100vw; height: 100%; max-height: 100vh; overflow-y: scroll;
             transition: opacity 0.3s ease, transform 0.3s ease;
             background-color: rgba(0, 0, 0, 0.65);
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 1.5rem;
         }
         .panel-container.hidden { opacity: 0; pointer-events: none; transform: translateY(-10px); }
         .panel-container::-webkit-scrollbar { width: 6px; }
@@ -97,14 +97,18 @@
 
         .control-section { margin-bottom: 0; }
         .control-section:last-child { margin-bottom: 0; }
-        .section-title { font-weight: normal; font-size: 1rem; margin-bottom: 0.75rem; color: #fff; text-transform: none; letter-spacing: 0;}
+        .section-title { font-weight: normal; font-size: 1.15rem; margin-bottom: 1rem; color: #fff; text-transform: none; letter-spacing: 0;}
 
         /* Checkboxes & Items */
-        .toggle-item, .legend-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .toggle-item, .legend-item { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
         .toggle-item { cursor: pointer; transition: color 0.2s; }
         .toggle-item:hover { color: #fff; }
 
         .toggle-item input[type="checkbox"] { accent-color: #00c8ff; }
+
+        .mini-toggles { margin-top: 0.5rem; }
+        .mini-toggles .toggle-item { gap: 6px; margin-bottom: 6px; font-size: 10.5px; color: #8b949e; }
+        .mini-toggles .toggle-item input[type="checkbox"] { width: 11px; height: 11px; }
 
         .legend-color { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
         .legend-line { width: 16px; height: 3px; flex-shrink: 0; border-radius: 2px; }
@@ -117,9 +121,9 @@
         /* --- TIMELINE STYLES --- */
         .anim-controls { background: transparent; padding: 0; border-radius: 0; border: 0; }
         .timeControl { position: relative; }
-        .timePlayer { display: flex; gap: 0.5rem; margin: 0.5rem 0; align-items: flex-end; }
+        .timePlayer { display: flex; gap: 0.5rem; margin: 0.5rem 0; align-items: flex-end; margin-right: 6.5rem; }
         .u-flex { display: flex; align-items: center; justify-content: space-between; }
-        .time { position: absolute; right: 0.5rem; top: 0.5rem; font-size: 1rem; }
+        .time { position: absolute; right: 0.5rem; top: 0.5rem; font-size: 1rem; white-space: nowrap; }
         .sameYear { cursor: pointer; }
         button, .action-btn {
             text-align: center;
@@ -177,20 +181,40 @@
         input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(255,255,255,0.28); border-radius: 2px; }
 
         /* --- BOAT PROFILE CARD --- */
-        .entity-profile { display: flex; align-items: center; gap: 0.5rem; background: transparent; padding: 0.25rem 0.5rem; border-radius: 0 5px 5px 0; border: 0; border-left: 5px solid transparent; cursor: pointer; transition: 0.2s all ease; opacity: 0.5; filter: grayscale(1); margin-bottom: 0.5rem; }
-        .entity-profile:hover { background-color: var(--activeGrayColor); opacity: 1; filter: grayscale(0); }
-        .entity-profile.selected { background: transparent; opacity: 1; filter: grayscale(0); }
+        .entity-profile {
+            display: flex; align-items: center; gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.6rem 0.75rem; border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 5px solid transparent;
+            cursor: pointer; transition: 0.2s all ease;
+            opacity: 0.55; filter: grayscale(1); margin-bottom: 0.6rem;
+            position: relative;
+        }
+        .entity-profile::after {
+            content: 'OFF';
+            position: absolute; top: 8px; right: 10px;
+            font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+            color: #8b949e; border: 1px solid #8b949e; border-radius: 10px;
+            padding: 2px 7px;
+        }
+        .entity-profile.selected::after {
+            content: 'ON';
+            color: #00c8ff; border-color: #00c8ff;
+        }
+        .entity-profile:hover { background-color: var(--activeGrayColor); opacity: 1; filter: grayscale(0); border-color: rgba(255,255,255,0.35); transform: translateY(-1px); }
+        .entity-profile.selected { background: rgba(255, 255, 255, 0.06); opacity: 1; filter: grayscale(0); }
         #focus-vessel-1-btn.selected { border-left-color: #ff3a3a; }
         #focus-vessel-2-btn.selected { border-left-color: #ff9800; }
         .entity-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: #21262d; box-shadow: inset 0 0 10px #000; }
-        .entity-details { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-        .entity-name { font-size: 13px; font-weight: 500; color: #fff; border-bottom: 0; padding-bottom: 0;}
-        .entity-legend-row { display: flex; align-items: center; gap: 10px; font-size: 11px; color: #8b949e; margin-top: 8px; }
-        .entity-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; border-top: 0; padding-top: 2px; }
-        .entity-info-item { font-size: 10px; }
+        .entity-details { display: flex; flex-direction: column; gap: 8px; width: 100%; padding-right: 40px; }
+        .entity-name { font-size: 15px; font-weight: 500; color: #fff; border-bottom: 0; padding-bottom: 0;}
+        .entity-legend-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #8b949e; margin-top: 8px; }
+        .entity-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; border-top: 0; padding-top: 2px; }
+        .entity-info-item { font-size: 11px; }
         .entity-info-item-label { color: #8b949e; }
         .entity-info-item-value { color: #c9d1d9; font-weight: 500; display: flex; align-items: center; gap: 6px; }
-        .count-text { font-size: 10px; color: #8b949e; text-align: left; margin-left: 28px; }
+        .count-text { font-size: 11px; color: #8b949e; text-align: left; margin-left: 28px; }
         .credits { font-size: 0.8rem; line-height: 1.45; opacity: 0.5; text-align: right; color: var(--textColor); }
         .credits a { color: var(--linkColor); text-decoration: underline; text-underline-offset: 2px; }
         .credit-box {
@@ -202,6 +226,41 @@
         }
         .credit-box p { margin-bottom: 0.5rem; }
         .credit-box p:last-child { margin-bottom: 0; }
+
+        /* --- STORY PANEL / ACCORDION --- */
+        .story-sections { display: flex; flex-direction: column; gap: 0.75rem; }
+        .story-section {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            overflow: hidden;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+        .story-section:hover { border-color: rgba(0, 200, 255, 0.5); }
+        .story-section.active { border-color: rgba(0, 200, 255, 0.6); background: rgba(0, 200, 255, 0.06); }
+        .story-section-header {
+            display: flex; align-items: center; gap: 10px;
+            padding: 0.85rem 1rem;
+            cursor: pointer;
+            font-size: 14px; font-weight: 500; color: #fff;
+            user-select: none;
+        }
+        .story-section-num { font-size: 11px; font-weight: 700; color: #00c8ff; letter-spacing: 0.5px; }
+        .story-chevron { margin-left: auto; color: #8b949e; transition: transform 0.2s ease; }
+        .story-section.active .story-chevron { transform: rotate(180deg); color: #00c8ff; }
+        .story-section-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.35s ease;
+            padding: 0 1rem;
+            font-size: 13px; line-height: 1.65; color: #cbd5e1;
+        }
+        .story-section-body p { margin-top: 0; margin-bottom: 0.85rem; }
+        .story-section-body p:last-child { margin-bottom: 0; }
+        .story-section.active .story-section-body {
+            max-height: 1000px;
+            padding: 0 1rem 1rem;
+        }
 
         /* --- HIGHLIGHT EFFECT --- */
         .highlight-pulse {
@@ -225,6 +284,7 @@
             .panel-container.hidden { transform: translateY(10px); }
             .panel-title { font-size: 18px; }
             .floating-btn { top: 12px; }
+            #btn-story { top: 54px; }
             .entity-info-grid { display: none; }
             .entity-profile { min-width: 150px; }
         }
@@ -235,35 +295,64 @@
 <div id="map-wrapper">
     <div id="map"></div>
 
-    <button id="btn-layers" class="floating-btn" style="left: 20px;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-        Map Layers
+    <button id="btn-story" class="floating-btn hidden" style="left: 20px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        The Krill Story
     </button>
     <button id="btn-legend" class="floating-btn hidden" style="right: 20px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
        Fishing vessels tracking and MPAs
     </button>
 
-    <div id="left-panel" class="panel-container hidden" style="left: 0; right: auto;">
+    <div id="story-panel" class="panel-container" style="left: 0; right: auto;">
         <div class="panel-header">
-            <div class="panel-title">Map Layers</div>
-            <button id="close-layers" class="close-btn">×</button>
+            <div class="panel-title">The Krill Story</div>
+            <button id="close-story" class="close-btn">×</button>
         </div>
 
-        <div class="control-section">
-            <div class="section-title">Marine Protection</div>
+        <div class="control-section story-sections">
+            <div class="story-section active" data-index="0">
+                <div class="story-section-header">
+                    <span class="story-section-num">01</span>
+                    <span>A keystone the size of a paperclip</span>
+                    <span class="story-chevron">▾</span>
+                </div>
+                <div class="story-section-body">
+                    <p>Krill are barely the length of a paperclip, but the entire Southern Ocean is built on them. This shrimp-like crustacean is a keystone species for the food web: it feeds whales, seals, penguins, and seabirds across the entire ecosystem. And yet, every year, industrial trawlers descend on this remote ecosystem to harvest it by the hundreds of thousands of tons, led overwhelmingly by the Norwegian company Aker BioMarine. With its two trawlers under the Norwegian flag, Antarctic Endurance and Saga Sea, it vacuums out as much as 62% of the total yearly krill catch.</p>
+                    <p>But most of what's caught doesn't feed people. It becomes aquaculture feed for farmed fish on the other side of the planet, oil supplements, and pet food. Aker BioMarine is even the recipient of millions of dollars in subsidies from the Norwegian government in order to remain competitive.</p>
+                </div>
+            </div>
+            <div class="story-section" data-index="1">
+                <div class="story-section-header">
+                    <span class="story-section-num">02</span>
+                    <span>Where the fishing concentrates</span>
+                    <span class="story-chevron">▾</span>
+                </div>
+                <div class="story-section-body">
+                    <p>Zoom in, and the impact of that extraction comes into focus. Here, fishing is governed by the Commission for the Conservation of Antarctic Marine Living Resources (CCAMLR), which set an overall catch trigger of 620,000 tonnes for krill. Aker BioMarine claims that, since it's a small fraction of total estimated krill biomass, it's proof the fishery is sustainable. But total catch limits obscure localized harm.</p>
+                    <p>Fishing vessels cluster exactly where krill, and the marine predators that depend on it, are most concentrated: the western Antarctic Peninsula, the South Orkney Islands, and South Georgia. In 2022, catch concentration there reached its highest level in 38 years (Cruz et al., 2022), and local catch can now rival or exceed what marine predators need, and even the standing stock of krill itself (Trathan et al., 2021). This is in addition to the already severe impacts of climate change, disrupting the Antarctic climate and the delicate balance of its food webs. Calling a regional catch quota "sustainable" is meaningless if the harvest is happening in the one place the ecosystem is least resilient to it.</p>
+                </div>
+            </div>
+            <div class="story-section" data-index="2">
+                <div class="story-section-header">
+                    <span class="story-section-num">03</span>
+                    <span>A fix that's already on the table</span>
+                    <span class="story-chevron">▾</span>
+                </div>
+                <div class="story-section-body">
+                    <p>This crisis has a fix, and it's already been sitting on the table. It's spatialization: dividing the fishing quota across sub-regions to spread out fishing pressure. CCAMLR used to do just this, until member states failed to renew the rule in 2024. The industry's answer was to accelerate. In 2025, for the first time, the entire 620,000-tonne limit could be taken from anywhere within the zone, and the fishery shut down early from the resulting hyper-concentration of catch from Aker BioMarine and others. This year again, the fishing quota has been met faster than ever.</p>
+                    <p>Meanwhile, the Domain 1 Marine Protected Area, a proposed no-take zone around the Antarctic Peninsula where fishing pressure currently concentrates, has been repeatedly blocked for nearly a decade.</p>
+                    <p>Adopting spatialization measures and the Domain 1 marine protected area are two sides of the same coin: an Antarctic krill fishery held to the limits of what the ecosystem will bear. What's clear is who is benefiting from this: a handful of companies, Aker BioMarine foremost among them, are extracting a keystone species for economic benefit, so it can end up in a salmon pellet or supplement capsule.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-section mini-toggles">
             <label class="toggle-item"><input type="checkbox" id="toggle-zones" checked> <span>Domain-1 Marine Protected Areas</span></label>
             <label class="toggle-item"><input type="checkbox" id="toggle-sgssi-mpa" checked> <span>South Georgia & South Sandwich Islands MPA</span></label>
             <label class="toggle-item"><input type="checkbox" id="toggle-mpa" checked> <span>South Orkney Islands MPA</span></label>
-        </div>
-
-        <div class="control-section">
-            <div class="section-title">Marine Life Data</div>
             <label class="toggle-item"><input type="checkbox" id="toggle-krill"> <span>Krill Density Heatmap</span></label>
-            <div id="krill-count" class="count-text" style="margin-bottom: 12px;">...</div>
-
             <label class="toggle-item"><input type="checkbox" id="toggle-whale"> <span>Whale Occurrences</span></label>
-            <div id="whale-count" class="count-text">...</div>
         </div>
     </div>
 
@@ -412,14 +501,17 @@
 </div>
 
 <script>
-    document.getElementById('btn-layers').addEventListener('click', () => {
-        document.getElementById('left-panel').classList.remove('hidden');
-        document.getElementById('btn-layers').classList.add('hidden');
-    });
-    document.getElementById('close-layers').addEventListener('click', () => {
-        document.getElementById('left-panel').classList.add('hidden');
-        document.getElementById('btn-layers').classList.remove('hidden');
-    });
+    function openStoryPanel() {
+        document.getElementById('story-panel').classList.remove('hidden');
+        document.getElementById('btn-story').classList.add('hidden');
+    }
+    function closeStoryPanel() {
+        if (typeof resetStoryView === 'function') resetStoryView();
+        document.getElementById('story-panel').classList.add('hidden');
+        document.getElementById('btn-story').classList.remove('hidden');
+    }
+    document.getElementById('btn-story').addEventListener('click', openStoryPanel);
+    document.getElementById('close-story').addEventListener('click', closeStoryPanel);
     document.getElementById('btn-legend').addEventListener('click', () => {
         document.getElementById('right-panel').classList.remove('hidden');
         document.getElementById('btn-legend').classList.add('hidden');
@@ -445,6 +537,9 @@
     const whaleCsvUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/whale_gbif_2000-2026_fixed.csv';
     const landGeoJsonUrl = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_land.geojson';
 
+    let sgssiBoundsGlobal = null;
+    let domain1BoundsGlobal = null;
+    let heatmapBoundsGlobal = null;
     let allTracksData = [];
     let allFishingData = [];
     let trackGroups = { chronological: [], seasonal: [] };
@@ -473,7 +568,7 @@
     const map = new maplibregl.Map({
         container: 'map',
         center: [-42, -54],
-        zoom: 2.4,
+        zoom: 2.0,
         attributionControl: true,
         style: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
     });
@@ -607,6 +702,7 @@
         animMinTime = timelineMode === 'seasonal' ? seasonStartTime : globalMinTime;
         animMaxTime = timelineMode === 'seasonal' ? seasonEndTime : globalMaxTime;
         animCurrentTime = animMinTime;
+        fishingMaxTime = animMinTime;
         const slider = document.getElementById('time-slider');
         slider.max = animMaxTime;
         slider.min = animMinTime;
@@ -627,9 +723,32 @@
         document.getElementById('anim-date-display').innerText = date.toLocaleString('en-US', options);
     }
 
-    function renderTracks() {
+    let fishingMaxTime;
+    let appliedFishingMaxTime = null;
+    let lastFishingSyncWallTime = 0;
+    const fishingSyncThrottleMs = 200;
+
+    function syncFishingLayer(force) {
+        if (!map.getLayer('animated-fishing')) return;
+        if (fishingMaxTime === appliedFishingMaxTime) return;
+        const nowWall = performance.now();
+        if (!force && isPlaying && (nowWall - lastFishingSyncWallTime) < fishingSyncThrottleMs) return;
+        lastFishingSyncWallTime = nowWall;
+        appliedFishingMaxTime = fishingMaxTime;
+
+        const timeProperty = timelineMode === 'seasonal' ? 'seasonAxisTime' : 'chronoTime';
+        const vessels = Array.from(visibleVessels);
+        const vesselFilter = vessels.length
+            ? ['in', ['get', 'boatSource'], ['literal', vessels]]
+            : ['==', 1, 0];
+        map.setFilter('animated-fishing', ['all', ['<=', ['get', timeProperty], fishingMaxTime], vesselFilter]);
+    }
+
+    function renderTracks(forceFishingSync) {
         if (!Number.isFinite(Number(animCurrentTime))) return;
         const currentEndMs = Number(animCurrentTime);
+        if (!Number.isFinite(fishingMaxTime)) fishingMaxTime = currentEndMs;
+        fishingMaxTime = Math.max(fishingMaxTime, currentEndMs);
 
         deckOverlay.setProps({
             layers: [
@@ -653,14 +772,7 @@
             ],
         });
 
-        if (map.getLayer('animated-fishing')) {
-            const timeProperty = timelineMode === 'seasonal' ? 'seasonAxisTime' : 'chronoTime';
-            const vessels = Array.from(visibleVessels);
-            const vesselFilter = vessels.length
-                ? ['in', ['get', 'boatSource'], ['literal', vessels]]
-                : ['==', 1, 0];
-            map.setFilter('animated-fishing', ['all', ['<=', ['get', timeProperty], currentEndMs], vesselFilter]);
-        }
+        syncFishingLayer(forceFishingSync);
     }
 
     function scheduleRenderTracks() {
@@ -680,6 +792,7 @@
         if (playAnimationFrame) window.cancelAnimationFrame(playAnimationFrame);
         playAnimationFrame = null;
         lastFrameTime = null;
+        renderTracks(true);
     }
 
     function startPlayback() {
@@ -691,7 +804,11 @@
             lastFrameTime = frameTime;
             const range = animMaxTime - animMinTime;
             animCurrentTime += range * elapsed / cycleDurationMs[speedLevel];
-            if (animCurrentTime >= animMaxTime) animCurrentTime = animMinTime;
+            if (animCurrentTime >= animMaxTime) {
+                animCurrentTime = animMaxTime;
+                renderTracks(true);
+                animCurrentTime = animMinTime;
+            }
             document.getElementById('time-slider').value = animCurrentTime;
             updateAnimDateDisplay();
             scheduleRenderTracks();
@@ -782,6 +899,7 @@
             feature.properties._border = d3.rgb(zoneColorScale(period)).darker(1.2).formatHex();
             feature.properties._fillOpacity = 0.24;
         });
+        domain1BoundsGlobal = boundsFromGeoJson(zonesGeoJson);
 
         addGeoJsonFill('domain-zones', zonesGeoJson, ['get', '_color'], ['get', '_border'], checkboxVisibility('toggle-zones'));
         addGeoJsonFill('sgssi-mpa', sgssiMpaGeoJson, '#1d4ed8', '#1d4ed8', checkboxVisibility('toggle-sgssi-mpa'));
@@ -795,8 +913,7 @@
             .map(d => ({ lat: parseFloat(d.decimalLatitude), lon: parseFloat(d.decimalLongitude) }))
             .filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon))
             .map(d => geojsonPoint(d.lon, d.lat));
-        document.getElementById('krill-count').innerText = `${krillFeatures.length} records mapped`;
-        document.getElementById('whale-count').innerText = `${whaleFeatures.length} occurrences mapped`;
+        heatmapBoundsGlobal = boundsFromGeoJson({ type: 'FeatureCollection', features: [...krillFeatures, ...whaleFeatures] });
 
         map.addSource('krill-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: krillFeatures } });
         map.addLayer({
@@ -807,7 +924,7 @@
             paint: {
                 'heatmap-weight': ['interpolate', ['linear'], ['to-number', ['get', 'quantity']], 0, 0, 100, 1],
                 'heatmap-radius': 14,
-                'heatmap-opacity': 0.75,
+                'heatmap-opacity': 0.5,
                 'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(255,255,212,0)', 0.35, '#fed98e', 0.55, '#fe9929', 0.75, '#d95f0e', 1, '#993404'],
             },
         });
@@ -819,7 +936,7 @@
             layout: { visibility: checkboxVisibility('toggle-whale') },
             paint: {
                 'heatmap-radius': 16,
-                'heatmap-opacity': 0.75,
+                'heatmap-opacity': 0.5,
                 'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(247,252,245,0)', 0.35, '#ccece6', 0.55, '#66c2a4', 0.8, '#2ca25f', 1, '#006d2c'],
             },
         });
@@ -830,7 +947,7 @@
             type: 'fill',
             source: 'land-foreground',
             paint: {
-                'fill-color': '#0e0e0e',
+                'fill-color': '#141414',
                 'fill-opacity': 1,
             },
         });
@@ -839,8 +956,8 @@
             type: 'line',
             source: 'land-foreground',
             paint: {
-                'line-color': 'rgba(255,255,255,0.08)',
-                'line-width': 0.5,
+                'line-color': 'rgba(255,255,255,0.35)',
+                'line-width': 0.75,
             },
         });
 
@@ -875,7 +992,7 @@
                 })),
             },
         });
-        map.addLayer({ id: 'animated-fishing', type: 'circle', source: 'animated-fishing', paint: { 'circle-radius': 1.1, 'circle-color': ['get', 'color'], 'circle-opacity': 0.3, 'circle-stroke-width': 0 } });
+        map.addLayer({ id: 'animated-fishing', type: 'circle', source: 'animated-fishing', paint: { 'circle-radius': 1.1, 'circle-color': ['get', 'color'], 'circle-opacity': 0.9, 'circle-stroke-width': 0 } });
 
         timelineMode = 'seasonal';
         document.getElementById('timeline-mode-btn').checked = true;
@@ -883,6 +1000,7 @@
         renderTracks();
 
         const sgssiBounds = boundsFromGeoJson(sgssiMpaGeoJson);
+        sgssiBoundsGlobal = sgssiBounds;
         if (sgssiBounds) map.fitBounds(sgssiBounds, { padding: { top: 150, bottom: 150, left: 150, right: 720 }, maxZoom: 2.2 });
 
         document.getElementById('focus-vessel-1-btn').classList.add('selected');
@@ -914,6 +1032,81 @@
     }
     setupVesselToggle('Antarctic Endurance', 'focus-vessel-1-btn');
     setupVesselToggle('Saga Sea', 'focus-vessel-2-btn');
+
+    function setToggle(checkboxId, checked) {
+        const el = document.getElementById(checkboxId);
+        if (el.checked !== checked) {
+            el.checked = checked;
+            el.dispatchEvent(new Event('change'));
+        }
+    }
+
+    const storyActions = [
+        () => {
+            setToggle('toggle-zones', false);
+            setToggle('toggle-sgssi-mpa', false);
+            setToggle('toggle-mpa', false);
+            setToggle('toggle-krill', false);
+            setToggle('toggle-whale', false);
+            map.flyTo({ center: [-42, -54], zoom: 2.0, duration: 1200 });
+        },
+        () => {
+            setToggle('toggle-krill', true);
+            setToggle('toggle-whale', true);
+            if (heatmapBoundsGlobal) {
+                map.fitBounds(heatmapBoundsGlobal, { padding: 150, maxZoom: 2.6, duration: 1200 });
+            }
+        },
+        () => {
+            setToggle('toggle-zones', true);
+            if (domain1BoundsGlobal) {
+                map.fitBounds(domain1BoundsGlobal, { padding: 120, maxZoom: 3.2, duration: 1200 });
+            }
+        },
+    ];
+
+    const storyExitActions = {
+        1: () => { setToggle('toggle-krill', false); setToggle('toggle-whale', false); },
+        2: () => { setToggle('toggle-zones', false); },
+    };
+    let activeStorySectionIndex = 0;
+
+    window.resetStoryView = function resetStoryView() {
+        if (storyExitActions[activeStorySectionIndex]) storyExitActions[activeStorySectionIndex]();
+        setToggle('toggle-zones', true);
+        setToggle('toggle-sgssi-mpa', true);
+        setToggle('toggle-mpa', true);
+        setToggle('toggle-krill', false);
+        setToggle('toggle-whale', false);
+        if (sgssiBoundsGlobal) {
+            map.fitBounds(sgssiBoundsGlobal, { padding: { top: 150, bottom: 150, left: 150, right: 720 }, maxZoom: 2.2, duration: 1000 });
+        }
+        document.querySelectorAll('.story-section').forEach((s, i) => s.classList.toggle('active', i === 0));
+        activeStorySectionIndex = 0;
+    };
+
+    function activateStorySection(index) {
+        if (activeStorySectionIndex !== index && storyExitActions[activeStorySectionIndex]) {
+            storyExitActions[activeStorySectionIndex]();
+        }
+        activeStorySectionIndex = index;
+        document.querySelectorAll('.story-section').forEach((s, i) => s.classList.toggle('active', i === index));
+        if (storyActions[index]) storyActions[index]();
+    }
+
+    document.querySelectorAll('.story-section-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const section = header.parentElement;
+            activateStorySection(Number(section.dataset.index));
+        });
+    });
+
+    document.getElementById('btn-story').addEventListener('click', () => {
+        activateStorySection(0);
+    });
+
+    // Story panel is open by default with section 0 active, apply its landing map state on load.
+    activateStorySection(0);
 </script>
 
 </body>
