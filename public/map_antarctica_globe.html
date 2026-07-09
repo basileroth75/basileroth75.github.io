@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aker fishing vessels</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" />
+    <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/deck.gl@9.0.35/dist.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="33df49ab-9727-47b2-a633-58fb79e81537"></script>
+    <style>
+        :root {
+            --textColor: white;
+            --linkColor: white;
+            --highlightColor: rgb(0, 200, 255);
+            --activeGrayColor: rgba(255, 255, 255, 0.2);
+        }
+
+        * { box-sizing: border-box; }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-size: 14px;
+            background-color: black;
+            color: var(--textColor);
+        }
+        a { color: var(--linkColor); }
+        p { margin-top: 0; }
+        h1, h2 { font-weight: normal; }
+        input { accent-color: var(--highlightColor); }
+        @media (hover: hover) { a:hover { color: var(--highlightColor); } }
+
+        #map-wrapper {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            margin: 0; z-index: 999; overflow: hidden;
+        }
+        #map { width: 100%; height: 100%; z-index: 1; background: #000; }
+        .maplibregl-map { filter: brightness(1.5); }
+
+        /* --- PREMIUM TOOLTIPS --- */
+        .custom-tooltip {
+            background: rgba(20, 24, 28, 0.95);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+            padding: 12px 16px; color: #cbd5e1; font-size: 11px; line-height: 1.6;
+        }
+        .custom-tooltip b { color: #f8fafc; font-weight: 600; }
+        .tooltip-title { font-weight: 600; font-size: 12px; margin-bottom: 8px; color: #fff; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1);}
+        /* --- FLOATING BUTTONS --- */
+        .floating-btn {
+            position: absolute; top: 20px;
+            background-color: #111;
+            color: var(--textColor); border: 1px solid var(--textColor);
+            padding: 9px 14px; border-radius: 3px;
+            box-shadow: none;
+            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+            z-index: 1000; cursor: pointer; transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 8px; font-family: inherit;
+        }
+        .floating-btn:hover { background: var(--highlightColor); border-color: var(--highlightColor); color: #000; }
+        .floating-btn.hidden { opacity: 0; pointer-events: none; transform: translateY(-10px); }
+
+        /* --- REDESIGNED UI PANELS --- */
+        .panel-container {
+            position: absolute; top: 0;
+            backdrop-filter: none; -webkit-backdrop-filter: none;
+            color: var(--textColor); border: 0;
+            padding: 1.5rem; border-radius: 0;
+            box-shadow: none;
+            font-size: 14px; z-index: 1000;
+            width: 480px; max-width: 100vw; height: 100%; max-height: 100vh; overflow-y: scroll;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            background-color: rgba(0, 0, 0, 0.65);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .panel-container.hidden { opacity: 0; pointer-events: none; transform: translateY(-10px); }
+        .panel-container::-webkit-scrollbar { width: 6px; }
+        .panel-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0; padding-bottom: 0; border-bottom: 0; }
+        .panel-title { font-weight: normal; font-size: 1.5rem; color: #fff; letter-spacing: 0; }
+        .close-btn { background: transparent; border: none; color: #64748b; font-size: 20px; cursor: pointer; padding: 0; line-height: 1; transition: color 0.2s; }
+        .close-btn:hover { color: #00c8ff; }
+
+        .control-section { margin-bottom: 0; }
+        .control-section:last-child { margin-bottom: 0; }
+        .section-title { font-weight: normal; font-size: 1.15rem; margin-bottom: 1rem; color: #fff; text-transform: none; letter-spacing: 0;}
+
+        /* Checkboxes & Items */
+        .toggle-item, .legend-item { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+        .toggle-item { cursor: pointer; transition: color 0.2s; }
+        .toggle-item:hover { color: #fff; }
+
+        .toggle-item input[type="checkbox"] { accent-color: #00c8ff; }
+
+        .mini-toggles { margin-top: 0.5rem; }
+        .mini-toggles .toggle-item { gap: 6px; margin-bottom: 6px; font-size: 10.5px; color: #8b949e; }
+        .mini-toggles .toggle-item input[type="checkbox"] { width: 11px; height: 11px; }
+
+        .legend-color { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+        .legend-line { width: 16px; height: 3px; flex-shrink: 0; border-radius: 2px; }
+        .legend-gradient-group { margin-bottom: 8px; }
+        .legend-gradient-group:last-child { margin-bottom: 0; }
+        .legend-gradient-label { font-size: 11px; color: #8b949e; margin-bottom: 6px; }
+        .legend-gradient-bar { width: 100%; height: 8px; border-radius: 4px; box-shadow: inset 0 0 2px rgba(0,0,0,0.5); }
+        .gradient-labels { display: flex; justify-content: space-between; font-size: 10px; color: #64748b; margin-top: 4px; }
+
+        /* --- TIMELINE STYLES --- */
+        .anim-controls { background: transparent; padding: 0; border-radius: 0; border: 0; }
+        .timeControl { position: relative; }
+        .timePlayer { display: flex; gap: 0.5rem; margin: 0.5rem 0; align-items: flex-end; margin-right: 6.5rem; }
+        .u-flex { display: flex; align-items: center; justify-content: space-between; }
+        .time { position: absolute; right: 0.5rem; top: 0.5rem; font-size: 1rem; white-space: nowrap; }
+        .sameYear { cursor: pointer; }
+        button, .action-btn {
+            text-align: center;
+            color: var(--textColor);
+            border-radius: 3px;
+            border: 1px solid var(--textColor);
+            background-color: #111;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        @media (hover: hover) { button:hover, .action-btn:hover { background-color: var(--highlightColor); color: #000; } }
+        .playPauseButton {
+            flex: 0 0 auto;
+            display: flex;
+            width: 2.5rem;
+            height: 2.5rem;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+        }
+        .playPauseButton::after {
+            box-sizing: border-box;
+            content: "";
+            display: block;
+            width: 12px;
+            height: 12px;
+            border-style: solid;
+            transition: 100ms all ease;
+            will-change: border-width;
+        }
+        .playPauseButton.play::after {
+            border-width: 6px 0 6px 12px;
+            border-color: transparent transparent transparent var(--textColor);
+        }
+        .playPauseButton.pause::after {
+            border-style: double;
+            border-width: 0 0 0 12px;
+            border-color: var(--textColor);
+        }
+        .timeScale { flex-grow: 1; flex-shrink: 0; }
+        .speedIndicator {
+            margin-left: 0.5rem;
+            height: 1rem;
+            width: 2rem;
+            background: black linear-gradient(to right, var(--highlightColor) var(--level), transparent var(--level), transparent 100%);
+            clip-path: polygon(0 100%, 100% 0, 100% 100%);
+        }
+        .timeControl input[type="checkbox"] { margin: 0.5rem 0.5rem 0 0; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; accent-color: var(--highlightColor); }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+            background: var(--highlightColor); cursor: pointer; margin-top: -6px; border: 2px solid #fff;
+        }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 4px; cursor: pointer; background: rgba(255,255,255,0.28); border-radius: 2px; }
+
+        /* --- BOAT PROFILE CARD --- */
+        .entity-profile {
+            display: flex; align-items: center; gap: 0.75rem;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.6rem 0.75rem; border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-left: 5px solid transparent;
+            cursor: pointer; transition: 0.2s all ease;
+            opacity: 0.55; filter: grayscale(1); margin-bottom: 0.6rem;
+            position: relative;
+        }
+        .entity-profile::after {
+            content: 'OFF';
+            position: absolute; top: 8px; right: 10px;
+            font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+            color: #8b949e; border: 1px solid #8b949e; border-radius: 10px;
+            padding: 2px 7px;
+        }
+        .entity-profile.selected::after {
+            content: 'ON';
+            color: #00c8ff; border-color: #00c8ff;
+        }
+        .entity-profile:hover { background-color: var(--activeGrayColor); opacity: 1; filter: grayscale(0); border-color: rgba(255,255,255,0.35); transform: translateY(-1px); }
+        .entity-profile.selected { background: rgba(255, 255, 255, 0.06); opacity: 1; filter: grayscale(0); }
+        #focus-vessel-1-btn.selected { border-left-color: #ff3a3a; }
+        #focus-vessel-2-btn.selected { border-left-color: #ff9800; }
+        .entity-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: #21262d; box-shadow: inset 0 0 10px #000; }
+        .entity-details { display: flex; flex-direction: column; gap: 8px; width: 100%; padding-right: 40px; }
+        .entity-name { font-size: 15px; font-weight: 500; color: #fff; border-bottom: 0; padding-bottom: 0;}
+        .entity-legend-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #8b949e; margin-top: 8px; }
+        .entity-info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; border-top: 0; padding-top: 2px; }
+        .entity-info-item { font-size: 11px; }
+        .entity-info-item-label { color: #8b949e; }
+        .entity-info-item-value { color: #c9d1d9; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+        .count-text { font-size: 11px; color: #8b949e; text-align: left; margin-left: 28px; }
+        .credits { font-size: 0.8rem; line-height: 1.45; opacity: 0.5; text-align: right; color: var(--textColor); }
+        .credits a { color: var(--linkColor); text-decoration: underline; text-underline-offset: 2px; }
+        .credit-box {
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            background: rgba(0, 0, 0, 0.28);
+            padding: 0.75rem;
+            font-size: 0.8rem;
+            line-height: 1.45;
+        }
+        .credit-box p { margin-bottom: 0.5rem; }
+        .credit-box p:last-child { margin-bottom: 0; }
+
+        /* --- STORY PANEL / ACCORDION --- */
+        .story-sections { display: flex; flex-direction: column; gap: 0.75rem; }
+        .story-section {
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            overflow: hidden;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+        .story-section:hover { border-color: rgba(0, 200, 255, 0.5); }
+        .story-section.active { border-color: rgba(0, 200, 255, 0.6); background: rgba(0, 200, 255, 0.06); }
+        .story-section-header {
+            display: flex; align-items: center; gap: 10px;
+            padding: 0.85rem 1rem;
+            cursor: pointer;
+            font-size: 14px; font-weight: 500; color: #fff;
+            user-select: none;
+        }
+        .story-section-num { font-size: 11px; font-weight: 700; color: #00c8ff; letter-spacing: 0.5px; }
+        .story-chevron { margin-left: auto; color: #8b949e; transition: transform 0.2s ease; }
+        .story-section.active .story-chevron { transform: rotate(180deg); color: #00c8ff; }
+        .story-section-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.35s ease, padding 0.35s ease;
+            padding: 0 1rem;
+            font-size: 13px; line-height: 1.65; color: #cbd5e1;
+        }
+        .story-section-body p { margin-top: 0; margin-bottom: 0.85rem; }
+        .story-section-body p:last-child { margin-bottom: 0; }
+        .story-section.active .story-section-body {
+            max-height: 1000px;
+            padding: 0 1rem 1rem;
+        }
+
+        /* --- HIGHLIGHT EFFECT --- */
+        .highlight-pulse {
+            animation: pulse-animation 1.5s ease-out;
+        }
+        @keyframes pulse-animation { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+
+        @media screen and (max-width: 800px) {
+            body { font-size: 12px; }
+            .panel-container {
+                top: auto !important;
+                bottom: 0;
+                left: 0 !important;
+                right: 0 !important;
+                width: 100%;
+                height: auto;
+                max-height: 58vh;
+                background: linear-gradient(transparent, rgba(0, 0, 0, 1));
+                padding: 1rem;
+            }
+            .panel-container.hidden { transform: translateY(10px); }
+            .panel-title { font-size: 18px; }
+            .floating-btn { top: 12px; }
+            #btn-story { top: 54px; }
+            .entity-info-grid { display: none; }
+            .entity-profile { min-width: 150px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="map-wrapper">
+    <div id="map"></div>
+
+    <button id="btn-story" class="floating-btn hidden" style="left: 20px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        The Krill Story
+    </button>
+    <button id="btn-legend" class="floating-btn hidden" style="right: 20px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+       Fishing vessels tracking and MPAs
+    </button>
+
+    <div id="story-panel" class="panel-container" style="left: 0; right: auto;">
+        <div class="panel-header">
+            <div class="panel-title">The Krill Story</div>
+            <button id="close-story" class="close-btn">×</button>
+        </div>
+
+        <div class="control-section story-sections">
+            <div class="story-section active" data-index="0">
+                <div class="story-section-header">
+                    <span class="story-section-num">01</span>
+                    <span>A keystone the size of a paperclip</span>
+                    <span class="story-chevron">▾</span>
+                </div>
+                <div class="story-section-body">
+                    <p>Krill are barely the length of a paperclip, but the entire Southern Ocean is built on them. This shrimp-like crustacean is a keystone species for the food web: it feeds whales, seals, penguins, and seabirds across the entire ecosystem. And yet, every year, industrial trawlers descend on this remote ecosystem to harvest it by the hundreds of thousands of tons, led overwhelmingly by the Norwegian company Aker BioMarine. With its two trawlers under the Norwegian flag, Antarctic Endurance and Saga Sea, it vacuums out as much as 62% of the total yearly krill catch.</p>
+                    <p>But most of what's caught doesn't feed people. It becomes aquaculture feed for farmed fish on the other side of the planet, oil supplements, and pet food. Aker BioMarine is even the recipient of millions of dollars in subsidies from the Norwegian government in order to remain competitive.</p>
+                </div>
+            </div>
+            <div class="story-section" data-index="1">
+                <div class="story-section-header">
+                    <span class="story-section-num">02</span>
+                    <span>Where the fishing concentrates</span>
+                    <span class="story-chevron">▾</span>
+                </div>
+                <div class="story-section-body">
+                    <p>Zoom in, and the impact of that extraction comes into focus. Here, fishing is governed by the Commission for the Conservation of Antarctic Marine Living Resources (CCAMLR), which set an overall catch trigger of 620,000 tonnes for krill. Aker BioMarine claims that, since it's a small fraction of total estimated krill biomass, it's proof the fishery is sustainable. But total catch limits obscure localized harm.</p>
+                    <p>Fishing vessels cluster exactly where krill, and the marine predators that depend on it, are most concentrated: the western Antarctic Peninsula, the South Orkney Islands, and South Georgia. In 2022, catch concentration there reached its highest level in 38 years (Cruz et al., 2022), and local catch can now rival or exceed what marine predators need, and even the standing stock of krill itself (Trathan et al., 2021). This is in addition to the already severe impacts of climate change, disrupting the Antarctic climate and the delicate balance of its food webs. Calling a regional catch quota "sustainable" is meaningless if the harvest is happening in the one place the ecosystem is least resilient to it.</p>
+                </div>
+            </div>
+            <div class="story-section" data-index="2">
+                <div class="story-section-header">
+                    <span class="story-section-num">03</span>
+                    <span>A fix that's already on the table</span>
+                    <span class="story-chevron">▾</span>
+                </div>
+                <div class="story-section-body">
+                    <p>This crisis has a fix, and it's already been sitting on the table. It's spatialization: dividing the fishing quota across sub-regions to spread out fishing pressure. CCAMLR used to do just this, until member states failed to renew the rule in 2024. The industry's answer was to accelerate. In 2025, for the first time, the entire 620,000-tonne limit could be taken from anywhere within the zone, and the fishery shut down early from the resulting hyper-concentration of catch from Aker BioMarine and others. This year again, the fishing quota has been met faster than ever.</p>
+                    <p>Meanwhile, the Domain 1 Marine Protected Area, a proposed no-take zone around the Antarctic Peninsula where fishing pressure currently concentrates, has been repeatedly blocked for nearly a decade.</p>
+                    <p>Adopting spatialization measures and the Domain 1 marine protected area are two sides of the same coin: an Antarctic krill fishery held to the limits of what the ecosystem will bear. What's clear is who is benefiting from this: a handful of companies, Aker BioMarine foremost among them, are extracting a keystone species for economic benefit, so it can end up in a salmon pellet or supplement capsule.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-section mini-toggles">
+            <label class="toggle-item"><input type="checkbox" id="toggle-zones" checked> <span>Domain-1 Marine Protected Areas</span></label>
+            <label class="toggle-item"><input type="checkbox" id="toggle-sgssi-mpa" checked> <span>South Georgia & South Sandwich Islands MPA</span></label>
+            <label class="toggle-item"><input type="checkbox" id="toggle-mpa" checked> <span>South Orkney Islands MPA</span></label>
+            <label class="toggle-item"><input type="checkbox" id="toggle-krill"> <span>Krill Density Heatmap</span></label>
+            <label class="toggle-item"><input type="checkbox" id="toggle-whale"> <span>Whale Occurrences</span></label>
+        </div>
+    </div>
+
+    <div id="right-panel" class="panel-container" style="right: 0; left: auto;">
+        <div class="panel-header">
+            <div class="panel-title">Aker fishing vessels</div>
+            <button id="close-legend" class="close-btn">×</button>
+        </div>
+
+        <div class="control-section anim-controls timeControl">
+            <div class="time" id="anim-date-display">...</div>
+            <div class="timePlayer">
+                <button id="play-btn" class="playPauseButton play" aria-label="Play"></button>
+                <input class="timeScale" type="range" id="time-slider" min="0" max="100" value="100">
+            </div>
+            <div class="u-flex">
+                <label class="sameYear">
+                    <input type="checkbox" id="timeline-mode-btn" checked>
+                    Merge observations in a single year
+                </label>
+                <div class="u-flex">
+                    <button id="speed-btn">Speed</button>
+                    <div id="speed-indicator" class="speedIndicator" style="--level: 67%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Tracked Vessels</div>
+            <div class="entity-profile" id="focus-vessel-1-btn" title="Click to focus on vessel">
+                <img src="https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/img/antarctic.png" alt="Boat" class="entity-avatar" style="border: 2px solid #ff3a3a;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%2321262d\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\'/></svg>'">
+                <div class="entity-details">
+                    <div class="entity-name">Antarctic Endurance</div>
+                    <div class="entity-info-grid">
+                        <div class="entity-info-item">
+                            <div class="entity-info-item-label">Flag</div>
+                            <div class="entity-info-item-value">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 16" style="width: 18px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.1);">
+                                    <rect width="22" height="16" fill="#ef2b2d"/><path fill="#fff" d="M6 0h4v16H6z"/><path fill="#fff" d="M0 6h22v4H0z"/><path fill="#002868" d="M7 0h2v16H7z"/><path fill="#002868" d="M0 7h22v2H0z"/>
+                                </svg>
+                                <span>NOR</span>
+                            </div>
+                        </div>
+                        <div class="entity-info-item">
+                            <div class="entity-info-item-label">IMO</div>
+                            <div class="entity-info-item-value">9827891</div>
+                        </div>
+                        <div class="entity-info-item">
+                            <div class="entity-info-item-label">MMSI</div>
+                            <div class="entity-info-item-value">257400000</div>
+                        </div>
+                    </div>
+                    <div class="entity-legend-row">
+                        <div class="legend-color" style="border-radius: 50%; width: 6px; height: 6px; background: #ff3a3a;"></div>
+                        <span>Identified Fishing Event</span>
+                    </div>
+
+                </div>
+            </div>
+            <div class="entity-profile" id="focus-vessel-2-btn" title="Click to focus on vessel" style="margin-top: 12px;">
+                <img src="https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/img/saga.png" alt="Boat" class="entity-avatar" style="border: 2px solid #ff9800;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%2321262d\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\'/></svg>'">
+                <div class="entity-details">
+                    <div class="entity-name">Saga Sea</div>
+                    <div class="entity-info-grid">
+                        <div class="entity-info-item">
+                            <div class="entity-info-item-label">Flag</div>
+                            <div class="entity-info-item-value">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 16" style="width: 18px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.1);">
+                                    <rect width="22" height="16" fill="#ef2b2d"/><path fill="#fff" d="M6 0h4v16H6z"/><path fill="#fff" d="M0 6h22v4H0z"/><path fill="#002868" d="M7 0h2v16H7z"/><path fill="#002868" d="M0 7h22v2H0z"/>
+                                </svg>
+                                <span>NOR</span>
+                            </div>
+                        </div>
+                    <div class="entity-info-item">
+                            <div class="entity-info-item-label">IMO</div>
+                            <div class="entity-info-item-value">7390416</div>
+                        </div>
+                        <div class="entity-info-item">
+                            <div class="entity-info-item-label">MMSI</div>
+                            <div class="entity-info-item-value">259539000</div>
+                        </div>
+                    </div>
+                    <div class="entity-legend-row">
+                        <div class="legend-color" style="border-radius: 50%; width: 6px; height: 6px; background: #ff9800;"></div>
+                        <span>Identified Fishing Event</span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Proposed Domain-1 Marine Protected Areas</div>
+            <div id="dynamic-zone-legend" style="margin-bottom: 12px;"></div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Existing Marine Protected Areas</div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(29, 78, 216, 0.3); border: 1px solid #1d4ed8;"></div>
+                <span style="color: #8b949e; font-size: 11px;">South Georgia & South Sandwich Islands MPA</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: rgba(8, 145, 178, 0.3); border: 1px solid #0891b2;"></div>
+                <span style="color: #8b949e; font-size: 11px;">South Orkney Islands MPA</span>
+            </div>
+        </div>
+
+        <div class="control-section">
+            <div class="section-title">Marine Life Heatmaps</div>
+            <div class="legend-gradient-group">
+                <div class="legend-gradient-label">Krill Density</div>
+                <div class="legend-gradient-bar" style="background: linear-gradient(to right, #ffffd4, #fed98e, #fe9929, #d95f0e, #993404);"></div>
+                <div class="gradient-labels">
+                    <span>Low</span>
+                    <span>High</span>
+                </div>
+            </div>
+            <div class="legend-gradient-group">
+                <div class="legend-gradient-label">Whale Occurrences</div>
+                <div class="legend-gradient-bar" style="background: linear-gradient(to right, #f7fcf5, #ccece6, #99d8c9, #66c2a4, #2ca25f, #006d2c);"></div>
+                <div class="gradient-labels">
+                    <span>Low</span>
+                    <span>High</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-section credits">
+            <div class="section-title">Sources</div>
+            <p>
+                Vessel tracks and fishing events: <a href="https://globalfishingwatch.org/" target="_blank" rel="noopener noreferrer">Global Fishing Watch</a>.<br>
+                MPA boundaries: CCAMLR Domain 1 proposals, SGSSI MPA plan, South Orkney Islands MPA.<br>
+                Krill and whale layers: public occurrence and survey datasets compiled for this project.<br>
+                Basemap: OpenStreetMap and CARTO.
+            </p>
+        </div>
+
+        <div class="control-section credit-box">
+            <div class="section-title">Crédits</div>
+            <p><strong>Visualisation</strong><br>B. Roth</p>
+            <p><strong>Collecte des données</strong><br>_______</p>
+            <p><strong>Relecture scientifique</strong><br>_______</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function openStoryPanel() {
+        document.getElementById('story-panel').classList.remove('hidden');
+        document.getElementById('btn-story').classList.add('hidden');
+    }
+    function closeStoryPanel() {
+        if (typeof resetStoryView === 'function') resetStoryView();
+        document.getElementById('story-panel').classList.add('hidden');
+        document.getElementById('btn-story').classList.remove('hidden');
+    }
+    document.getElementById('btn-story').addEventListener('click', openStoryPanel);
+    document.getElementById('close-story').addEventListener('click', closeStoryPanel);
+    document.getElementById('btn-legend').addEventListener('click', () => {
+        document.getElementById('right-panel').classList.remove('hidden');
+        document.getElementById('btn-legend').classList.add('hidden');
+    });
+    document.getElementById('close-legend').addEventListener('click', () => {
+        document.getElementById('right-panel').classList.add('hidden');
+        document.getElementById('btn-legend').classList.remove('hidden');
+    });
+
+    const boatColors = { 'Antarctic Endurance': '#ff3a3a', 'Saga Sea': '#ff9800' };
+    const visibleVessels = new Set(['Antarctic Endurance', 'Saga Sea']);
+    const dayMs = 24 * 60 * 60 * 1000;
+    const seasonCycleMs = 366 * dayMs;
+    const seasonStartTime = Date.UTC(2020, 10, 10, 0, 0, 0);
+    const seasonEndTime = Date.UTC(2021, 10, 9, 23, 59, 59);
+    const maxTrackGapMs = 10 * dayMs;
+    const cycleDurationMs = [240000, 120000, 60000];
+    const speedLevels = ['34%', '67%', '100%'];
+    const tracksPayloadUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/tracks_fishing_groupable_payload.json';
+    const zonesGeoJsonUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/zones_with_months.geojson';
+    const sgssiMpaGeoJsonUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/sgssi_plan_no_take_zones.json';
+    const krillCsvUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/Krill_2011_2022.csv';
+    const whaleCsvUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/whale_gbif_2000-2026_fixed.csv';
+    const landGeoJsonUrl = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_land.geojson';
+
+    let sgssiBoundsGlobal = null;
+    let domain1BoundsGlobal = null;
+    let heatmapBoundsGlobal = null;
+    let allTracksData = [];
+    let allFishingData = [];
+    let trackGroups = { chronological: [], seasonal: [] };
+    let tripData = { chronological: [], seasonal: [] };
+    let timelineMode = 'chronological';
+    let globalMinTime;
+    let globalMaxTime;
+    let animMinTime;
+    let animMaxTime;
+    let animCurrentTime;
+    let isLoaded = false;
+    let isPlaying = false;
+    let playAnimationFrame;
+    let renderAnimationFrame;
+    let lastFrameTime;
+    let speedLevel = 1;
+
+    const playbackControls = [
+        document.getElementById('play-btn'),
+        document.getElementById('speed-btn'),
+        document.getElementById('timeline-mode-btn'),
+        document.getElementById('time-slider'),
+    ];
+    playbackControls.forEach(control => { control.disabled = true; });
+
+    const map = new maplibregl.Map({
+        container: 'map',
+        center: [-42, -54],
+        zoom: 2.0,
+        attributionControl: true,
+        style: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
+    });
+    map.on('style.load', () => map.setProjection({ type: 'globe' }));
+    map.addControl(new maplibregl.NavigationControl(), 'bottom-left');
+    map.addControl(new maplibregl.GlobeControl(), 'bottom-left');
+    const deckOverlay = new deck.MapboxOverlay({ interleaved: false, layers: [] });
+    map.addControl(deckOverlay);
+
+    function mapReady() {
+        return new Promise(resolve => map.on('load', resolve));
+    }
+
+    function getSeasonTime(date) {
+        return Date.UTC(2020, date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+    }
+
+    function getSeasonAxisTime(date) {
+        const seasonTime = getSeasonTime(date);
+        return seasonTime < seasonStartTime ? seasonTime + seasonCycleMs : seasonTime;
+    }
+
+    function getFishingSeasonYear(date) {
+        const seasonTime = getSeasonTime(date);
+        return seasonTime >= seasonStartTime ? date.getUTCFullYear() + 1 : date.getUTCFullYear();
+    }
+
+    function geojsonPoint(lon, lat, properties = {}) {
+        return { type: 'Feature', geometry: { type: 'Point', coordinates: [lon, lat] }, properties };
+    }
+
+    function hexToRgbArray(hex) {
+        const normalized = hex.replace('#', '');
+        return [
+            parseInt(normalized.slice(0, 2), 16),
+            parseInt(normalized.slice(2, 4), 16),
+            parseInt(normalized.slice(4, 6), 16),
+        ];
+    }
+
+    function buildTrips(groups, mode) {
+        const trips = [];
+        for (const points of groups) {
+            const boatSource = points[0].boatSource;
+            let path = [];
+            let timestamps = [];
+
+            function flushTrip() {
+                if (path.length > 1) {
+                    trips.push({
+                        boatSource,
+                        path,
+                        timestamps,
+                        color: hexToRgbArray(boatColors[boatSource]),
+                    });
+                }
+                path = [];
+                timestamps = [];
+            }
+
+            for (let i = 0; i < points.length - 1; i++) {
+                const a = points[i];
+                const b = points[i + 1];
+                const aTime = mode === 'seasonal' ? a.seasonAxisTime : a.chronoTime;
+                const bTime = mode === 'seasonal' ? b.seasonAxisTime : b.chronoTime;
+
+                if (!path.length) {
+                    path.push([a.lon, a.lat]);
+                    timestamps.push(aTime);
+                }
+
+                if (bTime - aTime > maxTrackGapMs) {
+                    flushTrip();
+                    continue;
+                }
+
+                path.push([b.lon, b.lat]);
+                timestamps.push(bTime);
+            }
+            flushTrip();
+        }
+        return trips;
+    }
+
+    function southOrkneyGeoJson() {
+        return {
+            type: 'FeatureCollection',
+            features: [{
+                type: 'Feature',
+                properties: { name: 'South Orkney Islands MPA' },
+                geometry: {
+                    type: 'Polygon',
+                    coordinates: [[[-41.0, -61.5], [-44.0, -61.5], [-44.0, -62.0], [-46.0, -62.0], [-46.0, -61.5], [-48.0, -61.5], [-48.0, -64.0], [-41.0, -64.0], [-41.0, -61.5]]],
+                },
+            }],
+        };
+    }
+
+    function boundsFromGeoJson(geojson) {
+        const bounds = [[Infinity, Infinity], [-Infinity, -Infinity]];
+        function visit(coords) {
+            if (!Array.isArray(coords)) return;
+            if (typeof coords[0] === 'number') {
+                bounds[0][0] = Math.min(bounds[0][0], coords[0]);
+                bounds[0][1] = Math.min(bounds[0][1], coords[1]);
+                bounds[1][0] = Math.max(bounds[1][0], coords[0]);
+                bounds[1][1] = Math.max(bounds[1][1], coords[1]);
+            } else {
+                coords.forEach(visit);
+            }
+        }
+        for (const feature of geojson.features || []) visit(feature.geometry && feature.geometry.coordinates);
+        return Number.isFinite(bounds[0][0]) ? bounds : null;
+    }
+
+    function addGeoJsonFill(id, geojson, fillColor, lineColor, visibility = 'visible') {
+        map.addSource(id, { type: 'geojson', data: geojson });
+        map.addLayer({ id: `${id}-fill`, type: 'fill', source: id, layout: { visibility }, paint: { 'fill-color': fillColor, 'fill-opacity': ['to-number', ['coalesce', ['get', '_fillOpacity'], 0.28]] } });
+        map.addLayer({ id: `${id}-line`, type: 'line', source: id, layout: { visibility }, paint: { 'line-color': lineColor, 'line-width': 1, 'line-opacity': 0.9 } });
+    }
+
+    function checkboxVisibility(checkboxId) {
+        return document.getElementById(checkboxId).checked ? 'visible' : 'none';
+    }
+
+    function setLayerVisibility(layerIds, visible) {
+        for (const layerId of layerIds) {
+            if (map.getLayer(layerId)) map.setLayoutProperty(layerId, 'visibility', visible ? 'visible' : 'none');
+        }
+    }
+
+    function initOrUpdateAnimation() {
+        animMinTime = timelineMode === 'seasonal' ? seasonStartTime : globalMinTime;
+        animMaxTime = timelineMode === 'seasonal' ? seasonEndTime : globalMaxTime;
+        animCurrentTime = animMinTime;
+        fishingMaxTime = animMinTime;
+        const slider = document.getElementById('time-slider');
+        slider.max = animMaxTime;
+        slider.min = animMinTime;
+        slider.value = animCurrentTime;
+        updateAnimDateDisplay();
+    }
+
+    function updateAnimDateDisplay() {
+        if (!Number.isFinite(Number(animCurrentTime))) animCurrentTime = animMinTime;
+        const date = new Date(Number(animCurrentTime));
+        if (Number.isNaN(date.getTime())) {
+            document.getElementById('anim-date-display').innerText = 'Loading';
+            return;
+        }
+        const options = timelineMode === 'seasonal'
+            ? { month: 'short', day: '2-digit', timeZone: 'UTC' }
+            : { month: 'short', day: '2-digit', year: 'numeric', timeZone: 'UTC' };
+        document.getElementById('anim-date-display').innerText = date.toLocaleString('en-US', options);
+    }
+
+    let fishingMaxTime;
+    let appliedFishingMaxTime = null;
+    let lastFishingSyncWallTime = 0;
+    const fishingSyncThrottleMs = 200;
+
+    function syncFishingLayer(force) {
+        if (!map.getLayer('animated-fishing')) return;
+        if (fishingMaxTime === appliedFishingMaxTime) return;
+        const nowWall = performance.now();
+        if (!force && isPlaying && (nowWall - lastFishingSyncWallTime) < fishingSyncThrottleMs) return;
+        lastFishingSyncWallTime = nowWall;
+        appliedFishingMaxTime = fishingMaxTime;
+
+        const timeProperty = timelineMode === 'seasonal' ? 'seasonAxisTime' : 'chronoTime';
+        const vessels = Array.from(visibleVessels);
+        const vesselFilter = vessels.length
+            ? ['in', ['get', 'boatSource'], ['literal', vessels]]
+            : ['==', 1, 0];
+        map.setFilter('animated-fishing', ['all', ['<=', ['get', timeProperty], fishingMaxTime], vesselFilter]);
+    }
+
+    function renderTracks(forceFishingSync) {
+        if (!Number.isFinite(Number(animCurrentTime))) return;
+        const currentEndMs = Number(animCurrentTime);
+        if (!Number.isFinite(fishingMaxTime)) fishingMaxTime = currentEndMs;
+        fishingMaxTime = Math.max(fishingMaxTime, currentEndMs);
+
+        deckOverlay.setProps({
+            layers: [
+                new deck.TripsLayer({
+                    id: 'aker-vessel-trips',
+                    data: (tripData[timelineMode] || []).filter(trip => visibleVessels.has(trip.boatSource)),
+                    getPath: trip => trip.path,
+                    getTimestamps: trip => trip.timestamps,
+                    getColor: trip => trip.color,
+                    getWidth: 2,
+                    widthMinPixels: 1,
+                    widthMaxPixels: 4,
+                    opacity: 0.75,
+                    currentTime: currentEndMs,
+                    trailLength: 14 * dayMs,
+                    capRounded: false,
+                    jointRounded: false,
+                    shadowEnabled: false,
+                    parameters: { blend: true },
+                }),
+            ],
+        });
+
+        syncFishingLayer(forceFishingSync);
+    }
+
+    function scheduleRenderTracks() {
+        if (renderAnimationFrame) return;
+        renderAnimationFrame = window.requestAnimationFrame(() => {
+            renderAnimationFrame = null;
+            renderTracks();
+        });
+    }
+
+    function stopPlayback() {
+        isPlaying = false;
+        const playButton = document.getElementById('play-btn');
+        playButton.classList.remove('pause');
+        playButton.classList.add('play');
+        playButton.setAttribute('aria-label', 'Play');
+        if (playAnimationFrame) window.cancelAnimationFrame(playAnimationFrame);
+        playAnimationFrame = null;
+        lastFrameTime = null;
+        renderTracks(true);
+    }
+
+    function startPlayback() {
+        lastFrameTime = null;
+        function tick(frameTime) {
+            if (!isPlaying) return;
+            if (lastFrameTime == null) lastFrameTime = frameTime;
+            const elapsed = frameTime - lastFrameTime;
+            lastFrameTime = frameTime;
+            const range = animMaxTime - animMinTime;
+            animCurrentTime += range * elapsed / cycleDurationMs[speedLevel];
+            if (animCurrentTime >= animMaxTime) {
+                animCurrentTime = animMaxTime;
+                renderTracks(true);
+                animCurrentTime = animMinTime;
+            }
+            document.getElementById('time-slider').value = animCurrentTime;
+            updateAnimDateDisplay();
+            scheduleRenderTracks();
+            playAnimationFrame = window.requestAnimationFrame(tick);
+        }
+        if (playAnimationFrame) window.cancelAnimationFrame(playAnimationFrame);
+        playAnimationFrame = window.requestAnimationFrame(tick);
+    }
+
+    document.getElementById('timeline-mode-btn').addEventListener('change', function() {
+        if (!isLoaded || !allTracksData.length) return;
+        const wasPlaying = isPlaying;
+        if (isPlaying) stopPlayback();
+        timelineMode = this.checked ? 'seasonal' : 'chronological';
+        initOrUpdateAnimation();
+        scheduleRenderTracks();
+        if (wasPlaying) {
+            isPlaying = true;
+            const playButton = document.getElementById('play-btn');
+            playButton.classList.add('pause');
+            playButton.classList.remove('play');
+            playButton.setAttribute('aria-label', 'Pause');
+            startPlayback();
+        }
+    });
+    document.getElementById('speed-btn').addEventListener('click', function() {
+        if (!isLoaded) return;
+        speedLevel = (speedLevel + 1) % 3;
+        document.getElementById('speed-indicator').style.setProperty('--level', speedLevels[speedLevel]);
+    });
+    document.getElementById('play-btn').addEventListener('click', function() {
+        if (!isLoaded) return;
+        if (isPlaying) {
+            stopPlayback();
+        } else {
+            isPlaying = true;
+            this.classList.add('pause');
+            this.classList.remove('play');
+            this.setAttribute('aria-label', 'Pause');
+            if (animCurrentTime >= animMaxTime) {
+                animCurrentTime = animMinTime;
+                document.getElementById('time-slider').value = animCurrentTime;
+            }
+            startPlayback();
+        }
+    });
+    document.getElementById('time-slider').addEventListener('input', function() {
+        if (!isLoaded) return;
+        animCurrentTime = Number(this.value);
+        updateAnimDateDisplay();
+        scheduleRenderTracks();
+    });
+
+    Promise.all([
+        mapReady(),
+        d3.json(tracksPayloadUrl),
+        d3.json(zonesGeoJsonUrl),
+        d3.json(sgssiMpaGeoJsonUrl),
+        d3.dsv(';', krillCsvUrl),
+        d3.csv(whaleCsvUrl),
+        d3.json(landGeoJsonUrl),
+    ]).then(([, tracksPayload, zonesGeoJson, sgssiMpaGeoJson, krillData, whaleData, landGeoJson]) => {
+        const uniquePeriods = Array.from(new Set(zonesGeoJson.features.map(f => f.properties.protected ? f.properties.protected.trim() : 'Not Specified'))).sort((a, b) => a.localeCompare(b));
+        const zoneColorScale = d3.scaleOrdinal(d3.schemeGreens[Math.max(3, Math.min(9, uniquePeriods.length))]).domain(uniquePeriods);
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+        function formatPeriod(period, forLegend = false) {
+            const trimmedPeriod = period.trim();
+            if (trimmedPeriod === 'All year') return 'Restricted all year';
+            if (trimmedPeriod.includes('-')) {
+                const [startMonthNum, endMonthNum] = trimmedPeriod.split('-').map(s => parseInt(s.trim(), 10));
+                if (!Number.isNaN(startMonthNum) && !Number.isNaN(endMonthNum)) {
+                    return forLegend ? `From ${monthNames[startMonthNum - 1]} to ${monthNames[endMonthNum - 1]}` : `Restricted from ${monthNames[startMonthNum - 1]} to ${monthNames[endMonthNum - 1]}`;
+                }
+            }
+            return period;
+        }
+
+        document.getElementById('dynamic-zone-legend').innerHTML = uniquePeriods.map(period => {
+            const color = zoneColorScale(period);
+            const borderColor = d3.rgb(color).darker(1.2);
+            return `<div class="legend-item" style="margin-bottom: 8px; font-size: 11px; color: #8b949e;"><div class="legend-color" style="background: ${color}; opacity: 0.5; border: 1px solid ${borderColor};"></div><span> ${formatPeriod(period, true)}</span></div>`;
+        }).join('');
+
+        zonesGeoJson.features.forEach(feature => {
+            const period = feature.properties.protected ? feature.properties.protected.trim() : 'Not Specified';
+            feature.properties._color = zoneColorScale(period);
+            feature.properties._border = d3.rgb(zoneColorScale(period)).darker(1.2).formatHex();
+            feature.properties._fillOpacity = 0.24;
+        });
+        domain1BoundsGlobal = boundsFromGeoJson(zonesGeoJson);
+
+        addGeoJsonFill('domain-zones', zonesGeoJson, ['get', '_color'], ['get', '_border'], checkboxVisibility('toggle-zones'));
+        addGeoJsonFill('sgssi-mpa', sgssiMpaGeoJson, '#1d4ed8', '#1d4ed8', checkboxVisibility('toggle-sgssi-mpa'));
+        addGeoJsonFill('south-orkney-mpa', southOrkneyGeoJson(), '#0891b2', '#0891b2', checkboxVisibility('toggle-mpa'));
+
+        const krillFeatures = krillData
+            .map(d => ({ lat: parseFloat(d.latitude), lon: parseFloat(d.Longitude), quantity: parseFloat(d.Quantity) }))
+            .filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon) && !Number.isNaN(d.quantity))
+            .map(d => geojsonPoint(d.lon, d.lat, { quantity: d.quantity }));
+        const whaleFeatures = whaleData
+            .map(d => ({ lat: parseFloat(d.decimalLatitude), lon: parseFloat(d.decimalLongitude) }))
+            .filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon))
+            .map(d => geojsonPoint(d.lon, d.lat));
+        heatmapBoundsGlobal = boundsFromGeoJson({ type: 'FeatureCollection', features: [...krillFeatures, ...whaleFeatures] });
+
+        map.addSource('krill-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: krillFeatures } });
+        map.addLayer({
+            id: 'krill-heatmap',
+            type: 'heatmap',
+            source: 'krill-heatmap',
+            layout: { visibility: checkboxVisibility('toggle-krill') },
+            paint: {
+                'heatmap-weight': ['interpolate', ['linear'], ['to-number', ['get', 'quantity']], 0, 0, 100, 1],
+                'heatmap-radius': 14,
+                'heatmap-opacity': 0.5,
+                'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(255,255,212,0)', 0.35, '#fed98e', 0.55, '#fe9929', 0.75, '#d95f0e', 1, '#993404'],
+            },
+        });
+        map.addSource('whale-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: whaleFeatures } });
+        map.addLayer({
+            id: 'whale-heatmap',
+            type: 'heatmap',
+            source: 'whale-heatmap',
+            layout: { visibility: checkboxVisibility('toggle-whale') },
+            paint: {
+                'heatmap-radius': 16,
+                'heatmap-opacity': 0.5,
+                'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(247,252,245,0)', 0.35, '#ccece6', 0.55, '#66c2a4', 0.8, '#2ca25f', 1, '#006d2c'],
+            },
+        });
+
+        map.addSource('land-foreground', { type: 'geojson', data: landGeoJson });
+        map.addLayer({
+            id: 'land-foreground-fill',
+            type: 'fill',
+            source: 'land-foreground',
+            paint: {
+                'fill-color': '#141414',
+                'fill-opacity': 1,
+            },
+        });
+        map.addLayer({
+            id: 'land-foreground-line',
+            type: 'line',
+            source: 'land-foreground',
+            paint: {
+                'line-color': 'rgba(255,255,255,0.35)',
+                'line-width': 0.75,
+            },
+        });
+
+        allTracksData = tracksPayload.vessels.flatMap(vessel => vessel.tracks.map(point => {
+            const dateObj = new Date(point.date);
+            return { boatSource: vessel.name, dateObj, lat: parseFloat(point.lat), lon: parseFloat(point.lon), chronoTime: dateObj.getTime(), seasonTime: getSeasonTime(dateObj), seasonAxisTime: getSeasonAxisTime(dateObj), year: dateObj.getUTCFullYear(), seasonYear: getFishingSeasonYear(dateObj) };
+        })).filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon) && !Number.isNaN(d.chronoTime)).sort((a, b) => a.chronoTime - b.chronoTime);
+        allFishingData = tracksPayload.vessels.flatMap(vessel => vessel.fishing.map(event => {
+            const dateObj = new Date(event.date);
+            return { boatSource: vessel.name, dateObj, lat: parseFloat(event.lat), lon: parseFloat(event.lon), chronoTime: dateObj.getTime(), seasonTime: getSeasonTime(dateObj), seasonAxisTime: getSeasonAxisTime(dateObj), year: dateObj.getUTCFullYear(), seasonYear: getFishingSeasonYear(dateObj) };
+        })).filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon) && !Number.isNaN(d.chronoTime)).sort((a, b) => a.chronoTime - b.chronoTime);
+        trackGroups = {
+            chronological: Array.from(d3.group(allTracksData, d => d.boatSource).values()).map(points => points.slice().sort((a, b) => a.chronoTime - b.chronoTime)),
+            seasonal: Array.from(d3.group(allTracksData, d => `${d.boatSource}:${d.seasonYear}`).values()).map(points => points.slice().sort((a, b) => a.seasonAxisTime - b.seasonAxisTime)),
+        };
+        tripData = {
+            chronological: buildTrips(trackGroups.chronological, 'chronological'),
+            seasonal: buildTrips(trackGroups.seasonal, 'seasonal'),
+        };
+        globalMinTime = d3.min(allTracksData, d => d.chronoTime);
+        globalMaxTime = d3.max(allTracksData, d => d.chronoTime);
+
+        map.addSource('animated-fishing', {
+            type: 'geojson',
+            data: {
+                type: 'FeatureCollection',
+                features: allFishingData.map(event => geojsonPoint(event.lon, event.lat, {
+                    boatSource: event.boatSource,
+                    chronoTime: event.chronoTime,
+                    seasonAxisTime: event.seasonAxisTime,
+                    color: boatColors[event.boatSource],
+                })),
+            },
+        });
+        map.addLayer({ id: 'animated-fishing', type: 'circle', source: 'animated-fishing', paint: { 'circle-radius': 1.1, 'circle-color': ['get', 'color'], 'circle-opacity': 0.9, 'circle-stroke-width': 0 } });
+
+        timelineMode = 'seasonal';
+        document.getElementById('timeline-mode-btn').checked = true;
+        initOrUpdateAnimation();
+        renderTracks();
+
+        const sgssiBounds = boundsFromGeoJson(sgssiMpaGeoJson);
+        sgssiBoundsGlobal = sgssiBounds;
+        if (sgssiBounds) map.fitBounds(sgssiBounds, { padding: { top: 150, bottom: 150, left: 150, right: 720 }, maxZoom: 2.2 });
+
+        document.getElementById('focus-vessel-1-btn').classList.add('selected');
+        document.getElementById('focus-vessel-2-btn').classList.add('selected');
+        isLoaded = true;
+        playbackControls.forEach(control => { control.disabled = false; });
+        isPlaying = true;
+        const playButton = document.getElementById('play-btn');
+        playButton.classList.add('pause');
+        playButton.classList.remove('play');
+        playButton.setAttribute('aria-label', 'Pause');
+        startPlayback();
+    }).catch(error => console.error('Error loading data:', error));
+
+    document.getElementById('toggle-zones').addEventListener('change', event => setLayerVisibility(['domain-zones-fill', 'domain-zones-line'], event.target.checked));
+    document.getElementById('toggle-sgssi-mpa').addEventListener('change', event => setLayerVisibility(['sgssi-mpa-fill', 'sgssi-mpa-line'], event.target.checked));
+    document.getElementById('toggle-mpa').addEventListener('change', event => setLayerVisibility(['south-orkney-mpa-fill', 'south-orkney-mpa-line'], event.target.checked));
+    document.getElementById('toggle-krill').addEventListener('change', event => setLayerVisibility(['krill-heatmap'], event.target.checked));
+    document.getElementById('toggle-whale').addEventListener('change', event => setLayerVisibility(['whale-heatmap'], event.target.checked));
+
+    function setupVesselToggle(vesselName, profileId) {
+        const profile = document.getElementById(profileId);
+        profile.addEventListener('click', () => {
+            if (visibleVessels.has(vesselName)) visibleVessels.delete(vesselName);
+            else visibleVessels.add(vesselName);
+            profile.classList.toggle('selected', visibleVessels.has(vesselName));
+            scheduleRenderTracks();
+        });
+    }
+    setupVesselToggle('Antarctic Endurance', 'focus-vessel-1-btn');
+    setupVesselToggle('Saga Sea', 'focus-vessel-2-btn');
+
+    function setToggle(checkboxId, checked) {
+        const el = document.getElementById(checkboxId);
+        if (el.checked !== checked) {
+            el.checked = checked;
+            el.dispatchEvent(new Event('change'));
+        }
+    }
+
+    const storyActions = [
+        () => {
+            setToggle('toggle-zones', false);
+            setToggle('toggle-sgssi-mpa', false);
+            setToggle('toggle-mpa', false);
+            setToggle('toggle-krill', false);
+            setToggle('toggle-whale', false);
+            map.flyTo({ center: [-42, -54], zoom: 2.0, duration: 1200 });
+        },
+        () => {
+            setToggle('toggle-krill', true);
+            setToggle('toggle-whale', true);
+            if (heatmapBoundsGlobal) {
+                map.fitBounds(heatmapBoundsGlobal, { padding: 150, maxZoom: 2.6, duration: 1200 });
+            }
+        },
+        () => {
+            setToggle('toggle-zones', true);
+            if (domain1BoundsGlobal) {
+                map.fitBounds(domain1BoundsGlobal, { padding: 120, maxZoom: 3.2, duration: 1200 });
+            }
+        },
+    ];
+
+    const storyExitActions = {
+        1: () => { setToggle('toggle-krill', false); setToggle('toggle-whale', false); },
+        2: () => { setToggle('toggle-zones', false); },
+    };
+    let activeStorySectionIndex = 0;
+
+    window.resetStoryView = function resetStoryView() {
+        if (storyExitActions[activeStorySectionIndex]) storyExitActions[activeStorySectionIndex]();
+        setToggle('toggle-zones', true);
+        setToggle('toggle-sgssi-mpa', true);
+        setToggle('toggle-mpa', true);
+        setToggle('toggle-krill', false);
+        setToggle('toggle-whale', false);
+        if (sgssiBoundsGlobal) {
+            map.fitBounds(sgssiBoundsGlobal, { padding: { top: 150, bottom: 150, left: 150, right: 720 }, maxZoom: 2.2, duration: 1000 });
+        }
+        document.querySelectorAll('.story-section').forEach((s, i) => s.classList.toggle('active', i === 0));
+        activeStorySectionIndex = 0;
+    };
+
+    function activateStorySection(index) {
+        if (activeStorySectionIndex !== index && storyExitActions[activeStorySectionIndex]) {
+            storyExitActions[activeStorySectionIndex]();
+        }
+        activeStorySectionIndex = index;
+        document.querySelectorAll('.story-section').forEach((s, i) => s.classList.toggle('active', i === index));
+        if (storyActions[index]) storyActions[index]();
+    }
+
+    document.querySelectorAll('.story-section-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const section = header.parentElement;
+            activateStorySection(Number(section.dataset.index));
+        });
+    });
+
+    document.getElementById('btn-story').addEventListener('click', () => {
+        activateStorySection(0);
+    });
+
+    // Story panel is open by default with section 0 active, apply its landing map state on load.
+    activateStorySection(0);
+</script>
+
+</body>
+
+
+</html>
