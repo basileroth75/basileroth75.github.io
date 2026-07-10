@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" />
     <script src="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.js"></script>
-    <script src="https://unpkg.com/deck.gl@9.0.35/dist.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script defer src="https://cloud.umami.is/script.js" data-website-id="33df49ab-9727-47b2-a633-58fb79e81537"></script>
     <style>
@@ -57,6 +56,20 @@
         }
         .custom-tooltip b { color: #f8fafc; font-weight: 600; }
         .tooltip-title { font-weight: 600; font-size: 12px; margin-bottom: 8px; color: #fff; padding-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1);}
+        /* --- MPA HOVER POPUP --- */
+        .maplibregl-popup.mpa-popup { z-index: 1001; }
+        .maplibregl-popup.mpa-popup .maplibregl-popup-content {
+            background: rgba(20, 24, 28, 0.95);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8);
+            padding: 8px 12px;
+            font-family: inherit; font-size: 12px;
+        }
+        .maplibregl-popup.mpa-popup .maplibregl-popup-tip { display: none; }
+        .mpa-popup-title { color: #f8fafc; font-weight: 600; }
+        .mpa-popup-sub { color: #8b949e; font-size: 11px; margin-top: 3px; }
         /* --- FLOATING BUTTONS --- */
         .floating-btn {
             position: absolute; top: 20px;
@@ -84,7 +97,7 @@
             background-color: rgba(0, 0, 0, 0.65);
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2rem;
         }
         .panel-container.hidden { opacity: 0; pointer-events: none; transform: translateY(-10px); }
         .panel-container::-webkit-scrollbar { width: 6px; }
@@ -97,10 +110,10 @@
 
         .control-section { margin-bottom: 0; }
         .control-section:last-child { margin-bottom: 0; }
-        .section-title { font-weight: normal; font-size: 1.15rem; margin-bottom: 1rem; color: #fff; text-transform: none; letter-spacing: 0;}
+        .section-title { font-weight: normal; font-size: 1.15rem; margin-bottom: 1.15rem; color: #fff; text-transform: none; letter-spacing: 0;}
 
         /* Checkboxes & Items */
-        .toggle-item, .legend-item { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+        .toggle-item, .legend-item { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
         .toggle-item { cursor: pointer; transition: color 0.2s; }
         .toggle-item:hover { color: #fff; }
 
@@ -118,11 +131,40 @@
         .legend-gradient-bar { width: 100%; height: 8px; border-radius: 4px; box-shadow: inset 0 0 2px rgba(0,0,0,0.5); }
         .gradient-labels { display: flex; justify-content: space-between; font-size: 10px; color: #64748b; margin-top: 4px; }
 
+        /* --- LAYER TOGGLE CARDS (legend = filter, matching the vessel cards) --- */
+        .layer-toggle {
+            display: flex; align-items: center; gap: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 0.6rem 0.75rem; border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            cursor: pointer; transition: 0.2s all ease;
+            opacity: 0.55; filter: grayscale(1); margin-bottom: 0.6rem;
+            position: relative; user-select: none;
+        }
+        .layer-toggle:last-child { margin-bottom: 0; }
+        .layer-toggle:hover { background-color: var(--activeGrayColor); opacity: 1; filter: grayscale(0); border-color: rgba(255,255,255,0.35); transform: translateY(-1px); }
+        .layer-toggle:has(input:checked) { opacity: 1; filter: grayscale(0); background: rgba(255, 255, 255, 0.06); }
+        .layer-toggle-input { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; pointer-events: none; }
+        .layer-toggle-swatch { width: 22px; height: 22px; border-radius: 5px; flex-shrink: 0; box-shadow: inset 0 0 2px rgba(0,0,0,0.5); }
+        .layer-toggle-body { display: flex; flex-direction: column; gap: 3px; flex-grow: 1; padding-right: 42px; }
+        .layer-toggle-label { font-size: 13px; font-weight: 500; color: #fff; }
+        .layer-toggle-sub { font-size: 10.5px; color: #8b949e; }
+        .layer-toggle::after {
+            content: 'OFF';
+            position: absolute; top: 50%; right: 10px; transform: translateY(-50%);
+            font-size: 9px; font-weight: 700; letter-spacing: 0.5px;
+            color: #8b949e; border: 1px solid #8b949e; border-radius: 10px;
+            padding: 2px 7px;
+        }
+        .layer-toggle:has(input:checked)::after { content: 'ON'; color: #00c8ff; border-color: #00c8ff; }
+        .layer-zone-legend { margin: 2px 0 0.6rem 0; padding-left: 34px; }
+
         /* --- TIMELINE STYLES --- */
         .anim-controls { background: transparent; padding: 0; border-radius: 0; border: 0; }
         .timeControl { position: relative; }
-        .timePlayer { display: flex; gap: 0.5rem; margin: 0.5rem 0; align-items: flex-end; margin-right: 6.5rem; }
+        .timePlayer { display: flex; gap: 0.5rem; margin: 0.75rem 0 1.75rem; align-items: flex-end; margin-right: 6.5rem; }
         .u-flex { display: flex; align-items: center; justify-content: space-between; }
+        .timeline-actions { margin-top: 0.5rem; }
         .time { position: absolute; right: 0.5rem; top: 0.5rem; font-size: 1rem; white-space: nowrap; }
         .sameYear { cursor: pointer; }
         button, .action-btn {
@@ -164,6 +206,12 @@
             border-color: var(--textColor);
         }
         .timeScale { flex-grow: 1; flex-shrink: 0; }
+        .timeScale-wrapper { position: relative; flex-grow: 1; flex-shrink: 0; }
+        .timeScale-wrapper .timeScale { width: 100%; }
+        .season-ticks { position: absolute; left: 0; top: 100%; width: 100%; height: 20px; pointer-events: none; }
+        .season-tick { position: absolute; top: 6px; transform: translateX(-50%); font-size: 9px; line-height: 1; color: #8b949e; white-space: nowrap; }
+        .season-tick::before { content: ''; position: absolute; left: 50%; bottom: 100%; width: 1px; height: 4px; background: rgba(255, 255, 255, 0.35); }
+        .season-tick.season-tick-start { color: #00c8ff; }
         .speedIndicator {
             margin-left: 0.5rem;
             height: 1rem;
@@ -347,13 +395,6 @@
             </div>
         </div>
 
-        <div class="control-section mini-toggles">
-            <label class="toggle-item"><input type="checkbox" id="toggle-zones" checked> <span>Domain-1 Marine Protected Areas</span></label>
-            <label class="toggle-item"><input type="checkbox" id="toggle-sgssi-mpa" checked> <span>South Georgia & South Sandwich Islands MPA</span></label>
-            <label class="toggle-item"><input type="checkbox" id="toggle-mpa" checked> <span>South Orkney Islands MPA</span></label>
-            <label class="toggle-item"><input type="checkbox" id="toggle-krill"> <span>Krill Density Heatmap</span></label>
-            <label class="toggle-item"><input type="checkbox" id="toggle-whale"> <span>Whale Occurrences</span></label>
-        </div>
     </div>
 
     <div id="right-panel" class="panel-container" style="right: 0; left: auto;">
@@ -366,9 +407,12 @@
             <div class="time" id="anim-date-display">...</div>
             <div class="timePlayer">
                 <button id="play-btn" class="playPauseButton play" aria-label="Play"></button>
-                <input class="timeScale" type="range" id="time-slider" min="0" max="100" value="100">
+                <div class="timeScale-wrapper">
+                    <input class="timeScale" type="range" id="time-slider" min="0" max="100" value="100">
+                    <div id="season-ticks" class="season-ticks"></div>
+                </div>
             </div>
-            <div class="u-flex">
+            <div class="u-flex timeline-actions">
                 <label class="sameYear">
                     <input type="checkbox" id="timeline-mode-btn" checked>
                     Merge observations in a single year
@@ -445,40 +489,52 @@
         </div>
 
         <div class="control-section">
-            <div class="section-title">Proposed Domain-1 Marine Protected Areas</div>
-            <div id="dynamic-zone-legend" style="margin-bottom: 12px;"></div>
-        </div>
+            <div class="section-title">Map Layers</div>
+            <div style="font-size: 11px; color: #8b949e; margin: -0.5rem 0 0.25rem;">Click to show or hide each layer.</div>
 
-        <div class="control-section">
-            <div class="section-title">Existing Marine Protected Areas</div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: rgba(29, 78, 216, 0.3); border: 1px solid #1d4ed8;"></div>
-                <span style="color: #8b949e; font-size: 11px;">South Georgia & South Sandwich Islands MPA</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: rgba(8, 145, 178, 0.3); border: 1px solid #0891b2;"></div>
-                <span style="color: #8b949e; font-size: 11px;">South Orkney Islands MPA</span>
-            </div>
-        </div>
+            <label class="layer-toggle" title="Show / hide layer">
+                <input type="checkbox" class="layer-toggle-input" id="toggle-zones">
+                <div class="layer-toggle-swatch" style="background: rgba(144, 133, 233, 0.55); border: 1px solid #6c5fc7;"></div>
+                <div class="layer-toggle-body">
+                    <span class="layer-toggle-label">Proposed Domain-1 MPAs</span>
+                    <span class="layer-toggle-sub">Seasonal no-take proposals</span>
+                </div>
+            </label>
+            <div id="dynamic-zone-legend" class="layer-zone-legend"></div>
 
-        <div class="control-section">
-            <div class="section-title">Marine Life Heatmaps</div>
-            <div class="legend-gradient-group">
-                <div class="legend-gradient-label">Krill Density</div>
-                <div class="legend-gradient-bar" style="background: linear-gradient(to right, #ffffd4, #fed98e, #fe9929, #d95f0e, #993404);"></div>
-                <div class="gradient-labels">
-                    <span>Low</span>
-                    <span>High</span>
+            <label class="layer-toggle" title="Show / hide layer">
+                <input type="checkbox" class="layer-toggle-input" id="toggle-sgssi-mpa">
+                <div class="layer-toggle-swatch" style="background: rgba(213, 81, 129, 0.32); border: 1px solid #d55181;"></div>
+                <div class="layer-toggle-body">
+                    <span class="layer-toggle-label">South Georgia &amp; South Sandwich Islands MPA</span>
                 </div>
-            </div>
-            <div class="legend-gradient-group">
-                <div class="legend-gradient-label">Whale Occurrences</div>
-                <div class="legend-gradient-bar" style="background: linear-gradient(to right, #f7fcf5, #ccece6, #99d8c9, #66c2a4, #2ca25f, #006d2c);"></div>
-                <div class="gradient-labels">
-                    <span>Low</span>
-                    <span>High</span>
+            </label>
+
+            <label class="layer-toggle" title="Show / hide layer">
+                <input type="checkbox" class="layer-toggle-input" id="toggle-mpa">
+                <div class="layer-toggle-swatch" style="background: rgba(250, 204, 21, 0.22); border: 1px solid #facc15;"></div>
+                <div class="layer-toggle-body">
+                    <span class="layer-toggle-label">South Orkney Islands MPA</span>
                 </div>
-            </div>
+            </label>
+
+            <label class="layer-toggle" title="Show / hide layer">
+                <input type="checkbox" class="layer-toggle-input" id="toggle-krill">
+                <div class="layer-toggle-swatch" style="background: linear-gradient(135deg, #bdd7e7, #3182bd, #08519c);"></div>
+                <div class="layer-toggle-body">
+                    <span class="layer-toggle-label">Krill Density</span>
+                    <span class="layer-toggle-sub">Heatmap — low to high</span>
+                </div>
+            </label>
+
+            <label class="layer-toggle" title="Show / hide layer">
+                <input type="checkbox" class="layer-toggle-input" id="toggle-whale">
+                <div class="layer-toggle-swatch" style="background: linear-gradient(135deg, #ccece6, #66c2a4, #006d2c);"></div>
+                <div class="layer-toggle-body">
+                    <span class="layer-toggle-label">Whale Occurrences</span>
+                    <span class="layer-toggle-sub">Heatmap — low to high</span>
+                </div>
+            </label>
         </div>
 
         <div class="control-section credits">
@@ -528,6 +584,7 @@
     const seasonStartTime = Date.UTC(2020, 10, 10, 0, 0, 0);
     const seasonEndTime = Date.UTC(2021, 10, 9, 23, 59, 59);
     const maxTrackGapMs = 10 * dayMs;
+    const trailLengthMs = 14 * dayMs;
     const cycleDurationMs = [240000, 120000, 60000];
     const speedLevels = ['34%', '67%', '100%'];
     const tracksPayloadUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/tracks_fishing_groupable_payload.json';
@@ -535,9 +592,8 @@
     const sgssiMpaGeoJsonUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/sgssi_plan_no_take_zones.json';
     const krillCsvUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/Krill_2011_2022.csv';
     const whaleCsvUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/whale_gbif_2000-2026_fixed.csv';
-    const landGeoJsonUrl = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_land.geojson';
+    const landGeoJsonUrl = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson';
 
-    let sgssiBoundsGlobal = null;
     let domain1BoundsGlobal = null;
     let heatmapBoundsGlobal = null;
     let allTracksData = [];
@@ -565,18 +621,19 @@
     ];
     playbackControls.forEach(control => { control.disabled = true; });
 
+    const homeViewCenter = [-90, -55];
+    const homeViewZoom = 1.3;
+
     const map = new maplibregl.Map({
         container: 'map',
-        center: [-42, -54],
-        zoom: 2.0,
+        center: homeViewCenter,
+        zoom: homeViewZoom,
         attributionControl: true,
         style: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
     });
     map.on('style.load', () => map.setProjection({ type: 'globe' }));
     map.addControl(new maplibregl.NavigationControl(), 'bottom-left');
     map.addControl(new maplibregl.GlobeControl(), 'bottom-left');
-    const deckOverlay = new deck.MapboxOverlay({ interleaved: false, layers: [] });
-    map.addControl(deckOverlay);
 
     function mapReady() {
         return new Promise(resolve => map.on('load', resolve));
@@ -653,6 +710,47 @@
         return trips;
     }
 
+    // Vessel trails are rendered as native maplibre 'line' layers (not deck.gl) so they stay pinned
+    // to the globe's curved surface when the user rotates it manually. deck.gl's overlay projects
+    // positions with flat web-mercator math, which drifts away from maplibre's globe geometry as
+    // soon as the camera isn't a simple top-down view, scattering the trails all over the map.
+    function interpolateAlongSegment(a, b, ta, tb, t) {
+        if (tb === ta) return a.slice();
+        const f = (t - ta) / (tb - ta);
+        return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+    }
+
+    function clipTripToWindow(trip, trailStart, currentTime) {
+        const { path, timestamps } = trip;
+        if (!path.length || timestamps[timestamps.length - 1] < trailStart || timestamps[0] > currentTime) return null;
+        const coords = [];
+        for (let i = 0; i < path.length; i++) {
+            const t = timestamps[i];
+            if (t < trailStart) {
+                if (i + 1 < path.length && timestamps[i + 1] >= trailStart) {
+                    coords.push(interpolateAlongSegment(path[i], path[i + 1], t, timestamps[i + 1], trailStart));
+                }
+                continue;
+            }
+            if (t > currentTime) {
+                if (coords.length) coords.push(interpolateAlongSegment(path[i - 1], path[i], timestamps[i - 1], t, currentTime));
+                break;
+            }
+            coords.push(path[i]);
+        }
+        return coords.length > 1 ? coords : null;
+    }
+
+    function buildTrailFeatureCollection(boatSource, currentTime) {
+        const trailStart = currentTime - trailLengthMs;
+        const features = (tripData[timelineMode] || [])
+            .filter(trip => trip.boatSource === boatSource)
+            .map(trip => clipTripToWindow(trip, trailStart, currentTime))
+            .filter(Boolean)
+            .map(coordinates => ({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates } }));
+        return { type: 'FeatureCollection', features };
+    }
+
     function southOrkneyGeoJson() {
         return {
             type: 'FeatureCollection',
@@ -700,6 +798,30 @@
         }
     }
 
+    function computeSeasonTicks(minTime, maxTime) {
+        const ticks = [];
+        const minYear = new Date(minTime).getUTCFullYear() - 1;
+        const maxYear = new Date(maxTime).getUTCFullYear() + 1;
+        for (let year = minYear; year <= maxYear; year++) {
+            const start = Date.UTC(year, 10, 10);
+            const end = Date.UTC(year + 1, 10, 9, 23, 59, 59);
+            if (start >= minTime && start <= maxTime) ticks.push({ time: start, label: 'Season start', type: 'start' });
+            if (end >= minTime && end <= maxTime) ticks.push({ time: end, label: 'Season end', type: 'end' });
+        }
+        return ticks;
+    }
+
+    function renderSeasonTicks() {
+        const container = document.getElementById('season-ticks');
+        const range = animMaxTime - animMinTime;
+        if (!range) { container.innerHTML = ''; return; }
+        const ticks = computeSeasonTicks(animMinTime, animMaxTime);
+        container.innerHTML = ticks.map(tick => {
+            const pct = Math.min(100, Math.max(0, ((tick.time - animMinTime) / range) * 100));
+            return `<div class="season-tick season-tick-${tick.type}" style="left: ${pct}%;">${tick.label}</div>`;
+        }).join('');
+    }
+
     function initOrUpdateAnimation() {
         animMinTime = timelineMode === 'seasonal' ? seasonStartTime : globalMinTime;
         animMaxTime = timelineMode === 'seasonal' ? seasonEndTime : globalMaxTime;
@@ -710,6 +832,7 @@
         slider.min = animMinTime;
         slider.value = animCurrentTime;
         updateAnimDateDisplay();
+        renderSeasonTicks();
     }
 
     function updateAnimDateDisplay() {
@@ -752,27 +875,16 @@
         if (!Number.isFinite(fishingMaxTime)) fishingMaxTime = currentEndMs;
         fishingMaxTime = Math.max(fishingMaxTime, currentEndMs);
 
-        deckOverlay.setProps({
-            layers: [
-                new deck.TripsLayer({
-                    id: 'aker-vessel-trips',
-                    data: (tripData[timelineMode] || []).filter(trip => visibleVessels.has(trip.boatSource)),
-                    getPath: trip => trip.path,
-                    getTimestamps: trip => trip.timestamps,
-                    getColor: trip => trip.color,
-                    getWidth: 2,
-                    widthMinPixels: 1,
-                    widthMaxPixels: 4,
-                    opacity: 0.75,
-                    currentTime: currentEndMs,
-                    trailLength: 14 * dayMs,
-                    capRounded: false,
-                    jointRounded: false,
-                    shadowEnabled: false,
-                    parameters: { blend: true },
-                }),
-            ],
-        });
+        if (map.getSource('vessel-trail-1')) {
+            map.getSource('vessel-trail-1').setData(
+                visibleVessels.has('Antarctic Endurance') ? buildTrailFeatureCollection('Antarctic Endurance', currentEndMs) : { type: 'FeatureCollection', features: [] }
+            );
+        }
+        if (map.getSource('vessel-trail-2')) {
+            map.getSource('vessel-trail-2').setData(
+                visibleVessels.has('Saga Sea') ? buildTrailFeatureCollection('Saga Sea', currentEndMs) : { type: 'FeatureCollection', features: [] }
+            );
+        }
 
         syncFishingLayer(forceFishingSync);
     }
@@ -874,7 +986,7 @@
         d3.json(landGeoJsonUrl),
     ]).then(([, tracksPayload, zonesGeoJson, sgssiMpaGeoJson, krillData, whaleData, landGeoJson]) => {
         const uniquePeriods = Array.from(new Set(zonesGeoJson.features.map(f => f.properties.protected ? f.properties.protected.trim() : 'Not Specified'))).sort((a, b) => a.localeCompare(b));
-        const zoneColorScale = d3.scaleOrdinal(d3.schemeGreens[Math.max(3, Math.min(9, uniquePeriods.length))]).domain(uniquePeriods);
+        const zoneColorScale = d3.scaleOrdinal(d3.schemePurples[Math.max(3, Math.min(9, uniquePeriods.length))]).domain(uniquePeriods);
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
         function formatPeriod(period, forLegend = false) {
@@ -904,8 +1016,30 @@
         domain1BoundsGlobal = boundsFromGeoJson(zonesGeoJson);
 
         addGeoJsonFill('domain-zones', zonesGeoJson, ['get', '_color'], ['get', '_border'], checkboxVisibility('toggle-zones'));
-        addGeoJsonFill('sgssi-mpa', sgssiMpaGeoJson, '#1d4ed8', '#1d4ed8', checkboxVisibility('toggle-sgssi-mpa'));
-        addGeoJsonFill('south-orkney-mpa', southOrkneyGeoJson(), '#0891b2', '#0891b2', checkboxVisibility('toggle-mpa'));
+        addGeoJsonFill('sgssi-mpa', sgssiMpaGeoJson, '#d55181', '#d55181', checkboxVisibility('toggle-sgssi-mpa'));
+        addGeoJsonFill('south-orkney-mpa', southOrkneyGeoJson(), '#facc15', '#facc15', checkboxVisibility('toggle-mpa'));
+
+        // Hovering an MPA fill shows its name (hidden layers fire no events, so this is inert until toggled on).
+        const mpaPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, className: 'mpa-popup', offset: 12 });
+        function bindMpaHover(layerId, labelFn) {
+            map.on('mousemove', layerId, event => {
+                map.getCanvas().style.cursor = 'pointer';
+                const feature = event.features && event.features[0];
+                if (!feature) return;
+                mpaPopup.setLngLat(event.lngLat).setHTML(labelFn(feature)).addTo(map);
+            });
+            map.on('mouseleave', layerId, () => {
+                map.getCanvas().style.cursor = '';
+                mpaPopup.remove();
+            });
+        }
+        bindMpaHover('domain-zones-fill', feature => {
+            const period = feature.properties.protected ? feature.properties.protected.trim() : '';
+            const sub = period ? `<div class="mpa-popup-sub">${formatPeriod(period, true)}</div>` : '';
+            return `<div class="mpa-popup-title">Proposed Domain-1 MPA</div>${sub}`;
+        });
+        bindMpaHover('sgssi-mpa-fill', () => '<div class="mpa-popup-title">South Georgia &amp; South Sandwich Islands MPA</div>');
+        bindMpaHover('south-orkney-mpa-fill', feature => `<div class="mpa-popup-title">${feature.properties.name || 'South Orkney Islands MPA'}</div>`);
 
         const krillFeatures = krillData
             .map(d => ({ lat: parseFloat(d.latitude), lon: parseFloat(d.Longitude), quantity: parseFloat(d.Quantity) }))
@@ -917,6 +1051,8 @@
             .map(d => geojsonPoint(d.lon, d.lat));
         heatmapBoundsGlobal = boundsFromGeoJson({ type: 'FeatureCollection', features: [...krillFeatures, ...whaleFeatures] });
 
+        // Krill heatmap keeps the blue ramp used on the flat-map version (matches the legend swatch),
+        // rendered natively so it stays glued to the globe surface instead of drifting on rotation.
         map.addSource('krill-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: krillFeatures } });
         map.addLayer({
             id: 'krill-heatmap',
@@ -927,7 +1063,7 @@
                 'heatmap-weight': ['interpolate', ['linear'], ['to-number', ['get', 'quantity']], 0, 0, 100, 1],
                 'heatmap-radius': 14,
                 'heatmap-opacity': 0.5,
-                'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(255,255,212,0)', 0.35, '#fed98e', 0.55, '#fe9929', 0.75, '#d95f0e', 1, '#993404'],
+                'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(239,243,255,0)', 0.35, '#9ecae1', 0.55, '#6baed6', 0.75, '#3182bd', 1, '#08519c'],
             },
         });
         map.addSource('whale-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: whaleFeatures } });
@@ -943,14 +1079,32 @@
             },
         });
 
+        // Natural Earth ships Antarctica as one big polygon that spans the antimeridian and touches
+        // the pole; on the globe it mis-tessellates and leaves the interior showing the ocean sphere.
+        // Plug it with a "south polar cap" of simple latitude-band quads (which tessellate cleanly) in
+        // the land colour, tucked just under the land fill. Everything south of -80° is ice/land anyway.
+        const polarCapPolys = [];
+        for (let lat = -80; lat > -89.5; lat -= 0.5) {
+            const lat2 = lat - 0.5;
+            for (let lon = -180; lon < 180; lon += 5) {
+                polarCapPolys.push([[[lon, lat], [lon + 5, lat], [lon + 5, lat2], [lon, lat2], [lon, lat]]]);
+            }
+        }
+        map.addSource('south-polar-cap', { type: 'geojson', data: { type: 'Feature', properties: {}, geometry: { type: 'MultiPolygon', coordinates: polarCapPolys } } });
+        map.addLayer({ id: 'south-polar-cap', type: 'fill', source: 'south-polar-cap', paint: { 'fill-color': '#141414', 'fill-opacity': 0.999 } });
+
         map.addSource('land-foreground', { type: 'geojson', data: landGeoJson });
+        // fill-opacity is held just below 1 on purpose. A fully opaque fill renders in maplibre's
+        // opaque pass, which runs BEFORE the heatmap's translucent pass, so the heatmap would paint
+        // on top of the land no matter the layer order. Nudging it below 1 moves the land into the
+        // translucent pass, where layer order is respected and the land correctly covers the heatmap.
         map.addLayer({
             id: 'land-foreground-fill',
             type: 'fill',
             source: 'land-foreground',
             paint: {
                 'fill-color': '#141414',
-                'fill-opacity': 1,
+                'fill-opacity': 0.999,
             },
         });
         map.addLayer({
@@ -982,6 +1136,23 @@
         globalMinTime = d3.min(allTracksData, d => d.chronoTime);
         globalMaxTime = d3.max(allTracksData, d => d.chronoTime);
 
+        function addVesselTrailLayer(id, hexColor) {
+            const [r, g, b] = hexToRgbArray(hexColor);
+            map.addSource(id, { type: 'geojson', lineMetrics: true, data: { type: 'FeatureCollection', features: [] } });
+            map.addLayer({
+                id,
+                type: 'line',
+                source: id,
+                layout: { 'line-cap': 'round', 'line-join': 'round' },
+                paint: {
+                    'line-width': 2,
+                    'line-gradient': ['interpolate', ['linear'], ['line-progress'], 0, `rgba(${r},${g},${b},0)`, 1, `rgba(${r},${g},${b},0.85)`],
+                },
+            });
+        }
+        addVesselTrailLayer('vessel-trail-1', boatColors['Antarctic Endurance']);
+        addVesselTrailLayer('vessel-trail-2', boatColors['Saga Sea']);
+
         map.addSource('animated-fishing', {
             type: 'geojson',
             data: {
@@ -1001,9 +1172,7 @@
         initOrUpdateAnimation();
         renderTracks();
 
-        const sgssiBounds = boundsFromGeoJson(sgssiMpaGeoJson);
-        sgssiBoundsGlobal = sgssiBounds;
-        if (sgssiBounds) map.fitBounds(sgssiBounds, { padding: { top: 150, bottom: 150, left: 150, right: 720 }, maxZoom: 2.2 });
+        map.fitBounds([homeViewCenter, homeViewCenter], { padding: { top: 150, bottom: 150, left: 150, right: 720 }, maxZoom: homeViewZoom });
 
         document.getElementById('focus-vessel-1-btn').classList.add('selected');
         document.getElementById('focus-vessel-2-btn').classList.add('selected');
@@ -1050,7 +1219,7 @@
             setToggle('toggle-mpa', false);
             setToggle('toggle-krill', false);
             setToggle('toggle-whale', false);
-            map.flyTo({ center: [-42, -54], zoom: 2.0, duration: 1200 });
+            map.flyTo({ center: homeViewCenter, zoom: homeViewZoom, duration: 1200 });
         },
         () => {
             setToggle('toggle-krill', true);
@@ -1075,14 +1244,12 @@
 
     window.resetStoryView = function resetStoryView() {
         if (storyExitActions[activeStorySectionIndex]) storyExitActions[activeStorySectionIndex]();
-        setToggle('toggle-zones', true);
-        setToggle('toggle-sgssi-mpa', true);
-        setToggle('toggle-mpa', true);
+        setToggle('toggle-zones', false);
+        setToggle('toggle-sgssi-mpa', false);
+        setToggle('toggle-mpa', false);
         setToggle('toggle-krill', false);
         setToggle('toggle-whale', false);
-        if (sgssiBoundsGlobal) {
-            map.fitBounds(sgssiBoundsGlobal, { padding: { top: 150, bottom: 150, left: 150, right: 720 }, maxZoom: 2.2, duration: 1000 });
-        }
+        map.fitBounds([homeViewCenter, homeViewCenter], { padding: { top: 150, bottom: 150, left: 150, right: 720 }, maxZoom: homeViewZoom, duration: 1000 });
         document.querySelectorAll('.story-section').forEach((s, i) => s.classList.toggle('active', i === 0));
         activeStorySectionIndex = 0;
     };
