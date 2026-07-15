@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aker fishing vessels</title>
+    <title>Aker BioMarine's krill fishing activity</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.24.0/dist/maplibre-gl.css" />
@@ -103,6 +103,11 @@
         .panel-container::-webkit-scrollbar { width: 6px; }
         .panel-container::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 
+        /* Custom narrow styling for the right panel */
+        #right-panel {
+            width: 380px;
+        }
+
         .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0; padding-bottom: 0; border-bottom: 0; }
         .panel-title { font-weight: normal; font-size: 1.5rem; color: #fff; letter-spacing: 0; }
         .close-btn { background: transparent; border: none; color: #64748b; font-size: 20px; cursor: pointer; padding: 0; line-height: 1; transition: color 0.2s; }
@@ -149,6 +154,11 @@
         .layer-toggle-body { display: flex; flex-direction: column; gap: 3px; flex-grow: 1; padding-right: 42px; }
         .layer-toggle-label { font-size: 13px; font-weight: 500; color: #fff; }
         .layer-toggle-sub { font-size: 10.5px; color: #8b949e; }
+        .layer-toggle-group { margin-bottom: 0.6rem; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; background: rgba(255, 255, 255, 0.025); }
+        .layer-toggle-group .layer-toggle { margin: 0; border: 0; border-radius: 0; background: transparent; }
+        .layer-toggle-group .layer-toggle + .layer-toggle { border-top: 1px solid rgba(255, 255, 255, 0.12); }
+        .layer-toggle-group .layer-toggle:hover { transform: none; }
+        .layer-toggle-group .layer-zone-legend { margin-bottom: 0.6rem; }
         .layer-toggle::after {
             content: 'OFF';
             position: absolute; top: 50%; right: 10px; transform: translateY(-50%);
@@ -362,12 +372,14 @@
             <div class="story-section active" data-index="0">
                 <div class="story-section-header">
                     <span class="story-section-num">01</span>
-                    <span>A keystone the size of a paperclip</span>
+                    <span>A keystone species targeted for extraction</span>
                     <span class="story-chevron">▾</span>
                 </div>
                 <div class="story-section-body">
-                    <p>Krill are barely the length of a paperclip, but the entire Southern Ocean is built on them. This shrimp-like crustacean is a keystone species for the food web: it feeds whales, seals, penguins, and seabirds across the entire ecosystem. And yet, every year, industrial trawlers descend on this remote ecosystem to harvest it by the hundreds of thousands of tons, led overwhelmingly by the Norwegian company Aker BioMarine. With its two trawlers under the Norwegian flag, Antarctic Endurance and Saga Sea, it vacuums out as much as 62% of the total yearly krill catch.</p>
-                    <p>But most of what's caught doesn't feed people. It becomes aquaculture feed for farmed fish on the other side of the planet, oil supplements, and pet food. Aker BioMarine is even the recipient of millions of dollars in subsidies from the Norwegian government in order to remain competitive.</p>
+
+                <p>Krill are barely the size of a paperclip, but the entire Southern Ocean relies on them. This shrimp-like crustacean is a keystone species for the food web: it sustains whales, seals, penguins, and seabirds across the entire ecosystem. And yet, every year, industrial trawlers descend on this remote ecosystem to harvest it by the hundreds of thousands of tons, led overwhelmingly by the Norwegian company Aker BioMarine. With its two trawlers under the Norwegian flag, Antarctic Endurance and Saga Sea, it vacuums® out <a href="https://www.hi.no/en/hi/nettrapporter/toktrapport-en-2025-8">as much as 63%</a> of the total yearly krill catch.</p>
+                <p>But what's caught doesn't feed people. It becomes aquaculture feed for farmed fish on the other side of the planet, oil supplements such as omega-3, and pet food. Aker BioMarine is even the recipient of millions of dollars in subsidies from the Norwegian government in order to remain competitive. </p>
+
                 </div>
             </div>
             <div class="story-section" data-index="1">
@@ -377,8 +389,9 @@
                     <span class="story-chevron">▾</span>
                 </div>
                 <div class="story-section-body">
-                    <p>Zoom in, and the impact of that extraction comes into focus. Here, fishing is governed by the Commission for the Conservation of Antarctic Marine Living Resources (CCAMLR), which set an overall catch trigger of 620,000 tonnes for krill. Aker BioMarine claims that, since it's a small fraction of total estimated krill biomass, it's proof the fishery is sustainable. But total catch limits obscure localized harm.</p>
-                    <p>Fishing vessels cluster exactly where krill, and the marine predators that depend on it, are most concentrated: the western Antarctic Peninsula, the South Orkney Islands, and South Georgia. In 2022, catch concentration there reached its highest level in 38 years (Cruz et al., 2022), and local catch can now rival or exceed what marine predators need, and even the standing stock of krill itself (Trathan et al., 2021). This is in addition to the already severe impacts of climate change, disrupting the Antarctic climate and the delicate balance of its food webs. Calling a regional catch quota "sustainable" is meaningless if the harvest is happening in the one place the ecosystem is least resilient to it.</p>
+                    <p>Zoom in, and the impact of that extraction comes into focus. Here, fishing regulations are set by the Commission for the Conservation of Antarctic Marine Living Resources (CCAMLR), which set an overall catch limit of 620,000 tonnes for krill. Aker BioMarine claims that since this is a small fraction of the total estimated krill biomass, the fishery is “sustainable”. But a focus on total catch limits obscures a much greater localized harm.</p> 
+                    <p></p>Fishing vessels cluster exactly where krill, and the marine predators that depend on it, are most concentrated: the West Antarctic Peninsula, the South Orkney Islands, and South Georgia. In 2022, fishing concentration there reached its <a href="https://doi.org/10.1016/j.ocecoaman.2022.106146">highest level in 38 years</a>. Industrial fishing can now <a href="https://doi.org/10.1016/j.ocecoaman.2022.106146">rival what marine predators need</a>, raising concerns that fishing is <a href="https://www.nature.com/articles/s41467-024-51954-x">impeding the recovery</a> of whale populations recovering from industrial whaling. This is in addition to climate change impacts already disrupting the delicate balance of Antarctic food webs. Calling a regional catch quota "sustainable" is meaningless if the harvest is happening in the one place the ecosystem is least resilient to it.</p> 
+
                 </div>
             </div>
             <div class="story-section" data-index="2">
@@ -388,9 +401,10 @@
                     <span class="story-chevron">▾</span>
                 </div>
                 <div class="story-section-body">
-                    <p>This crisis has a fix, and it's already been sitting on the table. It's spatialization: dividing the fishing quota across sub-regions to spread out fishing pressure. CCAMLR used to do just this, until member states failed to renew the rule in 2024. The industry's answer was to accelerate. In 2025, for the first time, the entire 620,000-tonne limit could be taken from anywhere within the zone, and the fishery shut down early from the resulting hyper-concentration of catch from Aker BioMarine and others. This year again, the fishing quota has been met faster than ever.</p>
-                    <p>Meanwhile, the Domain 1 Marine Protected Area, a proposed no-take zone around the Antarctic Peninsula where fishing pressure currently concentrates, has been repeatedly blocked for nearly a decade.</p>
-                    <p>Adopting spatialization measures and the Domain 1 marine protected area are two sides of the same coin: an Antarctic krill fishery held to the limits of what the ecosystem will bear. What's clear is who is benefiting from this: a handful of companies, Aker BioMarine foremost among them, are extracting a keystone species for economic benefit, so it can end up in a salmon pellet or supplement capsule.</p>
+                    <p>This crisis has a fix. It’s spatialization: dividing the fishing quota across sub-regions to spread out fishing pressure, and monitoring that pressure to prevent harmful impacts. CCAMLR used to do just this, until it failed to renew the existing rule in 2024. Now, the entire 620,000-tonne catch limit can be taken from anywhere within the zone. With no longer any spatial safeguards, the industry was able to accelerate.  Aker BioMarine and others hyper-concentrated their catch around the Antarctic Peninsula, and in 2025, for the first time in history, the industry <a href="https://www.ap.org/news-highlights/spotlights/2025/krill-fishery-in-antarctica-shut-down-after-record-catch-triggers-unprecedented-early-closure/">reached the catch limit</a> and the fishery shut down three months early. This year again, for the second time in a row, the fishing quota has been met.</p>
+                    <p>Meanwhile, a proposal to establish the Domain 1 Marine Protected Area (MPA), a no-take zone around the Antarctic Peninsula where fishing pressure currently concentrates, has stalled for nearly a decade. Less than a handful of countries have repeatedly blocked its adoption at the annual CCAMLR negotiations.</p>
+                    <p>Adopting spatialization measures and the Domain 1 MPA are two sides of the same coin: an Antarctic krill fishery held to the limits of what the ecosystem will bear.</p>
+                    <p>What’s clear is who is benefiting from this: a handful of companies, Aker BioMarine foremost among them, are extracting a keystone species for economic benefit, so it can end up in a salmon pellet or supplement capsule.</p>
                 </div>
             </div>
         </div>
@@ -399,7 +413,7 @@
 
     <div id="right-panel" class="panel-container" style="right: 0; left: auto;">
         <div class="panel-header">
-            <div class="panel-title">Aker fishing vessels</div>
+            <div class="panel-title">Aker BioMarine's krill fishing activity</div>
             <button id="close-legend" class="close-btn">×</button>
         </div>
 
@@ -492,15 +506,25 @@
             <div class="section-title">Map Layers</div>
             <div style="font-size: 11px; color: #8b949e; margin: -0.5rem 0 0.25rem;">Click to show or hide each layer.</div>
 
-            <label class="layer-toggle" title="Show / hide layer">
-                <input type="checkbox" class="layer-toggle-input" id="toggle-zones">
-                <div class="layer-toggle-swatch" style="background: rgba(144, 133, 233, 0.55); border: 1px solid #6c5fc7;"></div>
-                <div class="layer-toggle-body">
-                    <span class="layer-toggle-label">Proposed Domain-1 MPAs</span>
-                    <span class="layer-toggle-sub">Seasonal no-take proposals</span>
-                </div>
-            </label>
-            <div id="dynamic-zone-legend" class="layer-zone-legend"></div>
+            <div class="layer-toggle-group">
+                <label class="layer-toggle" title="Show / hide layer">
+                    <input type="checkbox" class="layer-toggle-input" id="toggle-domain1">
+                    <div class="layer-toggle-swatch" style="background: rgba(143, 131, 216, 0.3); border: 1px solid #6c5fc7;"></div>
+                    <div class="layer-toggle-body">
+                        <span class="layer-toggle-label">Domain1</span>
+                    </div>
+                </label>
+
+                <label class="layer-toggle" title="Show / hide layer">
+                    <input type="checkbox" class="layer-toggle-input" id="toggle-zones">
+                    <div class="layer-toggle-swatch" style="background: rgba(144, 133, 233, 0.55); border: 1px solid #6c5fc7;"></div>
+                    <div class="layer-toggle-body">
+                        <span class="layer-toggle-label">Marine protected area proposal</span>
+                        <span class="layer-toggle-sub">Seasonal no-take proposals</span>
+                    </div>
+                </label>
+                <div id="dynamic-zone-legend" class="layer-zone-legend"></div>
+            </div>
 
             <label class="layer-toggle" title="Show / hide layer">
                 <input type="checkbox" class="layer-toggle-input" id="toggle-sgssi-mpa">
@@ -550,7 +574,7 @@
         <div class="control-section credit-box">
             <div class="section-title">Crédits</div>
             <p><strong>Visualisation</strong><br>B. Roth</p>
-            <p><strong>Collecte des données</strong><br>_______</p>
+            <p><strong>Collecte des données</strong><br>Tracked vessels AIS datas taken from Global Fishing Watch</p>
             <p><strong>Relecture scientifique</strong><br>_______</p>
         </div>
     </div>
@@ -587,12 +611,14 @@
     const trailLengthMs = 14 * dayMs;
     const cycleDurationMs = [240000, 120000, 60000];
     const speedLevels = ['34%', '67%', '100%'];
+    const domain1LatitudeOffset = -0.15;
     const tracksPayloadUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/tracks_fishing_groupable_payload.json';
+    const domain1ProposedGeoJsonUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/domain1_proposed.geojson';
     const zonesGeoJsonUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/zones_with_months.geojson';
     const sgssiMpaGeoJsonUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/sgssi_plan_no_take_zones.json';
     const krillCsvUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/Krill_2011_2022.csv';
     const whaleCsvUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/whale_gbif_2000-2026_fixed.csv';
-    const landGeoJsonUrl = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson';
+    const landGeoJsonUrl = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_land.geojson';
 
     let domain1BoundsGlobal = null;
     let heatmapBoundsGlobal = null;
@@ -623,15 +649,26 @@
 
     const homeViewCenter = [-90, -55];
     const homeViewZoom = 1.3;
+    const naturalEarthStyle = {
+        version: 8,
+        sources: {},
+        layers: [{
+            id: 'background',
+            type: 'background',
+            paint: { 'background-color': '#2C353C' },
+        }],
+    };
 
     const map = new maplibregl.Map({
         container: 'map',
         center: homeViewCenter,
         zoom: homeViewZoom,
         attributionControl: true,
-        style: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
+        style: naturalEarthStyle,
     });
-    map.on('style.load', () => map.setProjection({ type: 'globe' }));
+    map.on('style.load', () => {
+        map.setProjection({ type: 'globe' });
+    });
     map.addControl(new maplibregl.NavigationControl(), 'bottom-left');
     map.addControl(new maplibregl.GlobeControl(), 'bottom-left');
 
@@ -655,6 +692,21 @@
 
     function geojsonPoint(lon, lat, properties = {}) {
         return { type: 'Feature', geometry: { type: 'Point', coordinates: [lon, lat] }, properties };
+    }
+
+    function offsetGeoJsonLatitude(geojson, offset) {
+        function visit(coordinates) {
+            if (!Array.isArray(coordinates)) return;
+            if (typeof coordinates[0] === 'number') {
+                coordinates[1] = Math.max(-90, Math.min(90, coordinates[1] + offset));
+                return;
+            }
+            coordinates.forEach(visit);
+        }
+        for (const feature of geojson.features || []) {
+            if (feature.geometry) visit(feature.geometry.coordinates);
+        }
+        return geojson;
     }
 
     function hexToRgbArray(hex) {
@@ -710,10 +762,6 @@
         return trips;
     }
 
-    // Vessel trails are rendered as native maplibre 'line' layers (not deck.gl) so they stay pinned
-    // to the globe's curved surface when the user rotates it manually. deck.gl's overlay projects
-    // positions with flat web-mercator math, which drifts away from maplibre's globe geometry as
-    // soon as the camera isn't a simple top-down view, scattering the trails all over the map.
     function interpolateAlongSegment(a, b, ta, tb, t) {
         if (tb === ta) return a.slice();
         const f = (t - ta) / (tb - ta);
@@ -782,6 +830,173 @@
         return Number.isFinite(bounds[0][0]) ? bounds : null;
     }
 
+    function naturalEarthLandGeoJson(geojson) {
+        const features = [];
+
+        function polygonBounds(rings) {
+            const bounds = [[Infinity, Infinity], [-Infinity, -Infinity]];
+            rings.forEach(ring => ring.forEach(([lon, lat]) => {
+                bounds[0][0] = Math.min(bounds[0][0], lon);
+                bounds[0][1] = Math.min(bounds[0][1], lat);
+                bounds[1][0] = Math.max(bounds[1][0], lon);
+                bounds[1][1] = Math.max(bounds[1][1], lat);
+            }));
+            return bounds;
+        }
+
+        function isProblematicAntarctica(rings) {
+            const bounds = polygonBounds(rings);
+            return bounds[0][0] <= -180 && bounds[1][0] >= 180 && bounds[0][1] < -89;
+        }
+
+        function propertiesWithRenderFlags(feature) {
+            const skip = isProblematicAntarctica(feature.geometry.coordinates);
+            return {
+                ...(feature.properties || {}),
+                _skipFill: skip,
+                _skipLine: skip,
+            };
+        }
+
+        for (const feature of geojson.features || []) {
+            if (!feature.geometry) continue;
+            if (feature.geometry.type === 'Polygon') {
+                features.push({
+                    ...feature,
+                    properties: propertiesWithRenderFlags(feature),
+                });
+            }
+            if (feature.geometry.type === 'MultiPolygon') {
+                feature.geometry.coordinates
+                    .forEach(coordinates => {
+                        features.push({
+                            type: 'Feature',
+                            properties: feature.properties || {},
+                            geometry: { type: 'Polygon', coordinates },
+                        });
+                    });
+            }
+        }
+
+        return { type: 'FeatureCollection', features };
+    }
+
+    function polarSafeAntarcticaGeoJson(geojson) {
+        const features = [];
+
+        function project([lon, lat]) {
+            const angle = lon * Math.PI / 180;
+            const radius = 90 + lat;
+            return [radius * Math.cos(angle), radius * Math.sin(angle)];
+        }
+
+        function unproject([x, y]) {
+            return [Math.atan2(y, x) * 180 / Math.PI, Math.hypot(x, y) - 90];
+        }
+
+        function containsPoint(point, polygon) {
+            let inside = false;
+            for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+                const [xi, yi] = polygon[i];
+                const [xj, yj] = polygon[j];
+                const intersects = ((yi > point[1]) !== (yj > point[1]))
+                    && point[0] < ((xj - xi) * (point[1] - yi)) / (yj - yi) + xi;
+                if (intersects) inside = !inside;
+            }
+            return inside;
+        }
+
+        function normalizeLongitudes(coordinates) {
+            const baseLongitude = coordinates[0][0];
+            return coordinates.map(([lon, lat]) => {
+                while (lon - baseLongitude > 180) lon -= 360;
+                while (lon - baseLongitude < -180) lon += 360;
+                return [lon, lat];
+            });
+        }
+
+        for (const feature of geojson.features || []) {
+            if (!feature.geometry || feature.geometry.type !== 'Polygon') continue;
+            const bounds = boundsFromGeoJson({ type: 'FeatureCollection', features: [feature] });
+            if (!bounds || bounds[0][0] > -180 || bounds[1][0] < 180 || bounds[0][1] >= -89) continue;
+
+            const coastline = feature.geometry.coordinates[0].filter(([lon, lat]) => (
+                lat > -89 && Math.abs(Math.abs(lon) - 180) > 1e-9
+            ));
+            const polarCoastline = coastline.map(project);
+            const points = coastline.map((coordinates, index) => ({ coordinates, projected: polarCoastline[index] }));
+
+            for (let x = -27; x <= 27; x += 1) {
+                for (let y = -27; y <= 27; y += 1) {
+                    if (Math.hypot(x, y) < 0.25 || !containsPoint([x, y], polarCoastline)) continue;
+                    points.push({ coordinates: unproject([x, y]), projected: [x, y] });
+                }
+            }
+
+            const delaunay = d3.Delaunay.from(points, point => point.projected[0], point => point.projected[1]);
+            for (let i = 0; i < delaunay.triangles.length; i += 3) {
+                const triangle = [
+                    points[delaunay.triangles[i]],
+                    points[delaunay.triangles[i + 1]],
+                    points[delaunay.triangles[i + 2]],
+                ];
+                const projected = triangle.map(point => point.projected);
+                const centroid = [
+                    (projected[0][0] + projected[1][0] + projected[2][0]) / 3,
+                    (projected[0][1] + projected[1][1] + projected[2][1]) / 3,
+                ];
+                const edgeLengths = [
+                    Math.hypot(projected[0][0] - projected[1][0], projected[0][1] - projected[1][1]),
+                    Math.hypot(projected[1][0] - projected[2][0], projected[1][1] - projected[2][1]),
+                    Math.hypot(projected[2][0] - projected[0][0], projected[2][1] - projected[0][1]),
+                ];
+                if (!containsPoint(centroid, polarCoastline) || Math.max(...edgeLengths) > 4) continue;
+
+                const coordinates = normalizeLongitudes(triangle.map(point => point.coordinates));
+                features.push({
+                    type: 'Feature',
+                    properties: {},
+                    geometry: {
+                        type: 'Polygon',
+                        coordinates: [[...coordinates, coordinates[0]]],
+                    },
+                });
+            }
+        }
+
+        return { type: 'FeatureCollection', features };
+    }
+
+    function antarcticaCoastlineGeoJson(geojson) {
+        const features = [];
+
+        function isSyntheticPolePoint([lon, lat]) {
+            return lat < -89 || Math.abs(Math.abs(lon) - 180) < 1e-9;
+        }
+
+        for (const feature of geojson.features || []) {
+            if (!feature.geometry || feature.geometry.type !== 'Polygon') continue;
+            const rings = feature.geometry.coordinates;
+            const bounds = boundsFromGeoJson({ type: 'FeatureCollection', features: [feature] });
+            if (!bounds || bounds[0][0] > -180 || bounds[1][0] < 180 || bounds[0][1] >= -89) continue;
+
+            const ring = rings[0];
+            const firstPoleIndex = ring.findIndex(([lon, lat]) => isSyntheticPolePoint([lon, lat]) && lat < -89);
+            if (firstPoleIndex === -1) continue;
+
+            let endPoleIndex = firstPoleIndex;
+            while (endPoleIndex < ring.length && isSyntheticPolePoint(ring[endPoleIndex])) endPoleIndex++;
+
+            [ring.slice(0, firstPoleIndex), ring.slice(endPoleIndex)].forEach(coordinates => {
+                if (coordinates.length > 1) {
+                    features.push({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates } });
+                }
+            });
+        }
+
+        return { type: 'FeatureCollection', features };
+    }
+
     function addGeoJsonFill(id, geojson, fillColor, lineColor, visibility = 'visible') {
         map.addSource(id, { type: 'geojson', data: geojson });
         map.addLayer({ id: `${id}-fill`, type: 'fill', source: id, layout: { visibility }, paint: { 'fill-color': fillColor, 'fill-opacity': ['to-number', ['coalesce', ['get', '_fillOpacity'], 0.28]] } });
@@ -813,6 +1028,10 @@
 
     function renderSeasonTicks() {
         const container = document.getElementById('season-ticks');
+        if (timelineMode === 'chronological') {
+            container.innerHTML = '';
+            return;
+        }
         const range = animMaxTime - animMinTime;
         if (!range) { container.innerHTML = ''; return; }
         const ticks = computeSeasonTicks(animMinTime, animMaxTime);
@@ -872,6 +1091,10 @@
     function renderTracks(forceFishingSync) {
         if (!Number.isFinite(Number(animCurrentTime))) return;
         const currentEndMs = Number(animCurrentTime);
+        
+        if (currentEndMs < fishingMaxTime) {
+            fishingMaxTime = currentEndMs;
+        }
         if (!Number.isFinite(fishingMaxTime)) fishingMaxTime = currentEndMs;
         fishingMaxTime = Math.max(fishingMaxTime, currentEndMs);
 
@@ -922,6 +1145,7 @@
                 animCurrentTime = animMaxTime;
                 renderTracks(true);
                 animCurrentTime = animMinTime;
+                fishingMaxTime = animMinTime;
             }
             document.getElementById('time-slider').value = animCurrentTime;
             updateAnimDateDisplay();
@@ -979,12 +1203,22 @@
     Promise.all([
         mapReady(),
         d3.json(tracksPayloadUrl),
+        d3.json(domain1ProposedGeoJsonUrl).catch(error => {
+            console.warn('Domain-1 proposed GeoJSON could not be loaded:', error);
+            return null;
+        }),
         d3.json(zonesGeoJsonUrl),
         d3.json(sgssiMpaGeoJsonUrl),
         d3.dsv(';', krillCsvUrl),
         d3.csv(whaleCsvUrl),
         d3.json(landGeoJsonUrl),
-    ]).then(([, tracksPayload, zonesGeoJson, sgssiMpaGeoJson, krillData, whaleData, landGeoJson]) => {
+    ]).then(([, tracksPayload, domain1ProposedGeoJson, zonesGeoJson, sgssiMpaGeoJson, krillData, whaleData, landGeoJson]) => {
+        if (domain1ProposedGeoJson) {
+            offsetGeoJsonLatitude(domain1ProposedGeoJson, domain1LatitudeOffset);
+            domain1ProposedGeoJson.features.forEach(feature => {
+                feature.properties = { ...(feature.properties || {}), _fillOpacity: 0.14 };
+            });
+        }
         const uniquePeriods = Array.from(new Set(zonesGeoJson.features.map(f => f.properties.protected ? f.properties.protected.trim() : 'Not Specified'))).sort((a, b) => a.localeCompare(b));
         const zoneColorScale = d3.scaleOrdinal(d3.schemePurples[Math.max(3, Math.min(9, uniquePeriods.length))]).domain(uniquePeriods);
         const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -1013,13 +1247,15 @@
             feature.properties._border = d3.rgb(zoneColorScale(period)).darker(1.2).formatHex();
             feature.properties._fillOpacity = 0.24;
         });
-        domain1BoundsGlobal = boundsFromGeoJson(zonesGeoJson);
+        domain1BoundsGlobal = boundsFromGeoJson(domain1ProposedGeoJson || zonesGeoJson);
 
+        if (domain1ProposedGeoJson) {
+            addGeoJsonFill('domain1-proposed', domain1ProposedGeoJson, '#8f83d8', '#6c5fc7', checkboxVisibility('toggle-domain1'));
+        }
         addGeoJsonFill('domain-zones', zonesGeoJson, ['get', '_color'], ['get', '_border'], checkboxVisibility('toggle-zones'));
         addGeoJsonFill('sgssi-mpa', sgssiMpaGeoJson, '#d55181', '#d55181', checkboxVisibility('toggle-sgssi-mpa'));
         addGeoJsonFill('south-orkney-mpa', southOrkneyGeoJson(), '#facc15', '#facc15', checkboxVisibility('toggle-mpa'));
 
-        // Hovering an MPA fill shows its name (hidden layers fire no events, so this is inert until toggled on).
         const mpaPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, className: 'mpa-popup', offset: 12 });
         function bindMpaHover(layerId, labelFn) {
             map.on('mousemove', layerId, event => {
@@ -1036,8 +1272,11 @@
         bindMpaHover('domain-zones-fill', feature => {
             const period = feature.properties.protected ? feature.properties.protected.trim() : '';
             const sub = period ? `<div class="mpa-popup-sub">${formatPeriod(period, true)}</div>` : '';
-            return `<div class="mpa-popup-title">Proposed Domain-1 MPA</div>${sub}`;
+            return `<div class="mpa-popup-title">Marine protected area proposal</div>${sub}`;
         });
+        if (domain1ProposedGeoJson) {
+            bindMpaHover('domain1-proposed-fill', () => '<div class="mpa-popup-title">Domain1</div>');
+        }
         bindMpaHover('sgssi-mpa-fill', () => '<div class="mpa-popup-title">South Georgia &amp; South Sandwich Islands MPA</div>');
         bindMpaHover('south-orkney-mpa-fill', feature => `<div class="mpa-popup-title">${feature.properties.name || 'South Orkney Islands MPA'}</div>`);
 
@@ -1051,8 +1290,6 @@
             .map(d => geojsonPoint(d.lon, d.lat));
         heatmapBoundsGlobal = boundsFromGeoJson({ type: 'FeatureCollection', features: [...krillFeatures, ...whaleFeatures] });
 
-        // Krill heatmap keeps the blue ramp used on the flat-map version (matches the legend swatch),
-        // rendered natively so it stays glued to the globe surface instead of drifting on rotation.
         map.addSource('krill-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: krillFeatures } });
         map.addLayer({
             id: 'krill-heatmap',
@@ -1079,44 +1316,28 @@
             },
         });
 
-        // Natural Earth ships Antarctica as one big polygon that spans the antimeridian and touches
-        // the pole; on the globe it mis-tessellates and leaves the interior showing the ocean sphere.
-        // Plug it with a "south polar cap" of simple latitude-band quads (which tessellate cleanly) in
-        // the land colour, tucked just under the land fill. Everything south of -80° is ice/land anyway.
-        const polarCapPolys = [];
-        for (let lat = -80; lat > -89.5; lat -= 0.5) {
-            const lat2 = lat - 0.5;
-            for (let lon = -180; lon < 180; lon += 5) {
-                polarCapPolys.push([[[lon, lat], [lon + 5, lat], [lon + 5, lat2], [lon, lat2], [lon, lat]]]);
-            }
-        }
-        map.addSource('south-polar-cap', { type: 'geojson', data: { type: 'Feature', properties: {}, geometry: { type: 'MultiPolygon', coordinates: polarCapPolys } } });
-        map.addLayer({ id: 'south-polar-cap', type: 'fill', source: 'south-polar-cap', paint: { 'fill-color': '#141414', 'fill-opacity': 0.999 } });
-
-        map.addSource('land-foreground', { type: 'geojson', data: landGeoJson });
-        // fill-opacity is held just below 1 on purpose. A fully opaque fill renders in maplibre's
-        // opaque pass, which runs BEFORE the heatmap's translucent pass, so the heatmap would paint
-        // on top of the land no matter the layer order. Nudging it below 1 moves the land into the
-        // translucent pass, where layer order is respected and the land correctly covers the heatmap.
+        map.addSource('land-foreground', { type: 'geojson', data: naturalEarthLandGeoJson(landGeoJson) });
         map.addLayer({
             id: 'land-foreground-fill',
             type: 'fill',
             source: 'land-foreground',
+            filter: ['!=', ['get', '_skipFill'], true],
             paint: {
                 'fill-color': '#141414',
                 'fill-opacity': 0.999,
             },
         });
+        map.addSource('antarctica-fill', { type: 'geojson', data: polarSafeAntarcticaGeoJson(landGeoJson) });
         map.addLayer({
-            id: 'land-foreground-line',
-            type: 'line',
-            source: 'land-foreground',
+            id: 'antarctica-fill',
+            type: 'fill',
+            source: 'antarctica-fill',
             paint: {
-                'line-color': 'rgba(255,255,255,0.35)',
-                'line-width': 0.75,
+                'fill-color': '#141414',
+                'fill-opacity': 0.999,
+                'fill-antialias': false,
             },
         });
-
         allTracksData = tracksPayload.vessels.flatMap(vessel => vessel.tracks.map(point => {
             const dateObj = new Date(point.date);
             return { boatSource: vessel.name, dateObj, lat: parseFloat(point.lat), lon: parseFloat(point.lon), chronoTime: dateObj.getTime(), seasonTime: getSeasonTime(dateObj), seasonAxisTime: getSeasonAxisTime(dateObj), year: dateObj.getUTCFullYear(), seasonYear: getFishingSeasonYear(dateObj) };
@@ -1172,7 +1393,7 @@
         initOrUpdateAnimation();
         renderTracks();
 
-        map.fitBounds([homeViewCenter, homeViewCenter], { padding: { top: 150, bottom: 150, left: 150, right: 720 }, maxZoom: homeViewZoom });
+        map.fitBounds([homeViewCenter, homeViewCenter], { padding: { top: 150, bottom: 150, left: 150, right: 620 }, maxZoom: homeViewZoom });
 
         document.getElementById('focus-vessel-1-btn').classList.add('selected');
         document.getElementById('focus-vessel-2-btn').classList.add('selected');
@@ -1186,6 +1407,7 @@
         startPlayback();
     }).catch(error => console.error('Error loading data:', error));
 
+    document.getElementById('toggle-domain1').addEventListener('change', event => setLayerVisibility(['domain1-proposed-fill', 'domain1-proposed-line'], event.target.checked));
     document.getElementById('toggle-zones').addEventListener('change', event => setLayerVisibility(['domain-zones-fill', 'domain-zones-line'], event.target.checked));
     document.getElementById('toggle-sgssi-mpa').addEventListener('change', event => setLayerVisibility(['sgssi-mpa-fill', 'sgssi-mpa-line'], event.target.checked));
     document.getElementById('toggle-mpa').addEventListener('change', event => setLayerVisibility(['south-orkney-mpa-fill', 'south-orkney-mpa-line'], event.target.checked));
@@ -1214,6 +1436,7 @@
 
     const storyActions = [
         () => {
+            setToggle('toggle-domain1', false);
             setToggle('toggle-zones', false);
             setToggle('toggle-sgssi-mpa', false);
             setToggle('toggle-mpa', false);
@@ -1229,6 +1452,7 @@
             }
         },
         () => {
+            setToggle('toggle-domain1', true);
             setToggle('toggle-zones', true);
             if (domain1BoundsGlobal) {
                 map.fitBounds(domain1BoundsGlobal, { padding: 120, maxZoom: 3.2, duration: 1200 });
@@ -1238,18 +1462,19 @@
 
     const storyExitActions = {
         1: () => { setToggle('toggle-krill', false); setToggle('toggle-whale', false); },
-        2: () => { setToggle('toggle-zones', false); },
+        2: () => { setToggle('toggle-domain1', false); setToggle('toggle-zones', false); },
     };
     let activeStorySectionIndex = 0;
 
     window.resetStoryView = function resetStoryView() {
         if (storyExitActions[activeStorySectionIndex]) storyExitActions[activeStorySectionIndex]();
+        setToggle('toggle-domain1', false);
         setToggle('toggle-zones', false);
         setToggle('toggle-sgssi-mpa', false);
         setToggle('toggle-mpa', false);
         setToggle('toggle-krill', false);
         setToggle('toggle-whale', false);
-        map.fitBounds([homeViewCenter, homeViewCenter], { padding: { top: 150, bottom: 150, left: 150, right: 720 }, maxZoom: homeViewZoom, duration: 1000 });
+        map.fitBounds([homeViewCenter, homeViewCenter], { padding: { top: 150, bottom: 150, left: 150, right: 620 }, maxZoom: homeViewZoom, duration: 1000 });
         document.querySelectorAll('.story-section').forEach((s, i) => s.classList.toggle('active', i === 0));
         activeStorySectionIndex = 0;
     };
@@ -1274,11 +1499,8 @@
         activateStorySection(0);
     });
 
-    // Story panel is open by default with section 0 active, apply its landing map state on load.
     activateStorySection(0);
 </script>
 
 </body>
-
-
 </html>
