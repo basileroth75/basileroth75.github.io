@@ -725,13 +725,12 @@
     const speedLevels = ['34%', '67%', '100%'];
     const domain1LatitudeOffset = -0.15;
     const remoteDataRoot = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final';
-    const dataUrl = (localUrl, remoteFile) => location.protocol === 'file:' ? `${remoteDataRoot}/${remoteFile}` : localUrl;
-    const tracksPayloadUrl = dataUrl('./data/krill/tracks_fishing_groupable_payload.json', 'tracks_fishing_groupable_payload.json');
-    const domain1ProposedGeoJsonUrl = dataUrl('./data/domain1_proposed.geojson', 'domain1_proposed.geojson');
-    const zonesGeoJsonUrl = dataUrl('./data/krill/zones_with_months.geojson', 'zones_with_months.geojson');
-    const sgssiMpaGeoJsonUrl = dataUrl('./data/krill/sgssi_plan_no_take_zones.json', 'sgssi_plan_no_take_zones.json');
-    const krillCsvUrl = dataUrl('./data/Krill_2011_2022.csv', 'Krill_2011_2022.csv');
-    const whaleCsvUrl = dataUrl('./data/whale_gbif_2000-2026_fixed.csv', 'whale_gbif_2000-2026_fixed.csv');
+    const tracksPayloadUrl = `${remoteDataRoot}/tracks_fishing_groupable_payload.json`;
+    const domain1ProposedGeoJsonUrl = `${remoteDataRoot}/domain1_proposed.geojson`;
+    const zonesGeoJsonUrl = `${remoteDataRoot}/zones_with_months.geojson`;
+    const sgssiMpaGeoJsonUrl = `${remoteDataRoot}/sgssi_plan_no_take_zones.json`;
+    const krillCsvUrl = `${remoteDataRoot}/Krill_2011_2022.csv`;
+    const whaleCsvUrl = `${remoteDataRoot}/whale_gbif_2000-2026_fixed.csv`;
     const landGeoJsonUrl = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_land.geojson';
 
     let domain1BoundsGlobal = null;
