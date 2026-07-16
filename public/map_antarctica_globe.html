@@ -762,7 +762,7 @@
     playbackControls.forEach(control => { control.disabled = true; });
 
     const homeViewCenter = [-90, -55];
-    const homeViewZoom = 1.3;
+    const homeViewZoom = 2.1;
     const mobileLayout = window.matchMedia('(max-width: 800px)');
 
     function isMobileLayout() {
@@ -774,7 +774,7 @@
     }
 
     function homeViewZoomForLayout() {
-        return isMobileLayout() ? -1.2 : homeViewZoom;
+        return isMobileLayout() ? 0.3 : homeViewZoom;
     }
 
     function closePanelForMobile(panelId, buttonId) {
@@ -786,7 +786,13 @@
         const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
         const storyPanelOpen = !document.getElementById('story-panel').classList.contains('hidden');
         const panelHeightRatio = storyPanelOpen ? 0.4 : 0.52;
-        return { top: 40, bottom: Math.round(viewportHeight * panelHeightRatio) + 30, left: 30, right: 30 };
+        const bottomOffset = storyPanelOpen ? 70 : 30;
+        return { top: 40, bottom: Math.round(viewportHeight * panelHeightRatio) + bottomOffset, left: 30, right: 30 };
+    }
+
+    function homeViewOffset() {
+        const storyPanelOpen = !document.getElementById('story-panel').classList.contains('hidden');
+        return isMobileLayout() && storyPanelOpen ? [0, -110] : [0, 0];
     }
 
     function hasOpenPanel() {
@@ -802,8 +808,18 @@
         return { top: 150, bottom: 150, left: 150, right: 620 };
     }
 
-    function storyViewPadding(padding) {
-        return isMobileLayout() ? mobilePanelPadding() : padding;
+    function fitStoryBounds(bounds, desktopPadding, maxZoom, mobileView) {
+        if (isMobileLayout()) {
+            map.flyTo({
+                center: mobileView.center,
+                zoom: mobileView.zoom,
+                padding: { top: 0, bottom: 0, left: 0, right: 0 },
+                offset: [0, -110],
+                duration: 1200,
+            });
+            return;
+        }
+        map.fitBounds(bounds, { padding: desktopPadding, maxZoom, duration: 1200 });
     }
 
     function clearMobileMapPadding() {
@@ -834,6 +850,15 @@
     });
     map.on('style.load', () => {
         map.setProjection({ type: 'globe' });
+        if (isMobileLayout()) {
+            map.easeTo({
+                center: homeViewCenterForLayout(),
+                zoom: homeViewZoomForLayout(),
+                padding: mobilePanelPadding(),
+                offset: homeViewOffset(),
+                duration: 0,
+            });
+        }
     });
     map.addControl(new maplibregl.NavigationControl(), 'bottom-left');
     map.addControl(new maplibregl.GlobeControl(), 'bottom-left');
@@ -1472,8 +1497,12 @@
         addGeoJsonFill('south-orkney-mpa', southOrkneyGeoJson(), '#fbf288', '#c1ad34', checkboxVisibility('toggle-mpa'));
 
         const mpaPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, className: 'mpa-popup', offset: 12 });
-        function bindMpaHover(layerId, labelFn) {
+        function bindMpaHover(layerId, labelFn, coveredByLayerId = null) {
             map.on('mousemove', layerId, event => {
+                if (coveredByLayerId && map.getLayer(coveredByLayerId)) {
+                    const coveringFeatures = map.queryRenderedFeatures(event.point, { layers: [coveredByLayerId] });
+                    if (coveringFeatures.length) return;
+                }
                 map.getCanvas().style.cursor = 'pointer';
                 const feature = event.features && event.features[0];
                 if (!feature) return;
@@ -1490,7 +1519,7 @@
             return `<div class="mpa-popup-title">Marine protected area proposal</div>${sub}`;
         });
         if (domain1ProposedGeoJson) {
-            bindMpaHover('domain1-proposed-fill', () => '<div class="mpa-popup-title">Domain1</div>');
+            bindMpaHover('domain1-proposed-fill', () => '<div class="mpa-popup-title">Domain1</div>', 'domain-zones-fill');
         }
         bindMpaHover('sgssi-mpa-fill', () => '<div class="mpa-popup-title">South Georgia &amp; South Sandwich Islands MPA</div>');
         bindMpaHover('south-orkney-mpa-fill', feature => `<div class="mpa-popup-title">${feature.properties.name || 'South Orkney Islands MPA'}</div>`);
@@ -1573,7 +1602,20 @@
         renderTracks();
 
         const initialCenter = homeViewCenterForLayout();
-        map.fitBounds([initialCenter, initialCenter], { padding: homeViewPadding(), maxZoom: homeViewZoomForLayout() });
+        if (isMobileLayout()) {
+            map.easeTo({
+                center: initialCenter,
+                zoom: homeViewZoomForLayout(),
+                padding: homeViewPadding(),
+                offset: homeViewOffset(),
+                duration: 0,
+            });
+        } else {
+            map.fitBounds([homeViewCenter, homeViewCenter], {
+                padding: { top: 150, bottom: 150, left: 150, right: 620 },
+                maxZoom: homeViewZoom,
+            });
+        }
 
         document.getElementById('focus-vessel-1-btn').classList.add('selected');
         document.getElementById('focus-vessel-2-btn').classList.add('selected');
@@ -1639,19 +1681,25 @@
             setToggle('toggle-mpa', false);
             setToggle('toggle-krill', false);
             setToggle('toggle-whale', false);
+            const focusMainZone = !isMobileLayout() && isLoaded;
             map.flyTo({
-                center: homeViewCenterForLayout(),
-                zoom: homeViewZoomForLayout(),
+                center: focusMainZone ? [-58, -61] : homeViewCenterForLayout(),
+                zoom: focusMainZone ? homeViewZoom : homeViewZoomForLayout(),
                 duration: 1200,
+                offset: homeViewOffset(),
                 ...(isMobileLayout() && hasOpenPanel() ? { padding: mobilePanelPadding() } : {}),
             });
         },
         () => {
             setToggle('toggle-krill', true);
             setToggle('toggle-whale', true);
+            const mobileFishingView = { center: [-52, -59], zoom: 1.4 };
+            if (isMobileLayout()) {
+                fitStoryBounds(null, 150, 2.6, mobileFishingView);
+            }
             ensureHeatmapsLoaded().then(() => {
-                if (activeStorySectionIndex === 1 && heatmapBoundsGlobal) {
-                    map.fitBounds(heatmapBoundsGlobal, { padding: storyViewPadding(150), maxZoom: 2.6, duration: 1200 });
+                if (!isMobileLayout() && activeStorySectionIndex === 1 && heatmapBoundsGlobal) {
+                    fitStoryBounds(heatmapBoundsGlobal, 150, 2.6, mobileFishingView);
                 }
             }).catch(error => console.warn('Story heatmaps could not be loaded:', error));
         },
@@ -1659,7 +1707,10 @@
             setToggle('toggle-domain1', true);
             setToggle('toggle-zones', true);
             if (domain1BoundsGlobal) {
-                map.fitBounds(domain1BoundsGlobal, { padding: storyViewPadding(120), maxZoom: 3.2, duration: 1200 });
+                fitStoryBounds(domain1BoundsGlobal, 120, 3.2, {
+                    center: [-61, -64],
+                    zoom: 2.1,
+                });
             }
         },
     ];
@@ -1679,7 +1730,21 @@
         setToggle('toggle-krill', false);
         setToggle('toggle-whale', false);
         const resetCenter = homeViewCenterForLayout();
-        map.fitBounds([resetCenter, resetCenter], { padding: homeViewPadding(), maxZoom: homeViewZoomForLayout(), duration: 1000 });
+        if (isMobileLayout()) {
+            map.easeTo({
+                center: resetCenter,
+                zoom: homeViewZoomForLayout(),
+                padding: homeViewPadding(),
+                offset: homeViewOffset(),
+                duration: 1000,
+            });
+        } else {
+            map.fitBounds([homeViewCenter, homeViewCenter], {
+                padding: { top: 150, bottom: 150, left: 150, right: 620 },
+                maxZoom: homeViewZoom,
+                duration: 1000,
+            });
+        }
         document.querySelectorAll('.story-section').forEach((s, i) => s.classList.toggle('active', i === 0));
         activeStorySectionIndex = 0;
     };
