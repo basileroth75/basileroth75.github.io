@@ -12,10 +12,13 @@
     <script defer src="https://cloud.umami.is/script.js" data-website-id="33df49ab-9727-47b2-a633-58fb79e81537"></script>
     <style>
         :root {
-            --textColor: white;
-            --linkColor: white;
-            --highlightColor: rgb(0, 200, 255);
-            --activeGrayColor: rgba(255, 255, 255, 0.2);
+            --textColor: #1a3a5c;
+            --linkColor: #1a3a5c;
+            --highlightColor: #4aa6a3;
+            --activeGrayColor: rgba(26, 58, 92, 0.09);
+            --surfaceColor: rgba(255, 255, 255, 0.94);
+            --borderColor: rgba(26, 58, 92, 0.2);
+            --mutedColor: #657789;
         }
 
         * { box-sizing: border-box; }
@@ -28,7 +31,7 @@
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             font-size: 14px;
-            background-color: black;
+            background-color: #fafafa;
             color: var(--textColor);
         }
         a { color: var(--linkColor); }
@@ -42,8 +45,8 @@
             top: 0; left: 0; width: 100vw; height: 100vh;
             margin: 0; z-index: 999; overflow: hidden;
         }
-        #map { width: 100%; height: 100%; z-index: 1; background: #000; }
-        .maplibregl-map { filter: brightness(1.5); }
+        #map { width: 100%; height: 100%; z-index: 1; background: #fafafa; }
+        .maplibregl-map { filter: none; }
 
         /* --- PREMIUM TOOLTIPS --- */
         .custom-tooltip {
@@ -262,8 +265,8 @@
         }
         .entity-profile:hover { background-color: var(--activeGrayColor); opacity: 1; filter: grayscale(0); border-color: rgba(255,255,255,0.35); transform: translateY(-1px); }
         .entity-profile.selected { background: rgba(255, 255, 255, 0.06); opacity: 1; filter: grayscale(0); }
-        #focus-vessel-1-btn.selected { border-left-color: #ff3a3a; }
-        #focus-vessel-2-btn.selected { border-left-color: #ff9800; }
+        #focus-vessel-1-btn.selected { border-left-color: #d1495b; }
+        #focus-vessel-2-btn.selected { border-left-color: #e67e22; }
         .entity-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; background: #21262d; box-shadow: inset 0 0 10px #000; }
         .entity-details { display: flex; flex-direction: column; gap: 8px; width: 100%; padding-right: 40px; }
         .entity-name { font-size: 15px; font-weight: 500; color: #fff; border-bottom: 0; padding-bottom: 0;}
@@ -326,25 +329,130 @@
         }
         @keyframes pulse-animation { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
 
+        /* Light cartographic theme inspired by the World Bank reference map. */
+        .custom-tooltip,
+        .maplibregl-popup.mpa-popup .maplibregl-popup-content {
+            background: var(--surfaceColor);
+            border-color: var(--borderColor);
+            box-shadow: 0 8px 24px rgba(26, 58, 92, 0.18);
+            color: #40566c;
+        }
+        .custom-tooltip b,
+        .tooltip-title,
+        .mpa-popup-title { color: #1a3a5c; }
+        .tooltip-title { border-bottom-color: var(--borderColor); }
+        .mpa-popup-sub { color: var(--mutedColor); }
+        .floating-btn,
+        button,
+        .action-btn {
+            background-color: var(--surfaceColor);
+            border-color: #1a3a5c;
+            color: #1a3a5c;
+            box-shadow: 0 2px 10px rgba(26, 58, 92, 0.14);
+        }
+        .floating-btn:hover { background: #89d1ce; border-color: #4aa6a3; color: #1a3a5c; }
+        @media (hover: hover) {
+            button:hover, .action-btn:hover { background-color: #89d1ce; color: #1a3a5c; }
+        }
+        .panel-container {
+            background-color: rgba(255, 255, 255, 0.91);
+            color: #263f57;
+            box-shadow: 0 0 24px rgba(26, 58, 92, 0.1);
+        }
+        .panel-container::-webkit-scrollbar-thumb { background: rgba(26, 58, 92, 0.2); }
+        .panel-title,
+        .section-title,
+        .entity-name,
+        .layer-toggle-label,
+        .story-section-header { color: #1a3a5c; }
+        .close-btn,
+        .mini-toggles .toggle-item,
+        .legend-gradient-label,
+        .gradient-labels,
+        .layer-toggle-sub,
+        .entity-legend-row,
+        .entity-info-item-label,
+        .count-text,
+        .story-chevron { color: var(--mutedColor); }
+        .close-btn { box-shadow: none; }
+        .close-btn:hover,
+        .story-section-num,
+        .story-section.active .story-chevron,
+        .season-tick.season-tick-start { color: #2f8987; }
+        .layer-toggle,
+        .layer-toggle-group,
+        .entity-profile,
+        .story-section {
+            background: rgba(255, 255, 255, 0.55);
+            border-color: var(--borderColor);
+        }
+        .layer-toggle-group .layer-toggle + .layer-toggle { border-top-color: var(--borderColor); }
+        .layer-toggle:hover,
+        .entity-profile:hover { border-color: rgba(26, 58, 92, 0.38); }
+        .layer-toggle:has(input:checked),
+        .entity-profile.selected { background: rgba(137, 209, 206, 0.2); }
+        .layer-toggle::after,
+        .entity-profile::after { color: var(--mutedColor); border-color: var(--mutedColor); }
+        .layer-toggle:has(input:checked)::after,
+        .entity-profile.selected::after { color: #2f8987; border-color: #2f8987; }
+        .story-section:hover { border-color: rgba(74, 166, 163, 0.65); }
+        .story-section.active {
+            border-color: #4aa6a3;
+            background: rgba(137, 209, 206, 0.2);
+        }
+        .story-section-body,
+        .entity-info-item-value { color: #40566c; }
+        .credit-box {
+            background: rgba(255, 255, 255, 0.52);
+            border-color: var(--borderColor);
+        }
+        .credits { color: #40566c; opacity: 0.8; }
+        .speedIndicator {
+            background-color: #dce6ed;
+            background-image: linear-gradient(to right, var(--highlightColor) var(--level), transparent var(--level), transparent 100%);
+        }
+        input[type=range]::-webkit-slider-runnable-track { background: rgba(26, 58, 92, 0.22); }
+        input[type=range]::-webkit-slider-thumb { border-color: #fff; }
+        .season-tick { color: var(--mutedColor); }
+        .season-tick::before { background: rgba(26, 58, 92, 0.3); }
+        .entity-avatar { background: #e4edf2; box-shadow: inset 0 0 8px rgba(26, 58, 92, 0.15); }
+
         @media screen and (max-width: 800px) {
+            html, body, #map-wrapper { height: 100dvh; }
             body { font-size: 12px; }
             .panel-container {
                 top: auto !important;
                 bottom: 0;
                 left: 0 !important;
                 right: 0 !important;
-                width: 100%;
+                width: 100% !important;
                 height: auto;
-                max-height: 58vh;
-                background: linear-gradient(transparent, rgba(0, 0, 0, 1));
-                padding: 1rem;
+                max-width: none;
+                max-height: 52dvh;
+                overflow-x: hidden;
+                overscroll-behavior: contain;
+                -webkit-overflow-scrolling: touch;
+                background: rgba(255, 255, 255, 0.96);
+                border-top: 1px solid var(--borderColor);
+                padding: 1rem max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+                gap: 1.25rem;
             }
-            .panel-container.hidden { transform: translateY(10px); }
+            #story-panel { max-height: 40dvh; }
+            .panel-container.hidden { transform: translateY(100%); }
             .panel-title { font-size: 18px; }
-            .floating-btn { top: 12px; }
-            #btn-story { top: 54px; }
+            .floating-btn {
+                top: max(12px, env(safe-area-inset-top));
+                height: 48px;
+                padding: 7px 9px;
+                justify-content: center;
+                line-height: 1.15;
+            }
+            #btn-story { left: 12px !important; width: calc(42vw - 18px); }
+            #btn-legend { right: 12px !important; width: calc(58vw - 18px); text-align: left; }
             .entity-info-grid { display: none; }
             .entity-profile { min-width: 150px; }
+            #map-wrapper:has(#story-panel:not(.hidden)) .maplibregl-ctrl-bottom-left { bottom: calc(40dvh + 4px); }
+            #map-wrapper:has(#right-panel:not(.hidden)) .maplibregl-ctrl-bottom-left { bottom: calc(52dvh + 4px); }
         }
     </style>
 </head>
@@ -390,7 +498,7 @@
                 </div>
                 <div class="story-section-body">
                     <p>Zoom in, and the impact of that extraction comes into focus. Here, fishing regulations are set by the Commission for the Conservation of Antarctic Marine Living Resources (CCAMLR), which set an overall catch limit of 620,000 tonnes for krill. Aker BioMarine claims that since this is a small fraction of the total estimated krill biomass, the fishery is “sustainable”. But a focus on total catch limits obscures a much greater localized harm.</p> 
-                    <p></p>Fishing vessels cluster exactly where krill, and the marine predators that depend on it, are most concentrated: the West Antarctic Peninsula, the South Orkney Islands, and South Georgia. In 2022, fishing concentration there reached its <a href="https://doi.org/10.1016/j.ocecoaman.2022.106146">highest level in 38 years</a>. Industrial fishing can now <a href="https://doi.org/10.1016/j.ocecoaman.2022.106146">rival what marine predators need</a>, raising concerns that fishing is <a href="https://www.nature.com/articles/s41467-024-51954-x">impeding the recovery</a> of whale populations recovering from industrial whaling. This is in addition to climate change impacts already disrupting the delicate balance of Antarctic food webs. Calling a regional catch quota "sustainable" is meaningless if the harvest is happening in the one place the ecosystem is least resilient to it.</p> 
+                    <p>Fishing vessels cluster exactly where krill, and the marine predators that depend on it, are most concentrated: the West Antarctic Peninsula, the South Orkney Islands, and South Georgia. In 2022, fishing concentration there reached its <a href="https://doi.org/10.1016/j.ocecoaman.2022.106146">highest level in 38 years</a>. Industrial fishing can now <a href="https://doi.org/10.1016/j.ocecoaman.2022.106146">rival what marine predators need</a>, raising concerns that fishing is <a href="https://www.nature.com/articles/s41467-024-51954-x">impeding the recovery</a> of whale populations recovering from industrial whaling. This is in addition to climate change impacts already disrupting the delicate balance of Antarctic food webs. Calling a regional catch quota "sustainable" is meaningless if the harvest is happening in the one place the ecosystem is least resilient to it.</p>
 
                 </div>
             </div>
@@ -441,7 +549,7 @@
         <div class="control-section">
             <div class="section-title">Tracked Vessels</div>
             <div class="entity-profile" id="focus-vessel-1-btn" title="Click to focus on vessel">
-                <img src="https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/img/antarctic.png" alt="Boat" class="entity-avatar" style="border: 2px solid #ff3a3a;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%2321262d\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\'/></svg>'">
+                <img src="https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/img/antarctic.png" alt="Boat" class="entity-avatar" style="border: 2px solid #d1495b;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%23eceee9\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\'/></svg>'">
                 <div class="entity-details">
                     <div class="entity-name">Antarctic Endurance</div>
                     <div class="entity-info-grid">
@@ -464,14 +572,14 @@
                         </div>
                     </div>
                     <div class="entity-legend-row">
-                        <div class="legend-color" style="border-radius: 50%; width: 6px; height: 6px; background: #ff3a3a;"></div>
+                        <div class="legend-color" style="border-radius: 50%; width: 6px; height: 6px; background: #d1495b;"></div>
                         <span>Identified Fishing Event</span>
                     </div>
 
                 </div>
             </div>
             <div class="entity-profile" id="focus-vessel-2-btn" title="Click to focus on vessel" style="margin-top: 12px;">
-                <img src="https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/img/saga.png" alt="Boat" class="entity-avatar" style="border: 2px solid #ff9800;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%2321262d\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\'/></svg>'">
+                <img src="https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/img/saga.png" alt="Boat" class="entity-avatar" style="border: 2px solid #e67e22;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' fill=\'%23eceee9\' viewBox=\'0 0 24 24\'><circle cx=\'12\' cy=\'12\' r=\'12\'/></svg>'">
                 <div class="entity-details">
                     <div class="entity-name">Saga Sea</div>
                     <div class="entity-info-grid">
@@ -494,7 +602,7 @@
                         </div>
                     </div>
                     <div class="entity-legend-row">
-                        <div class="legend-color" style="border-radius: 50%; width: 6px; height: 6px; background: #ff9800;"></div>
+                        <div class="legend-color" style="border-radius: 50%; width: 6px; height: 6px; background: #e67e22;"></div>
                         <span>Identified Fishing Event</span>
                     </div>
 
@@ -504,12 +612,12 @@
 
         <div class="control-section">
             <div class="section-title">Map Layers</div>
-            <div style="font-size: 11px; color: #8b949e; margin: -0.5rem 0 0.25rem;">Click to show or hide each layer.</div>
+            <div style="font-size: 11px; color: #657789; margin: -0.5rem 0 0.25rem;">Click to show or hide each layer.</div>
 
             <div class="layer-toggle-group">
                 <label class="layer-toggle" title="Show / hide layer">
                     <input type="checkbox" class="layer-toggle-input" id="toggle-domain1">
-                    <div class="layer-toggle-swatch" style="background: rgba(143, 131, 216, 0.3); border: 1px solid #6c5fc7;"></div>
+                    <div class="layer-toggle-swatch" style="background: rgba(118, 141, 161, 0.4); border: 1px solid #768da1;"></div>
                     <div class="layer-toggle-body">
                         <span class="layer-toggle-label">Domain1</span>
                     </div>
@@ -528,7 +636,7 @@
 
             <label class="layer-toggle" title="Show / hide layer">
                 <input type="checkbox" class="layer-toggle-input" id="toggle-sgssi-mpa">
-                <div class="layer-toggle-swatch" style="background: rgba(213, 81, 129, 0.32); border: 1px solid #d55181;"></div>
+                <div class="layer-toggle-swatch" style="background: rgba(63, 155, 120, 0.32); border: 1px solid #3f9b78;"></div>
                 <div class="layer-toggle-body">
                     <span class="layer-toggle-label">South Georgia &amp; South Sandwich Islands MPA</span>
                 </div>
@@ -536,7 +644,7 @@
 
             <label class="layer-toggle" title="Show / hide layer">
                 <input type="checkbox" class="layer-toggle-input" id="toggle-mpa">
-                <div class="layer-toggle-swatch" style="background: rgba(250, 204, 21, 0.22); border: 1px solid #facc15;"></div>
+                <div class="layer-toggle-swatch" style="background: rgba(251, 242, 136, 0.65); border: 1px solid #c1ad34;"></div>
                 <div class="layer-toggle-body">
                     <span class="layer-toggle-label">South Orkney Islands MPA</span>
                 </div>
@@ -582,26 +690,30 @@
 
 <script>
     function openStoryPanel() {
+        if (isMobileLayout()) closePanelForMobile('right-panel', 'btn-legend');
         document.getElementById('story-panel').classList.remove('hidden');
         document.getElementById('btn-story').classList.add('hidden');
     }
     function closeStoryPanel() {
-        if (typeof resetStoryView === 'function') resetStoryView();
         document.getElementById('story-panel').classList.add('hidden');
         document.getElementById('btn-story').classList.remove('hidden');
+        if (typeof resetStoryView === 'function') resetStoryView();
     }
     document.getElementById('btn-story').addEventListener('click', openStoryPanel);
     document.getElementById('close-story').addEventListener('click', closeStoryPanel);
     document.getElementById('btn-legend').addEventListener('click', () => {
+        if (isMobileLayout()) closePanelForMobile('story-panel', 'btn-story');
         document.getElementById('right-panel').classList.remove('hidden');
         document.getElementById('btn-legend').classList.add('hidden');
+        applyMobileMapPadding();
     });
     document.getElementById('close-legend').addEventListener('click', () => {
         document.getElementById('right-panel').classList.add('hidden');
         document.getElementById('btn-legend').classList.remove('hidden');
+        clearMobileMapPadding();
     });
 
-    const boatColors = { 'Antarctic Endurance': '#ff3a3a', 'Saga Sea': '#ff9800' };
+    const boatColors = { 'Antarctic Endurance': '#d1495b', 'Saga Sea': '#e67e22' };
     const visibleVessels = new Set(['Antarctic Endurance', 'Saga Sea']);
     const dayMs = 24 * 60 * 60 * 1000;
     const seasonCycleMs = 366 * dayMs;
@@ -612,12 +724,14 @@
     const cycleDurationMs = [240000, 120000, 60000];
     const speedLevels = ['34%', '67%', '100%'];
     const domain1LatitudeOffset = -0.15;
-    const tracksPayloadUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/tracks_fishing_groupable_payload.json';
-    const domain1ProposedGeoJsonUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/domain1_proposed.geojson';
-    const zonesGeoJsonUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/zones_with_months.geojson';
-    const sgssiMpaGeoJsonUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/sgssi_plan_no_take_zones.json';
-    const krillCsvUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/Krill_2011_2022.csv';
-    const whaleCsvUrl = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final/whale_gbif_2000-2026_fixed.csv';
+    const remoteDataRoot = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final';
+    const dataUrl = (localUrl, remoteFile) => location.protocol === 'file:' ? `${remoteDataRoot}/${remoteFile}` : localUrl;
+    const tracksPayloadUrl = dataUrl('./data/krill/tracks_fishing_groupable_payload.json', 'tracks_fishing_groupable_payload.json');
+    const domain1ProposedGeoJsonUrl = dataUrl('./data/domain1_proposed.geojson', 'domain1_proposed.geojson');
+    const zonesGeoJsonUrl = dataUrl('./data/krill/zones_with_months.geojson', 'zones_with_months.geojson');
+    const sgssiMpaGeoJsonUrl = dataUrl('./data/krill/sgssi_plan_no_take_zones.json', 'sgssi_plan_no_take_zones.json');
+    const krillCsvUrl = dataUrl('./data/Krill_2011_2022.csv', 'Krill_2011_2022.csv');
+    const whaleCsvUrl = dataUrl('./data/whale_gbif_2000-2026_fixed.csv', 'whale_gbif_2000-2026_fixed.csv');
     const landGeoJsonUrl = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_land.geojson';
 
     let domain1BoundsGlobal = null;
@@ -638,6 +752,7 @@
     let renderAnimationFrame;
     let lastFrameTime;
     let speedLevel = 1;
+    let heatmapsPromise;
 
     const playbackControls = [
         document.getElementById('play-btn'),
@@ -649,20 +764,72 @@
 
     const homeViewCenter = [-90, -55];
     const homeViewZoom = 1.3;
+    const mobileLayout = window.matchMedia('(max-width: 800px)');
+
+    function isMobileLayout() {
+        return mobileLayout.matches;
+    }
+
+    function homeViewCenterForLayout() {
+        return isMobileLayout() ? [-41, -50] : homeViewCenter;
+    }
+
+    function homeViewZoomForLayout() {
+        return isMobileLayout() ? -1.2 : homeViewZoom;
+    }
+
+    function closePanelForMobile(panelId, buttonId) {
+        document.getElementById(panelId).classList.add('hidden');
+        document.getElementById(buttonId).classList.remove('hidden');
+    }
+
+    function mobilePanelPadding() {
+        const viewportHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        const storyPanelOpen = !document.getElementById('story-panel').classList.contains('hidden');
+        const panelHeightRatio = storyPanelOpen ? 0.4 : 0.52;
+        return { top: 40, bottom: Math.round(viewportHeight * panelHeightRatio) + 30, left: 30, right: 30 };
+    }
+
+    function hasOpenPanel() {
+        return Boolean(document.querySelector('.panel-container:not(.hidden)'));
+    }
+
+    function homeViewPadding() {
+        if (isMobileLayout()) {
+            return hasOpenPanel()
+                ? mobilePanelPadding()
+                : { top: 30, bottom: 30, left: 30, right: 30 };
+        }
+        return { top: 150, bottom: 150, left: 150, right: 620 };
+    }
+
+    function storyViewPadding(padding) {
+        return isMobileLayout() ? mobilePanelPadding() : padding;
+    }
+
+    function clearMobileMapPadding() {
+        if (!isMobileLayout() || typeof map === 'undefined') return;
+        map.easeTo({ padding: { top: 0, bottom: 0, left: 0, right: 0 }, duration: 300 });
+    }
+
+    function applyMobileMapPadding() {
+        if (!isMobileLayout() || typeof map === 'undefined') return;
+        map.easeTo({ padding: mobilePanelPadding(), duration: 300 });
+    }
     const naturalEarthStyle = {
         version: 8,
         sources: {},
         layers: [{
             id: 'background',
             type: 'background',
-            paint: { 'background-color': '#2C353C' },
+            paint: { 'background-color': '#bcc4c6' },
         }],
     };
 
     const map = new maplibregl.Map({
         container: 'map',
-        center: homeViewCenter,
-        zoom: homeViewZoom,
+        center: homeViewCenterForLayout(),
+        zoom: homeViewZoomForLayout(),
         attributionControl: true,
         style: naturalEarthStyle,
     });
@@ -1200,6 +1367,57 @@
         scheduleRenderTracks();
     });
 
+    function ensureHeatmapsLoaded() {
+        if (heatmapsPromise) return heatmapsPromise;
+
+        heatmapsPromise = Promise.all([
+            d3.dsv(';', krillCsvUrl),
+            d3.csv(whaleCsvUrl),
+        ]).then(([krillData, whaleData]) => {
+            const krillFeatures = krillData
+                .map(d => ({ lat: parseFloat(d.latitude), lon: parseFloat(d.Longitude), quantity: parseFloat(d.Quantity) }))
+                .filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon) && !Number.isNaN(d.quantity))
+                .map(d => geojsonPoint(d.lon, d.lat, { quantity: d.quantity }));
+            const whaleFeatures = whaleData
+                .map(d => ({ lat: parseFloat(d.decimalLatitude), lon: parseFloat(d.decimalLongitude) }))
+                .filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon))
+                .map(d => geojsonPoint(d.lon, d.lat));
+            heatmapBoundsGlobal = boundsFromGeoJson({ type: 'FeatureCollection', features: [...krillFeatures, ...whaleFeatures] });
+            const firstForegroundLayer = map.getLayer('land-foreground-fill') ? 'land-foreground-fill' : undefined;
+
+            map.addSource('krill-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: krillFeatures } });
+            map.addLayer({
+                id: 'krill-heatmap',
+                type: 'heatmap',
+                source: 'krill-heatmap',
+                layout: { visibility: checkboxVisibility('toggle-krill') },
+                paint: {
+                    'heatmap-weight': ['interpolate', ['linear'], ['to-number', ['get', 'quantity']], 0, 0, 100, 1],
+                    'heatmap-radius': 14,
+                    'heatmap-opacity': 0.5,
+                    'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(239,243,255,0)', 0.35, '#9ecae1', 0.55, '#6baed6', 0.75, '#3182bd', 1, '#08519c'],
+                },
+            }, firstForegroundLayer);
+            map.addSource('whale-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: whaleFeatures } });
+            map.addLayer({
+                id: 'whale-heatmap',
+                type: 'heatmap',
+                source: 'whale-heatmap',
+                layout: { visibility: checkboxVisibility('toggle-whale') },
+                paint: {
+                    'heatmap-radius': 16,
+                    'heatmap-opacity': 0.5,
+                    'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(247,252,245,0)', 0.35, '#ccece6', 0.55, '#66c2a4', 0.8, '#2ca25f', 1, '#006d2c'],
+                },
+            }, firstForegroundLayer);
+        }).catch(error => {
+            heatmapsPromise = null;
+            throw error;
+        });
+
+        return heatmapsPromise;
+    }
+
     Promise.all([
         mapReady(),
         d3.json(tracksPayloadUrl),
@@ -1209,10 +1427,8 @@
         }),
         d3.json(zonesGeoJsonUrl),
         d3.json(sgssiMpaGeoJsonUrl),
-        d3.dsv(';', krillCsvUrl),
-        d3.csv(whaleCsvUrl),
         d3.json(landGeoJsonUrl),
-    ]).then(([, tracksPayload, domain1ProposedGeoJson, zonesGeoJson, sgssiMpaGeoJson, krillData, whaleData, landGeoJson]) => {
+    ]).then(([, tracksPayload, domain1ProposedGeoJson, zonesGeoJson, sgssiMpaGeoJson, landGeoJson]) => {
         if (domain1ProposedGeoJson) {
             offsetGeoJsonLatitude(domain1ProposedGeoJson, domain1LatitudeOffset);
             domain1ProposedGeoJson.features.forEach(feature => {
@@ -1238,7 +1454,7 @@
         document.getElementById('dynamic-zone-legend').innerHTML = uniquePeriods.map(period => {
             const color = zoneColorScale(period);
             const borderColor = d3.rgb(color).darker(1.2);
-            return `<div class="legend-item" style="margin-bottom: 8px; font-size: 11px; color: #8b949e;"><div class="legend-color" style="background: ${color}; opacity: 0.5; border: 1px solid ${borderColor};"></div><span> ${formatPeriod(period, true)}</span></div>`;
+            return `<div class="legend-item" style="margin-bottom: 8px; font-size: 11px; color: #657789;"><div class="legend-color" style="background: ${color}; opacity: 0.5; border: 1px solid ${borderColor};"></div><span> ${formatPeriod(period, true)}</span></div>`;
         }).join('');
 
         zonesGeoJson.features.forEach(feature => {
@@ -1250,11 +1466,11 @@
         domain1BoundsGlobal = boundsFromGeoJson(domain1ProposedGeoJson || zonesGeoJson);
 
         if (domain1ProposedGeoJson) {
-            addGeoJsonFill('domain1-proposed', domain1ProposedGeoJson, '#8f83d8', '#6c5fc7', checkboxVisibility('toggle-domain1'));
+            addGeoJsonFill('domain1-proposed', domain1ProposedGeoJson, '#768da1', '#526b80', checkboxVisibility('toggle-domain1'));
         }
         addGeoJsonFill('domain-zones', zonesGeoJson, ['get', '_color'], ['get', '_border'], checkboxVisibility('toggle-zones'));
-        addGeoJsonFill('sgssi-mpa', sgssiMpaGeoJson, '#d55181', '#d55181', checkboxVisibility('toggle-sgssi-mpa'));
-        addGeoJsonFill('south-orkney-mpa', southOrkneyGeoJson(), '#facc15', '#facc15', checkboxVisibility('toggle-mpa'));
+        addGeoJsonFill('sgssi-mpa', sgssiMpaGeoJson, '#3f9b78', '#277459', checkboxVisibility('toggle-sgssi-mpa'));
+        addGeoJsonFill('south-orkney-mpa', southOrkneyGeoJson(), '#fbf288', '#c1ad34', checkboxVisibility('toggle-mpa'));
 
         const mpaPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, className: 'mpa-popup', offset: 12 });
         function bindMpaHover(layerId, labelFn) {
@@ -1280,42 +1496,6 @@
         bindMpaHover('sgssi-mpa-fill', () => '<div class="mpa-popup-title">South Georgia &amp; South Sandwich Islands MPA</div>');
         bindMpaHover('south-orkney-mpa-fill', feature => `<div class="mpa-popup-title">${feature.properties.name || 'South Orkney Islands MPA'}</div>`);
 
-        const krillFeatures = krillData
-            .map(d => ({ lat: parseFloat(d.latitude), lon: parseFloat(d.Longitude), quantity: parseFloat(d.Quantity) }))
-            .filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon) && !Number.isNaN(d.quantity))
-            .map(d => geojsonPoint(d.lon, d.lat, { quantity: d.quantity }));
-        const whaleFeatures = whaleData
-            .map(d => ({ lat: parseFloat(d.decimalLatitude), lon: parseFloat(d.decimalLongitude) }))
-            .filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon))
-            .map(d => geojsonPoint(d.lon, d.lat));
-        heatmapBoundsGlobal = boundsFromGeoJson({ type: 'FeatureCollection', features: [...krillFeatures, ...whaleFeatures] });
-
-        map.addSource('krill-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: krillFeatures } });
-        map.addLayer({
-            id: 'krill-heatmap',
-            type: 'heatmap',
-            source: 'krill-heatmap',
-            layout: { visibility: checkboxVisibility('toggle-krill') },
-            paint: {
-                'heatmap-weight': ['interpolate', ['linear'], ['to-number', ['get', 'quantity']], 0, 0, 100, 1],
-                'heatmap-radius': 14,
-                'heatmap-opacity': 0.5,
-                'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(239,243,255,0)', 0.35, '#9ecae1', 0.55, '#6baed6', 0.75, '#3182bd', 1, '#08519c'],
-            },
-        });
-        map.addSource('whale-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: whaleFeatures } });
-        map.addLayer({
-            id: 'whale-heatmap',
-            type: 'heatmap',
-            source: 'whale-heatmap',
-            layout: { visibility: checkboxVisibility('toggle-whale') },
-            paint: {
-                'heatmap-radius': 16,
-                'heatmap-opacity': 0.5,
-                'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(247,252,245,0)', 0.35, '#ccece6', 0.55, '#66c2a4', 0.8, '#2ca25f', 1, '#006d2c'],
-            },
-        });
-
         map.addSource('land-foreground', { type: 'geojson', data: naturalEarthLandGeoJson(landGeoJson) });
         map.addLayer({
             id: 'land-foreground-fill',
@@ -1323,7 +1503,7 @@
             source: 'land-foreground',
             filter: ['!=', ['get', '_skipFill'], true],
             paint: {
-                'fill-color': '#141414',
+                'fill-color': '#d9ddde',
                 'fill-opacity': 0.999,
             },
         });
@@ -1333,7 +1513,7 @@
             type: 'fill',
             source: 'antarctica-fill',
             paint: {
-                'fill-color': '#141414',
+                'fill-color': '#d9ddde',
                 'fill-opacity': 0.999,
                 'fill-antialias': false,
             },
@@ -1393,7 +1573,8 @@
         initOrUpdateAnimation();
         renderTracks();
 
-        map.fitBounds([homeViewCenter, homeViewCenter], { padding: { top: 150, bottom: 150, left: 150, right: 620 }, maxZoom: homeViewZoom });
+        const initialCenter = homeViewCenterForLayout();
+        map.fitBounds([initialCenter, initialCenter], { padding: homeViewPadding(), maxZoom: homeViewZoomForLayout() });
 
         document.getElementById('focus-vessel-1-btn').classList.add('selected');
         document.getElementById('focus-vessel-2-btn').classList.add('selected');
@@ -1405,14 +1586,31 @@
         playButton.classList.remove('play');
         playButton.setAttribute('aria-label', 'Pause');
         startPlayback();
+
+        const loadOptionalLayers = () => ensureHeatmapsLoaded().catch(error => {
+            console.warn('Optional heatmap data could not be loaded:', error);
+        });
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(loadOptionalLayers, { timeout: 2500 });
+        } else {
+            window.setTimeout(loadOptionalLayers, 500);
+        }
     }).catch(error => console.error('Error loading data:', error));
 
     document.getElementById('toggle-domain1').addEventListener('change', event => setLayerVisibility(['domain1-proposed-fill', 'domain1-proposed-line'], event.target.checked));
     document.getElementById('toggle-zones').addEventListener('change', event => setLayerVisibility(['domain-zones-fill', 'domain-zones-line'], event.target.checked));
     document.getElementById('toggle-sgssi-mpa').addEventListener('change', event => setLayerVisibility(['sgssi-mpa-fill', 'sgssi-mpa-line'], event.target.checked));
     document.getElementById('toggle-mpa').addEventListener('change', event => setLayerVisibility(['south-orkney-mpa-fill', 'south-orkney-mpa-line'], event.target.checked));
-    document.getElementById('toggle-krill').addEventListener('change', event => setLayerVisibility(['krill-heatmap'], event.target.checked));
-    document.getElementById('toggle-whale').addEventListener('change', event => setLayerVisibility(['whale-heatmap'], event.target.checked));
+    document.getElementById('toggle-krill').addEventListener('change', event => {
+        ensureHeatmapsLoaded()
+            .then(() => setLayerVisibility(['krill-heatmap'], event.target.checked))
+            .catch(error => console.warn('Krill heatmap could not be loaded:', error));
+    });
+    document.getElementById('toggle-whale').addEventListener('change', event => {
+        ensureHeatmapsLoaded()
+            .then(() => setLayerVisibility(['whale-heatmap'], event.target.checked))
+            .catch(error => console.warn('Whale heatmap could not be loaded:', error));
+    });
 
     function setupVesselToggle(vesselName, profileId) {
         const profile = document.getElementById(profileId);
@@ -1442,20 +1640,27 @@
             setToggle('toggle-mpa', false);
             setToggle('toggle-krill', false);
             setToggle('toggle-whale', false);
-            map.flyTo({ center: homeViewCenter, zoom: homeViewZoom, duration: 1200 });
+            map.flyTo({
+                center: homeViewCenterForLayout(),
+                zoom: homeViewZoomForLayout(),
+                duration: 1200,
+                ...(isMobileLayout() && hasOpenPanel() ? { padding: mobilePanelPadding() } : {}),
+            });
         },
         () => {
             setToggle('toggle-krill', true);
             setToggle('toggle-whale', true);
-            if (heatmapBoundsGlobal) {
-                map.fitBounds(heatmapBoundsGlobal, { padding: 150, maxZoom: 2.6, duration: 1200 });
-            }
+            ensureHeatmapsLoaded().then(() => {
+                if (activeStorySectionIndex === 1 && heatmapBoundsGlobal) {
+                    map.fitBounds(heatmapBoundsGlobal, { padding: storyViewPadding(150), maxZoom: 2.6, duration: 1200 });
+                }
+            }).catch(error => console.warn('Story heatmaps could not be loaded:', error));
         },
         () => {
             setToggle('toggle-domain1', true);
             setToggle('toggle-zones', true);
             if (domain1BoundsGlobal) {
-                map.fitBounds(domain1BoundsGlobal, { padding: 120, maxZoom: 3.2, duration: 1200 });
+                map.fitBounds(domain1BoundsGlobal, { padding: storyViewPadding(120), maxZoom: 3.2, duration: 1200 });
             }
         },
     ];
@@ -1474,7 +1679,8 @@
         setToggle('toggle-mpa', false);
         setToggle('toggle-krill', false);
         setToggle('toggle-whale', false);
-        map.fitBounds([homeViewCenter, homeViewCenter], { padding: { top: 150, bottom: 150, left: 150, right: 620 }, maxZoom: homeViewZoom, duration: 1000 });
+        const resetCenter = homeViewCenterForLayout();
+        map.fitBounds([resetCenter, resetCenter], { padding: homeViewPadding(), maxZoom: homeViewZoomForLayout(), duration: 1000 });
         document.querySelectorAll('.story-section').forEach((s, i) => s.classList.toggle('active', i === 0));
         activeStorySectionIndex = 0;
     };
@@ -1499,6 +1705,9 @@
         activateStorySection(0);
     });
 
+    if (isMobileLayout()) {
+        closePanelForMobile('right-panel', 'btn-legend');
+    }
     activateStorySection(0);
 </script>
 
