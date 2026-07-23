@@ -146,15 +146,17 @@
             padding: 0.6rem 0.75rem; border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.15);
             cursor: pointer; transition: 0.2s all ease;
-            opacity: 0.55; filter: grayscale(1); margin-bottom: 0.6rem;
+            margin-bottom: 0.6rem;
             position: relative; user-select: none;
         }
         .layer-toggle:last-child { margin-bottom: 0; }
-        .layer-toggle:hover { background-color: var(--activeGrayColor); opacity: 1; filter: grayscale(0); border-color: rgba(255,255,255,0.35); transform: translateY(-1px); }
-        .layer-toggle:has(input:checked) { opacity: 1; filter: grayscale(0); background: rgba(255, 255, 255, 0.06); }
+        .layer-toggle:hover { background-color: var(--activeGrayColor); border-color: rgba(255,255,255,0.35); transform: translateY(-1px); }
+        .layer-toggle:has(input:checked) { background: rgba(255, 255, 255, 0.06); }
         .layer-toggle-input { position: absolute; opacity: 0; width: 0; height: 0; margin: 0; pointer-events: none; }
         .layer-toggle-swatch { width: 22px; height: 22px; border-radius: 5px; flex-shrink: 0; box-shadow: inset 0 0 2px rgba(0,0,0,0.5); }
-        .layer-toggle-body { display: flex; flex-direction: column; gap: 3px; flex-grow: 1; padding-right: 42px; }
+        .layer-toggle-body { display: flex; flex-direction: column; gap: 3px; flex-grow: 1; padding-right: 42px; opacity: 0.55; filter: grayscale(1); transition: 0.2s all ease; }
+        .layer-toggle:hover .layer-toggle-body { opacity: 1; filter: grayscale(0); }
+        .layer-toggle:has(input:checked) .layer-toggle-body { opacity: 1; filter: grayscale(0); }
         .layer-toggle-label { font-size: 13px; font-weight: 500; color: #fff; }
         .layer-toggle-sub { font-size: 10.5px; color: #8b949e; }
         .layer-toggle-group { margin-bottom: 0.6rem; overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; background: rgba(255, 255, 255, 0.025); }
@@ -636,7 +638,7 @@
 
             <label class="layer-toggle" title="Show / hide layer">
                 <input type="checkbox" class="layer-toggle-input" id="toggle-sgssi-mpa">
-                <div class="layer-toggle-swatch" style="background: rgba(63, 155, 120, 0.32); border: 1px solid #3f9b78;"></div>
+                <div class="layer-toggle-swatch" style="background: rgba(196, 108, 74, 0.32); border: 1px solid #c46c4a;"></div>
                 <div class="layer-toggle-body">
                     <span class="layer-toggle-label">South Georgia &amp; South Sandwich Islands MPA</span>
                 </div>
@@ -652,7 +654,7 @@
 
             <label class="layer-toggle" title="Show / hide layer">
                 <input type="checkbox" class="layer-toggle-input" id="toggle-krill">
-                <div class="layer-toggle-swatch" style="background: linear-gradient(135deg, #bdd7e7, #3182bd, #08519c);"></div>
+                <div class="layer-toggle-swatch" style="background: linear-gradient(135deg, #d9f0f3, #a3d9d3, #1b7a72);"></div>
                 <div class="layer-toggle-body">
                     <span class="layer-toggle-label">Krill Density</span>
                     <span class="layer-toggle-sub">Heatmap — low to high</span>
@@ -667,23 +669,34 @@
                     <span class="layer-toggle-sub">Heatmap — low to high</span>
                 </div>
             </label>
+
+            <label class="layer-toggle" title="Show / hide layer">
+                <input type="checkbox" class="layer-toggle-input" id="toggle-penguin">
+                <div class="layer-toggle-swatch" style="background: linear-gradient(135deg, #bdd7e7, #3182bd, #08519c);"></div>
+                <div class="layer-toggle-body">
+                    <span class="layer-toggle-label">Penguin Occurrences</span>
+                    <span class="layer-toggle-sub">Heatmap — low to high</span>
+                </div>
+            </label>
         </div>
 
         <div class="control-section credits">
             <div class="section-title">Sources</div>
             <p>
-                Vessel tracks and fishing events: <a href="https://globalfishingwatch.org/" target="_blank" rel="noopener noreferrer">Global Fishing Watch</a>.<br>
-                MPA boundaries: CCAMLR Domain 1 proposals, SGSSI MPA plan, South Orkney Islands MPA.<br>
-                Krill and whale layers: public occurrence and survey datasets compiled for this project.<br>
-                Basemap: OpenStreetMap and CARTO.
+                <b>Vessel tracks and fishing events</b>: AIS data from <a href="https://globalfishingwatch.org/" target="_blank" rel="noopener noreferrer">Global Fishing Watch</a>.<br>
+                <b>MPA boundaries</b>: CCAMLR Domain 1 proposals, SGSSI MPA plan, South Orkney Islands MPA.<br>
+                <b>Krill density</b>: adapted from GBIF.org (22 July 2026) | <a href="https://doi.org/10.15468/dl.9cp9qg" target="_blank" rel="noopener noreferrer">GBIF Occurrence Download</a> <br>
+                <b>Whale occurrences</b>: adapted from GBIF.org (17 February 2026) | <a href="https://doi.org/10.15468/dl.r5na3d" target="_blank" rel="noopener noreferrer">GBIF Occurrence Download</a> <br>
+                <b>Penguin occurrences</b>: adapted from GBIF.org (20 February 2026) |<a href="https://doi.org/10.15468/dl.9n3czq" target="_blank" rel="noopener noreferrer">GBIF Occurrence Download</a> <br>
+                <b>Basemap</b>: OpenStreetMap and CARTO.
             </p>
         </div>
 
         <div class="control-section credit-box">
-            <div class="section-title">Crédits</div>
-            <p><strong>Visualisation</strong><br>B. Roth</p>
-            <p><strong>Collecte des données</strong><br>Tracked vessels AIS datas taken from Global Fishing Watch</p>
-            <p><strong>Relecture scientifique</strong><br>_______</p>
+            <div class="section-title">Credits</div>
+            <p><strong>Visualization</strong><br>Basile Roth</p>
+            <p><strong>Data mining</strong><br>Zoé Borius, Hansa Mukherjee, Pierre-Louis Rey, Jérôme Bourdillon</p>
+            <p><strong>Text & Review</strong><br>Martin Binachon, Lila Sakata</p>
         </div>
     </div>
 </div>
@@ -726,15 +739,15 @@
     const domain1LatitudeOffset = -0.15;
     const remoteDataRoot = 'https://raw.githubusercontent.com/basileroth75/data_viz/main/krill/final';
     const tracksPayloadUrl = `${remoteDataRoot}/tracks_fishing_groupable_payload.json`;
-    const domain1ProposedGeoJsonUrl = `${remoteDataRoot}/domain1_proposed.geojson`;
-    const zonesGeoJsonUrl = `${remoteDataRoot}/zones_with_months.geojson`;
-    const sgssiMpaGeoJsonUrl = `${remoteDataRoot}/sgssi_plan_no_take_zones.json`;
-    const krillCsvUrl = `${remoteDataRoot}/Krill_2011_2022.csv`;
-    const whaleCsvUrl = `${remoteDataRoot}/whale_gbif_2000-2026_fixed.csv`;
-    const landGeoJsonUrl = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_land.geojson';
+    const mpaBundleUrl = `${remoteDataRoot}/mpa_bundle.json`;
+    const krillCsvUrl = `${remoteDataRoot}/krill_latlon.csv`;
+    const whaleCsvUrl = `${remoteDataRoot}/whale_latlon.csv`;
+    const penguinCsvUrl = `${remoteDataRoot}/penguin_latlon.csv`;
+    const landGeoJsonUrl = `${remoteDataRoot}/ne_land_hybrid.geojson`;
 
     let domain1BoundsGlobal = null;
     let heatmapBoundsGlobal = null;
+    let heatmapStackBeforeLayer;
     let allTracksData = [];
     let allFishingData = [];
     let trackGroups = { chronological: [], seasonal: [] };
@@ -1391,23 +1404,33 @@
         scheduleRenderTracks();
     });
 
+    function bringHeatmapToFront(layerId) {
+        if (map.getLayer(layerId)) map.moveLayer(layerId, heatmapStackBeforeLayer);
+    }
+
     function ensureHeatmapsLoaded() {
         if (heatmapsPromise) return heatmapsPromise;
 
         heatmapsPromise = Promise.all([
-            d3.dsv(';', krillCsvUrl),
+            d3.csv(krillCsvUrl),
             d3.csv(whaleCsvUrl),
-        ]).then(([krillData, whaleData]) => {
+            d3.csv(penguinCsvUrl),
+        ]).then(([krillData, whaleData, penguinData]) => {
             const krillFeatures = krillData
-                .map(d => ({ lat: parseFloat(d.latitude), lon: parseFloat(d.Longitude), quantity: parseFloat(d.Quantity) }))
-                .filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon) && !Number.isNaN(d.quantity))
-                .map(d => geojsonPoint(d.lon, d.lat, { quantity: d.quantity }));
-            const whaleFeatures = whaleData
-                .map(d => ({ lat: parseFloat(d.decimalLatitude), lon: parseFloat(d.decimalLongitude) }))
+                .map(d => ({ lat: parseFloat(d.lat), lon: parseFloat(d.lon) }))
                 .filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon))
                 .map(d => geojsonPoint(d.lon, d.lat));
-            heatmapBoundsGlobal = boundsFromGeoJson({ type: 'FeatureCollection', features: [...krillFeatures, ...whaleFeatures] });
+            const whaleFeatures = whaleData
+                .map(d => ({ lat: parseFloat(d.lat), lon: parseFloat(d.lon) }))
+                .filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon))
+                .map(d => geojsonPoint(d.lon, d.lat));
+            const penguinFeatures = penguinData
+                .map(d => ({ lat: parseFloat(d.lat), lon: parseFloat(d.lon) }))
+                .filter(d => !Number.isNaN(d.lat) && !Number.isNaN(d.lon))
+                .map(d => geojsonPoint(d.lon, d.lat));
+            heatmapBoundsGlobal = boundsFromGeoJson({ type: 'FeatureCollection', features: [...krillFeatures, ...whaleFeatures, ...penguinFeatures] });
             const firstForegroundLayer = map.getLayer('land-foreground-fill') ? 'land-foreground-fill' : undefined;
+            heatmapStackBeforeLayer = firstForegroundLayer;
 
             map.addSource('krill-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: krillFeatures } });
             map.addLayer({
@@ -1416,10 +1439,10 @@
                 source: 'krill-heatmap',
                 layout: { visibility: checkboxVisibility('toggle-krill') },
                 paint: {
-                    'heatmap-weight': ['interpolate', ['linear'], ['to-number', ['get', 'quantity']], 0, 0, 100, 1],
+                    'heatmap-weight': 1,
                     'heatmap-radius': 14,
                     'heatmap-opacity': 0.5,
-                    'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(239,243,255,0)', 0.35, '#9ecae1', 0.55, '#6baed6', 0.75, '#3182bd', 1, '#08519c'],
+                    'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(217,240,243,0)', 0.35, '#d9f0f3', 0.55, '#a3d9d3', 0.75, '#4fb3a9', 1, '#1b7a72'],
                 },
             }, firstForegroundLayer);
             map.addSource('whale-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: whaleFeatures } });
@@ -1434,6 +1457,18 @@
                     'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(247,252,245,0)', 0.35, '#ccece6', 0.55, '#66c2a4', 0.8, '#2ca25f', 1, '#006d2c'],
                 },
             }, firstForegroundLayer);
+            map.addSource('penguin-heatmap', { type: 'geojson', data: { type: 'FeatureCollection', features: penguinFeatures } });
+            map.addLayer({
+                id: 'penguin-heatmap',
+                type: 'heatmap',
+                source: 'penguin-heatmap',
+                layout: { visibility: checkboxVisibility('toggle-penguin') },
+                paint: {
+                    'heatmap-radius': 16,
+                    'heatmap-opacity': 0.5,
+                    'heatmap-color': ['interpolate', ['linear'], ['heatmap-density'], 0, 'rgba(239,243,255,0)', 0.35, '#9ecae1', 0.55, '#6baed6', 0.8, '#3182bd', 1, '#08519c'],
+                },
+            }, firstForegroundLayer);
         }).catch(error => {
             heatmapsPromise = null;
             throw error;
@@ -1442,17 +1477,20 @@
         return heatmapsPromise;
     }
 
+    // Kicked off in parallel with the layer Promise.all below, but its heavy
+    // per-point processing is only run once the base map layers have painted
+    // (see tracksPayloadPromise.then(...) further down), so the vessel tracks
+    // don't hold up the initial map render.
+    const tracksPayloadPromise = d3.json(tracksPayloadUrl);
+
     Promise.all([
         mapReady(),
-        d3.json(tracksPayloadUrl),
-        d3.json(domain1ProposedGeoJsonUrl).catch(error => {
-            console.warn('Domain-1 proposed GeoJSON could not be loaded:', error);
-            return null;
-        }),
-        d3.json(zonesGeoJsonUrl),
-        d3.json(sgssiMpaGeoJsonUrl),
+        d3.json(mpaBundleUrl),
         d3.json(landGeoJsonUrl),
-    ]).then(([, tracksPayload, domain1ProposedGeoJson, zonesGeoJson, sgssiMpaGeoJson, landGeoJson]) => {
+    ]).then(([, mpaBundle, landGeoJson]) => {
+        const domain1ProposedGeoJson = mpaBundle.domain1 || null;
+        const zonesGeoJson = mpaBundle.zones;
+        const sgssiMpaGeoJson = mpaBundle.sgssi;
         if (domain1ProposedGeoJson) {
             offsetGeoJsonLatitude(domain1ProposedGeoJson, domain1LatitudeOffset);
             domain1ProposedGeoJson.features.forEach(feature => {
@@ -1493,7 +1531,7 @@
             addGeoJsonFill('domain1-proposed', domain1ProposedGeoJson, '#768da1', '#526b80', checkboxVisibility('toggle-domain1'));
         }
         addGeoJsonFill('domain-zones', zonesGeoJson, ['get', '_color'], ['get', '_border'], checkboxVisibility('toggle-zones'));
-        addGeoJsonFill('sgssi-mpa', sgssiMpaGeoJson, '#3f9b78', '#277459', checkboxVisibility('toggle-sgssi-mpa'));
+        addGeoJsonFill('sgssi-mpa', sgssiMpaGeoJson, '#c46c4a', '#a8492e', checkboxVisibility('toggle-sgssi-mpa'));
         addGeoJsonFill('south-orkney-mpa', southOrkneyGeoJson(), '#fbf288', '#c1ad34', checkboxVisibility('toggle-mpa'));
 
         const mpaPopup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, className: 'mpa-popup', offset: 12 });
@@ -1546,6 +1584,35 @@
                 'fill-antialias': false,
             },
         });
+        // Base map (land + MPA layers) is now painted. The initial view can be
+        // framed right away since it doesn't depend on vessel track data.
+        const initialCenter = homeViewCenterForLayout();
+        if (isMobileLayout()) {
+            map.easeTo({
+                center: initialCenter,
+                zoom: homeViewZoomForLayout(),
+                padding: homeViewPadding(),
+                offset: homeViewOffset(),
+                duration: 0,
+            });
+        } else {
+            map.fitBounds([homeViewCenter, homeViewCenter], {
+                padding: { top: 150, bottom: 150, left: 150, right: 620 },
+                maxZoom: homeViewZoom,
+            });
+        }
+
+        const loadOptionalLayers = () => ensureHeatmapsLoaded().catch(error => {
+            console.warn('Optional heatmap data could not be loaded:', error);
+        });
+        if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(loadOptionalLayers, { timeout: 2500 });
+        } else {
+            window.setTimeout(loadOptionalLayers, 500);
+        }
+
+        return tracksPayloadPromise;
+    }).then(tracksPayload => {
         allTracksData = tracksPayload.vessels.flatMap(vessel => vessel.tracks.map(point => {
             const dateObj = new Date(point.date);
             return { boatSource: vessel.name, dateObj, lat: parseFloat(point.lat), lon: parseFloat(point.lon), chronoTime: dateObj.getTime(), seasonTime: getSeasonTime(dateObj), seasonAxisTime: getSeasonAxisTime(dateObj), year: dateObj.getUTCFullYear(), seasonYear: getFishingSeasonYear(dateObj) };
@@ -1601,22 +1668,6 @@
         initOrUpdateAnimation();
         renderTracks();
 
-        const initialCenter = homeViewCenterForLayout();
-        if (isMobileLayout()) {
-            map.easeTo({
-                center: initialCenter,
-                zoom: homeViewZoomForLayout(),
-                padding: homeViewPadding(),
-                offset: homeViewOffset(),
-                duration: 0,
-            });
-        } else {
-            map.fitBounds([homeViewCenter, homeViewCenter], {
-                padding: { top: 150, bottom: 150, left: 150, right: 620 },
-                maxZoom: homeViewZoom,
-            });
-        }
-
         document.getElementById('focus-vessel-1-btn').classList.add('selected');
         document.getElementById('focus-vessel-2-btn').classList.add('selected');
         isLoaded = true;
@@ -1627,15 +1678,6 @@
         playButton.classList.remove('play');
         playButton.setAttribute('aria-label', 'Pause');
         startPlayback();
-
-        const loadOptionalLayers = () => ensureHeatmapsLoaded().catch(error => {
-            console.warn('Optional heatmap data could not be loaded:', error);
-        });
-        if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(loadOptionalLayers, { timeout: 2500 });
-        } else {
-            window.setTimeout(loadOptionalLayers, 500);
-        }
     }).catch(error => console.error('Error loading data:', error));
 
     document.getElementById('toggle-domain1').addEventListener('change', event => setLayerVisibility(['domain1-proposed-fill', 'domain1-proposed-line'], event.target.checked));
@@ -1644,13 +1686,27 @@
     document.getElementById('toggle-mpa').addEventListener('change', event => setLayerVisibility(['south-orkney-mpa-fill', 'south-orkney-mpa-line'], event.target.checked));
     document.getElementById('toggle-krill').addEventListener('change', event => {
         ensureHeatmapsLoaded()
-            .then(() => setLayerVisibility(['krill-heatmap'], event.target.checked))
+            .then(() => {
+                setLayerVisibility(['krill-heatmap'], event.target.checked);
+                if (event.target.checked) bringHeatmapToFront('krill-heatmap');
+            })
             .catch(error => console.warn('Krill heatmap could not be loaded:', error));
     });
     document.getElementById('toggle-whale').addEventListener('change', event => {
         ensureHeatmapsLoaded()
-            .then(() => setLayerVisibility(['whale-heatmap'], event.target.checked))
+            .then(() => {
+                setLayerVisibility(['whale-heatmap'], event.target.checked);
+                if (event.target.checked) bringHeatmapToFront('whale-heatmap');
+            })
             .catch(error => console.warn('Whale heatmap could not be loaded:', error));
+    });
+    document.getElementById('toggle-penguin').addEventListener('change', event => {
+        ensureHeatmapsLoaded()
+            .then(() => {
+                setLayerVisibility(['penguin-heatmap'], event.target.checked);
+                if (event.target.checked) bringHeatmapToFront('penguin-heatmap');
+            })
+            .catch(error => console.warn('Penguin heatmap could not be loaded:', error));
     });
 
     function setupVesselToggle(vesselName, profileId) {
@@ -1681,6 +1737,7 @@
             setToggle('toggle-mpa', false);
             setToggle('toggle-krill', false);
             setToggle('toggle-whale', false);
+            setToggle('toggle-penguin', false);
             const focusMainZone = !isMobileLayout() && isLoaded;
             map.flyTo({
                 center: focusMainZone ? [-58, -61] : homeViewCenterForLayout(),
@@ -1693,6 +1750,7 @@
         () => {
             setToggle('toggle-krill', true);
             setToggle('toggle-whale', true);
+            setToggle('toggle-penguin', true);
             const mobileFishingView = { center: [-52, -59], zoom: 1.4 };
             if (isMobileLayout()) {
                 fitStoryBounds(null, 150, 2.6, mobileFishingView);
@@ -1716,7 +1774,7 @@
     ];
 
     const storyExitActions = {
-        1: () => { setToggle('toggle-krill', false); setToggle('toggle-whale', false); },
+        1: () => { setToggle('toggle-krill', false); setToggle('toggle-whale', false); setToggle('toggle-penguin', false); },
         2: () => { setToggle('toggle-domain1', false); setToggle('toggle-zones', false); },
     };
     let activeStorySectionIndex = 0;
@@ -1729,6 +1787,7 @@
         setToggle('toggle-mpa', false);
         setToggle('toggle-krill', false);
         setToggle('toggle-whale', false);
+        setToggle('toggle-penguin', false);
         const resetCenter = homeViewCenterForLayout();
         if (isMobileLayout()) {
             map.easeTo({
